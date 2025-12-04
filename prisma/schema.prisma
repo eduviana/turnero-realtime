@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OPERATOR
+  SUPERVISOR
+  ADMIN
+}
+
+enum TicketStatus {
+  PENDING
+  WAITING
+  CALLED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model User {
+  id      String  @id @default(cuid())
+  email   String?
+  clerkId String  @unique
+  role    Role
+
+  firstName    String?
+  lastName     String?
+  profileImage String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  auditLogs      AuditLog[] @relation("UserAuditLogs")
+  ticketsCreated Ticket[]   @relation("TicketCreatedBy")
+  ticketsHandled Ticket[]   @relation("TicketHandledBy")
+}
+
+enum AffiliateStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+model Affiliate {
+  id        String  @id @default(cuid())
+  dni       String  @unique
+  firstName String
+  lastName  String
+  phone     String?
+  email     String?
+
+  status AffiliateStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tickets Ticket[]
+
+  @@index([dni])
+}
+
+model Service {
+  id           String  @id @default(cuid())
+  name         String
+  code         String // si es prefijo tipo "A"
+  description  String?
+  currentIndex Int     @default(0)
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tickets Ticket[]
+}
+
+model Ticket {
+  id          String       @id @default(cuid())
+  serviceId   String
+  affiliateId String?
+  number      Int
+  code        String       @unique
+  status      TicketStatus @default(PENDING)
+  createdById String?
+  handledById String?
+  note        String?
+
+  // Timestamps útiles para dashboard y métricas
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  calledAt    DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  service   Service    @relation(fields: [serviceId], references: [id])
+  affiliate Affiliate? @relation(fields: [affiliateId], references: [id])
+  createdBy User?      @relation("TicketCreatedBy", fields: [createdById], references: [id])
+  handledBy User?      @relation("TicketHandledBy", fields: [handledById], references: [id])
+
+  @@unique([serviceId, number])
+  @@index([status])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  metadata  Json?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  actor User? @relation("UserAuditLogs", fields: [actorId], references: [id])
+}
