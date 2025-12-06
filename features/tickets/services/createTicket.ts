@@ -4,10 +4,16 @@
 import { Ticket } from "../types/ticket";
 
 export async function createTicket(serviceId: string): Promise<Ticket> {
+
+  const dni = sessionStorage.getItem("affiliate_dni");
+
   const res = await fetch("/api/tickets/create", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ serviceId }),
+    body: JSON.stringify({
+      serviceId,
+      dni, // <-- acá lo enviamos al backend
+    }),
   });
 
   if (!res.ok) {

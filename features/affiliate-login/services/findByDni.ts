@@ -1,4 +1,8 @@
-export async function findByDni(dni: string): Promise<{ affiliateId: string }> {
+export interface FindByDniResponse {
+  affiliateId: string;
+}
+
+export async function findByDni(dni: string): Promise<FindByDniResponse> {
   try {
     const res = await fetch("/api/affiliate/find-by-dni", {
       method: "POST",
@@ -6,36 +10,35 @@ export async function findByDni(dni: string): Promise<{ affiliateId: string }> {
       body: JSON.stringify({ dni }),
     });
 
-    // Si fallo el fetch (network error), res es undefined → catch lo maneja
-    const data = await res.json();
-
-    if (res.status === 404) {
-      throw new Error("No se encontró un afiliado con ese DNI.");
+    let data: any;
+    try {
+      data = await res.json();
+    } catch (e) {
+      console.log(e)
+      throw new Error("Respuesta inválida del servidor.");
     }
 
-    if (res.status === 403) {
-      if (data.code === "SUSPENDED") {
-        throw new Error("El afiliado se encuentra suspendido.");
-      }
+    switch (res.status) {
+      case 200:
+        return { affiliateId: data.affiliateId };
 
-      throw new Error("El afiliado no está activo.");
+      case 404:
+        throw new Error("No se encontró un afiliado con ese DNI.");
+
+      case 403:
+        if (data.code === "SUSPENDED") {
+          throw new Error("El afiliado se encuentra suspendido.");
+        }
+        throw new Error("El afiliado no está activo.");
+
+      default:
+        throw new Error(data?.message ?? "Error inesperado.");
     }
-
-    if (!res.ok) {
-      throw new Error(data?.message ?? "Error inesperado.");
-    }
-
-    return {
-      affiliateId: data.affiliateId,
-    };
   } catch (err) {
-    // Detectamos error de red real
     if (err instanceof TypeError) {
-      // TypeError = falla de fetch (network)
       throw new Error("Error de conexión.");
     }
 
-    // Re-lanzamos errores semánticos sin tocarlos
     throw err;
   }
 }

@@ -1,7 +1,8 @@
 import { db } from "@/lib/db/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
+import { auditService } from "@/lib/audit/auditService";
+import { AuditActions } from "@/lib/audit/auditActions";
 
 const schema = z.object({
   dni: z.string().min(7).max(10),
@@ -17,6 +18,17 @@ export async function POST(req: Request) {
       select: {
         id: true,
         status: true,
+      },
+    });
+
+    // Auditoría para "lookup" general
+    await auditService.record({
+      action: AuditActions.AFILIADO_BUSQUEDA,
+      actorId: null, // No hay operador autenticado en este flujo público
+      metadata: {
+        dni,
+        exists: Boolean(affiliate),
+        status: affiliate?.status ?? null,
       },
     });
 
@@ -44,15 +56,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // OK
     return NextResponse.json(
       {
         code: "OK",
         affiliateId: affiliate.id,
+        dni,
       },
       { status: 200 }
     );
   } catch (error) {
+    // Errores de validación
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { code: "INVALID_DATA", message: "Datos inválidos." },
@@ -60,7 +73,8 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error(error);
+    console.error("Affiliate lookup error:", error);
+
     return NextResponse.json(
       { code: "SERVER_ERROR", message: "Error inesperado." },
       { status: 500 }

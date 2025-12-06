@@ -174,23 +174,6 @@ export async function POST(req: Request) {
     });
   }
 
-  // //
-  // // 2. USER DELETED
-  // //
-  // if (type === "user.deleted") {
-  //   const clerkId = data.id;
-
-  //   await prisma.user.updateMany({
-  //     where: { clerkId },
-  //     data: {
-  //       deletedAt: new Date(),
-  //     },
-  //   });
-  // }
-
-  //
-  // 2. USER DELETED
-  //
   if (type === "user.deleted") {
     const clerkId = data.id;
 

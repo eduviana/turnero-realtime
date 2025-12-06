@@ -20,18 +20,16 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
     ----crear 10 afiliados: npx tsx prisma/scripts/create-affiliates.ts
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
 
+6- en app > api > services > find-all - route.ts se cachea la response con un tiempo de 1 semana ya que rara vez van a cambiar.
+    
+7- stablecí en la configuracion de clerk en el apartado Sessions que el Maximun lifetime sea de 1 dia en vez de 7, si bien se puede hacer, pero en el plan free esto solo funciona en development, para produccion hay que pagar.
+
+//TODO
+1- podria separar la feature services que actualmente está integrada en affiliate-login en una nueva carpeta en  "features" una nueva carpeta "services" y mover aqui dentro los archivos: affiliate-login > services - getAllServices.ts y de affiliate-login > types - services.ts
 
 
 
-
-
-
-
-
-    estoy creando una pagina web de uso interno para una obra social con nextjs (version 16) prisma, postgres, typescrypt, shadcn, zod, tailwind. utilizo Modular Feature Architecture (Feature Modules).
+estoy creando una pagina web de uso interno para una obra social con nextjs (version 16) prisma, postgres, typescrypt, shadcn, zod, tailwind. utilizo Modular Feature Architecture (Feature Modules).
 Cada feature contiene sus piezas internas, mientras que app/ contiene únicamente el routing.
 Es un patrón de organización donde cada feature del negocio tiene un módulo autocontenido que incluye UI, lógica, tipos y utilidades, mientras que las rutas viven aparte (en app/) y funcionan como puntos de entrada.
 
-
-//TODO
-1- tengo que crear en la carpeta "features" una nueva carpeta "services" y mover aqui dentro los archivos: affiliate-login > services - getAllServices.ts y de affiliate-login > types - services.ts

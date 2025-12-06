@@ -42,9 +42,13 @@ export default function ServiciosPage() {
   }
 
   function onTicketPrinted() {
+    sessionStorage.removeItem("affiliate_dni"); // limpiar el dni almacenado
+
     setCreatedTicket(null);
     router.replace("/ingreso-afiliado");
   }
+
+
 
   if (loading) {
     return (

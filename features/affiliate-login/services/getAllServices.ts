@@ -1,9 +1,10 @@
 import { ServiceItem } from "../types/services";
 
-
 export async function getAllServices(): Promise<ServiceItem[]> {
   try {
-    const res = await fetch("/api/services/find-all");
+    const res = await fetch("/api/services/find-all", {
+      cache: "force-cache",
+    });
 
     if (!res.ok) {
       throw new Error("Error obteniendo los servicios.");

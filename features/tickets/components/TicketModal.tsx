@@ -65,3 +65,5 @@ export function TicketModal({ ticket, onClose }: TicketModalProps) {
     </Dialog>
   );
 }
+
+
