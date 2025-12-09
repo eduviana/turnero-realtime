@@ -1,8 +1,14 @@
-"use client";
 
+
+import { RoleLinks } from "@/features/dashboard/components/RoleLinks";
+import { Role } from "@/generated/prisma/enums";
 import Link from "next/link";
 
-export function Sidebar() {
+interface SidebarProps {
+  accountRole: Role;
+}
+
+export function Sidebar({ accountRole }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
@@ -12,10 +18,11 @@ export function Sidebar() {
         </div>
 
         <nav className="flex flex-col p-4 gap-2">
-          <Link href="/" className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">Inicio</Link>
-          <Link href="/events" className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">Eventos</Link>
+          <RoleLinks role={accountRole} />
         </nav>
       </aside>
     </>
   );
 }
+
+

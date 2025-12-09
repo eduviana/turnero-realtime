@@ -13,12 +13,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  OPERATOR
-  SUPERVISOR
-  ADMIN
-}
-
 enum TicketStatus {
   PENDING
   WAITING
@@ -27,6 +21,21 @@ enum TicketStatus {
   COMPLETED
   CANCELLED
   NO_SHOW
+}
+
+enum Role {
+  OPERATOR
+  SUPERVISOR
+  ADMIN
+}
+
+model OperatorStatus {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  isOnline      Boolean  @default(false)
+  lastHeartbeat DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -46,6 +55,8 @@ model User {
   auditLogs      AuditLog[] @relation("UserAuditLogs")
   ticketsCreated Ticket[]   @relation("TicketCreatedBy")
   ticketsHandled Ticket[]   @relation("TicketHandledBy")
+
+  operatorStatus OperatorStatus?
 }
 
 enum AffiliateStatus {
@@ -99,6 +110,9 @@ model Ticket {
   note        String?
 
   // Timestamps útiles para dashboard y métricas
+  waitingSeconds  Int?
+  durationSeconds Int?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   calledAt    DateTime?

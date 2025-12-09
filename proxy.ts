@@ -1,23 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
-  // "/sign-in(.*)",       // login para las cuentas de la organización
-  // "/api/users/sync",    // webhook de Clerk (MUST be PUBLIC)
+  // "/sign-in(.*)",
+  // "/api/users/sync",
+  // "/ingreso-afiliado(.*)", // Incluye /servicios
+  // "/api/affiliate(.*)",
+  // "/api/services(.*)",
+  // "/api/tickets/create", // O /api/tickets(.*) si habrá más
 
-  //  // Rutas públicas del tótem de turnos:
-  // "/ingreso-afiliado(.*)",         // Page para ingresar DNI
-  // "/servicios(.*)",                // Page de selección de servicio
-  // "/api/affiliate(.*)",            // Validación DNI
-  // "/api/services(.*)",             // Listado de servicios
-  // "/api/tickets/create",           // Crear ticket
-
-
+  
+  "/",  // <-- agrega la raíz como pública
   "/sign-in(.*)",
   "/api/users/sync",
-  "/ingreso-afiliado(.*)", // Incluye /servicios
+  "/ingreso-afiliado(.*)",
   "/api/affiliate(.*)",
   "/api/services(.*)",
-  "/api/tickets/create", // O /api/tickets(.*) si habrá más
+  "/api/tickets/create",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
