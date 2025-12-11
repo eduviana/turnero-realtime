@@ -2,7 +2,7 @@
 
 import { RoleLinks } from "@/features/dashboard/components/RoleLinks";
 import { Role } from "@/generated/prisma/enums";
-import Link from "next/link";
+
 
 interface SidebarProps {
   accountRole: Role;

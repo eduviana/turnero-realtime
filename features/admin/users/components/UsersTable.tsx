@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { columns as buildColumns } from "../columns";
-import { DataTable } from "../data-table";
 
 import { UserTableRow } from "../types/users";
 import { ViewUserModal } from "./ViewUserModal";
+import { DataTable } from "@/components/ui/data-table";
 
 interface UsersTableProps {
   data: UserTableRow[];
@@ -29,13 +29,16 @@ export default function UsersTable({ data }: UsersTableProps) {
 
   return (
     <>
-      <DataTable columns={tableColumns} data={data} />
+      {/* <DataTable columns={tableColumns} data={data} /> */}
+      <DataTable
+        columns={tableColumns}
+        data={data}
+        filterColumn="email"
+        filterPlaceholder="Filtrar por email..."
+      />
 
       {selectedUserId && (
-        <ViewUserModal
-          userId={selectedUserId}
-          onClose={closeModal}
-        />
+        <ViewUserModal userId={selectedUserId} onClose={closeModal} />
       )}
     </>
   );

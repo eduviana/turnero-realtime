@@ -37,6 +37,8 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
 13- Un Client Component NO puede acceder directamente a la base de datos, por lo que necesita un endpoint o un server action.
     Un Server Component y Server Actions pueden acceder a la base de datos (ejemplo: db.user.findMany)
 
+14- se implementa RBAC en el archivo proxy.ts para proteger las rutas autenticadas. (por ejemplo: que una cuenta con el rol OPERATOR no pueda modificar la url y acceder a un path que es exclusivo de cuentas con el rol ADMIN). Ademas, en los endpoints hay proteccion adicional a las acciones dependiendo el rol (por ejemplo: si una cuenta con rol OPERATOR pudiera acceder a un path que no debe, no va a poder ejecutar ninguna accion de agregar/editar/eliminar/ver porque los endpoints verifican el rol de la cuenta que solicita la accion.)
+
 
 
 estoy creando una pagina web de uso interno para una obra social con nextjs (version 16) prisma, postgres, typescrypt, shadcn, zod, tailwind. utilizo Modular Feature Architecture (Feature Modules).
