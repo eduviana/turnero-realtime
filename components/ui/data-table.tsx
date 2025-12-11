@@ -34,15 +34,11 @@ import {
 } from "@/components/ui/table";
 import { getColumnLabel } from "@/features/admin/users/lib/getColumnLabel";
 
-// interface DataTableProps<TData, TValue> {
-//   columns: ColumnDef<TData, TValue>[];
-//   data: TData[];
-// }
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  filterColumn?: string; // NEW
-  filterPlaceholder?: string; // NEW
+  filterColumn?: string;
+  filterPlaceholder?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -80,14 +76,6 @@ export function DataTable<TData, TValue>({
     <div className="w-full">
       {/* Top Bar */}
       <div className="flex items-center py-4">
-        {/* <Input
-          placeholder="Filtrar por email..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
         {filterColumn && (
           <Input
             placeholder={filterPlaceholder ?? `Filtrar por ${filterColumn}...`}
@@ -179,7 +167,7 @@ export function DataTable<TData, TValue>({
 
       {/* Footer */}
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-sm text-muted-foreground ml-1">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} seleccionados.
         </div>

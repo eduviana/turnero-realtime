@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { columns as buildColumns } from "../columns";
-
 import { UserTableRow } from "../types/users";
 import { ViewUserModal } from "./ViewUserModal";
 import { DataTable } from "@/components/ui/data-table";
@@ -24,12 +23,10 @@ export default function UsersTable({ data }: UsersTableProps) {
 
   const tableColumns = buildColumns({
     onView: handleView,
-    // Se elimina onEdit por completo
   });
 
   return (
     <>
-      {/* <DataTable columns={tableColumns} data={data} /> */}
       <DataTable
         columns={tableColumns}
         data={data}

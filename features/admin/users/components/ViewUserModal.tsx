@@ -10,16 +10,18 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
 import { getUserById } from "../services/getUserById";
 import { UserDataViewModal } from "../types/users";
+import { UserViewSkeleton } from "./UserViewSkeleton";
 
 interface ViewUserModalProps {
   userId: string | null;
   onClose: () => void;
 }
 
-
+// Altura consistente para skeleton y contenido final.
+// Ajustala si tu modal tiene otra altura real.
+const CARD_HEIGHT_CLASS = "h-[28rem]";
 
 export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
   const [loading, setLoading] = useState(false);
@@ -48,28 +50,30 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl w-full">
         <DialogHeader>
           <DialogTitle>Detalles del usuario</DialogTitle>
         </DialogHeader>
 
-        {/* Loading */}
+        {/* LOADING */}
         {loading && (
-          <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin" />
+          <div className="flex items-center justify-center">
+            <div className="w-full">
+              <UserViewSkeleton className={CARD_HEIGHT_CLASS} />
+            </div>
           </div>
         )}
 
-        {/* Error */}
+        {/* ERROR */}
         {!loading && error && (
           <div className="text-center py-6 text-red-500 font-medium">
             {error}
           </div>
         )}
 
-        {/* Content */}
+        {/* CONTENT */}
         {!loading && !error && user && (
-          <Card className="overflow-hidden">
+          <Card className={`overflow-hidden w-full ${CARD_HEIGHT_CLASS}`}>
             {/* HEADER */}
             <CardHeader className="flex flex-col items-center gap-4 p-6 bg-muted/30 border-b">
               {user.profileImage ? (
@@ -99,7 +103,7 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
             </CardHeader>
 
             {/* BODY */}
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="px-6 space-y-4 overflow-auto">
               {/* Email */}
               <div className="space-y-1">
                 <Label>Email</Label>
@@ -108,7 +112,7 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
                 </div>
               </div>
 
-              {/* Nombre + Apellido Responsive */}
+              {/* Nombre y Apellido */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label>Nombre</Label>
@@ -126,7 +130,7 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
               </div>
 
               {/* Fechas */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label>Fecha de alta</Label>
                   <div className="text-sm text-muted-foreground">
