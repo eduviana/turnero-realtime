@@ -117,11 +117,11 @@ export function DataTable<TData, TValue>({
       {/* Table */}
       <div className="rounded-md border overflow-hidden">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-primary">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="h-18 px-4 text-secondary text-[1rem]">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -142,7 +142,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="p-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -167,10 +167,10 @@ export function DataTable<TData, TValue>({
 
       {/* Footer */}
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground ml-1">
+        {/* <div className="flex-1 text-sm text-muted-foreground ml-1">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} seleccionados.
-        </div>
+        </div> */}
 
         <div className="space-x-2">
           <Button

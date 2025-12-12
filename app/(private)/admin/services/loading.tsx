@@ -47,12 +47,9 @@ export default function LoadingServicesTable() {
         </div>
 
         {/* Footer Skeleton */}
-        <div className="flex justify-between mt-6">
-          <Skeleton className="h-5 w-64" />
-          <div className="flex gap-4">
-            <Skeleton className="h-8 w-20" />
-            <Skeleton className="h-8 w-20" />
-          </div>
+        <div className="flex gap-4 justify-end mt-6">
+          <Skeleton className="h-8 w-20" />
+          <Skeleton className="h-8 w-20" />
         </div>
       </div>
     </div>
