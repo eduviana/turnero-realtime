@@ -93,13 +93,26 @@
 
 import { headers } from "next/headers";
 import { Webhook } from "svix";
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
+type ClerkEmailAddress = {
+  id: string;
+  email_address: string;
+};
+
+type ClerkUserData = {
+  id: string;
+  first_name?: string;
+  last_name?: string;
+  image_url?: string;
+  primary_email_address_id?: string;
+  email_addresses?: ClerkEmailAddress[];
+};
+
 type ClerkWebhookEvent = {
-  object: string;
-  type: string;
-  data: any;
+  object: "event";
+  type: "user.created" | "user.updated" | "user.deleted";
+  data: ClerkUserData;
 };
 
 export async function POST(req: Request) {
@@ -108,7 +121,6 @@ export async function POST(req: Request) {
     throw new Error("Missing CLERK_WEBHOOK_SECRET");
   }
 
-  // Clerk envía el body como raw text
   const payload = await req.text();
   const hdrs = await headers();
 
@@ -137,63 +149,47 @@ export async function POST(req: Request) {
 
   const { type, data } = event;
 
-  //
-  // 1. USER CREATED / UPDATED
-  //
+  // USER CREATED / UPDATED
   if (type === "user.created" || type === "user.updated") {
     const clerkId = data.id;
-    const firstName = data.first_name ?? null;
-    const lastName = data.last_name ?? null;
-    const profileImage =
-      data.image_url && data.image_url.length > 0 ? data.image_url : null;
 
-    // Email principal
-    const primaryEmailId = data.primary_email_address_id;
-    const email = primaryEmailId
-      ? data.email_addresses?.find((e: any) => e.id === primaryEmailId)
-          ?.email_address ?? null
-      : null;
+    const email =
+      data.primary_email_address_id
+        ? data.email_addresses?.find(
+            (e) => e.id === data.primary_email_address_id
+          )?.email_address ?? null
+        : null;
 
     await prisma.user.upsert({
       where: { clerkId },
       create: {
         clerkId,
         email,
-        firstName,
-        lastName,
-        profileImage,
-        role: "OPERATOR", // por defecto
+        firstName: data.first_name ?? null,
+        lastName: data.last_name ?? null,
+        profileImage: data.image_url ?? null,
+        role: "OPERATOR",
       },
       update: {
         email,
-        firstName,
-        lastName,
-        profileImage,
-        updatedAt: new Date(),
+        firstName: data.first_name ?? null,
+        lastName: data.last_name ?? null,
+        profileImage: data.image_url ?? null,
       },
     });
   }
 
+  // USER DELETED (soft delete)
   if (type === "user.deleted") {
-    const clerkId = data.id;
-
     try {
       await prisma.user.update({
-        where: { clerkId },
-        data: {
-          deletedAt: new Date(),
-        },
+        where: { clerkId: data.id },
+        data: { deletedAt: new Date() },
       });
     } catch (err: any) {
-      // Si el usuario no existe o ya está borrado:
-      // Prisma lanza un error P2025 (Record not found).
-      if (err.code === "P2025") {
-        // No hacemos nada: el usuario ya no estaba en la base o ya estaba borrado.
-        return new Response("OK", { status: 200 });
+      if (err.code !== "P2025") {
+        throw err;
       }
-
-      // Otros errores deben ser arrojados
-      throw err;
     }
   }
 
