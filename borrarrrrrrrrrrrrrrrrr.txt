@@ -39,6 +39,27 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
 
 14- se implementa RBAC en el archivo proxy.ts para proteger las rutas autenticadas. (por ejemplo: que una cuenta con el rol OPERATOR no pueda modificar la url y acceder a un path que es exclusivo de cuentas con el rol ADMIN). Ademas, en los endpoints hay proteccion adicional a las acciones dependiendo el rol (por ejemplo: si una cuenta con rol OPERATOR pudiera acceder a un path que no debe, no va a poder ejecutar ninguna accion de agregar/editar/eliminar/ver porque los endpoints verifican el rol de la cuenta que solicita la accion.)
 
+15- Seguridad de la pagina ---- existen tres niveles de control, cada uno con un objetivo distinto:
+        capa 1 -  archivo:  proxy.ts (middleware) objetivo: Control de acceso a rutas (autorización coarse-grained)
+        capa 2 - archivo: app > (private) - layout.tsx objetivo: Garantizar sesión + usuario DB consistente.
+        capa 3 - archivo: app > api (en los endpoints que ejecuten acciones que lo requieran, se utiliza la funcion requireRole) objetivo: Autorización funcional / de negocio (fine-grained)
+
+    grafico arquitectura de seguridad: 
+    
+     proxy.ts     │  ← protege rutas por prefijo (macro)
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ PrivateLayout│  ← sesión + usuario DB
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Page         │  ← permisos funcionales / UX
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ API / Action │  ← requireRole (seguridad dura)
+
 
 
 estoy creando una pagina web de uso interno para una obra social con nextjs (version 16) prisma, postgres, typescrypt, shadcn, zod, tailwind. utilizo Modular Feature Architecture (Feature Modules).

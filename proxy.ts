@@ -72,9 +72,13 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/api/users/sync",
-  "/api/sessions(.*)", // <-- webhook fuera del middleware
+  "/api/sessions(.*)", // webhooks
   "/ingreso-afiliado(.*)",
-  "/api/affiliate(.*)",
+
+  // Afiliados (solo lo público)
+  "/api/affiliate/find-by-dni(.*)",
+
+  // Otros públicos
   "/api/services(.*)",
   "/api/tickets/create",
 ]);

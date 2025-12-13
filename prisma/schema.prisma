@@ -59,22 +59,73 @@ model User {
   operatorStatus OperatorStatus?
 }
 
+// enum AffiliateStatus {
+//   ACTIVE
+//   SUSPENDED
+//   INACTIVE
+// }
+
+// model Affiliate {
+//   id        String  @id @default(cuid())
+//   dni       String  @unique
+//   firstName String
+//   lastName  String
+//   phone     String?
+//   email     String?
+
+//   status AffiliateStatus @default(ACTIVE)
+
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   deletedAt DateTime?
+
+//   tickets Ticket[]
+
+//   @@index([dni])
+// }
 enum AffiliateStatus {
   ACTIVE
   SUSPENDED
   INACTIVE
 }
 
+enum AffiliateStatusReason {
+  NONE
+  DEBT
+  MISSING_DOCUMENTATION
+  VOLUNTARY_LEAVE
+  ADMIN_DECISION
+}
+
 model Affiliate {
-  id        String  @id @default(cuid())
-  dni       String  @unique
+  id String @id @default(cuid())
+
+  // Identificación
+  dni             String  @unique
+  affiliateNumber String? @unique
+
   firstName String
   lastName  String
   phone     String?
   email     String?
 
-  status AffiliateStatus @default(ACTIVE)
+  // Organización / contexto laboral
+  organization String?
 
+  // Ubicación
+  province String?
+  city     String?
+
+  // Estado
+  status       AffiliateStatus       @default(ACTIVE)
+  statusReason AffiliateStatusReason @default(NONE)
+
+  // Fechas operativas
+  activatedAt   DateTime?
+  suspendedAt   DateTime?
+  inactivatedAt DateTime?
+
+  // Auditoría básica
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -82,6 +133,9 @@ model Affiliate {
   tickets Ticket[]
 
   @@index([dni])
+  @@index([status])
+  @@index([organization])
+  @@index([province, city])
 }
 
 model Service {
