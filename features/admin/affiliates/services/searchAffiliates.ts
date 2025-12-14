@@ -1,15 +1,14 @@
 import { db } from "@/lib/db/prisma";
 import { AffiliateSearchFilters } from "../types/affiliate";
 
-
 export async function searchAffiliates(filters: AffiliateSearchFilters) {
   const {
     dni,
     status,
     statusReason,
-    organization,
-    province,
-    city,
+    organization, // nomralizar esto falta
+    provinceId,
+    cityId,
     createdFrom,
     createdTo,
     limit = 20,
@@ -22,9 +21,10 @@ export async function searchAffiliates(filters: AffiliateSearchFilters) {
       ...(dni && { dni }),
       ...(status && { status }),
       ...(statusReason && { statusReason }),
+
       ...(organization && { organization }),
-      ...(province && { province }),
-      ...(city && { city }),
+      ...(provinceId && { provinceId }),
+      ...(cityId && { cityId }),
 
       ...(createdFrom || createdTo
         ? {

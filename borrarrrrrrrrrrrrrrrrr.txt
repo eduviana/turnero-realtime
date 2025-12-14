@@ -17,8 +17,12 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
 
 
 5- Comandos para ejecutar los archivos seeds y cargar la base de datos de data de prueba: 
+    ----crear provincias y ciudades: npx tsx prisma/scripts/create-provinces-and-cities.ts
     ----crear 10 afiliados: npx tsx prisma/scripts/create-affiliates.ts
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
+
+    hacer lo de organizationId?: string;  organization?: string;
+    
 
 6- en app > api > services > find-all - route.ts se cachea la response con un tiempo de 1 semana ya que rara vez van a cambiar.
     
@@ -59,6 +63,8 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
        ↓
 ┌──────────────┐
 │ API / Action │  ← requireRole (seguridad dura)
+
+16- los endpoints de provinces y cities tienen una cache revalidate de 24hs.
 
 
 
