@@ -53,47 +53,6 @@ model User {
   operatorStatus OperatorStatus?
 }
 
-// model Affiliate {
-//   id String @id @default(cuid())
-
-//   // Identificación
-//   dni             String  @unique
-//   affiliateNumber String? @unique
-
-//   firstName String
-//   lastName  String
-//   phone     String?
-//   email     String?
-
-//   // Organización / contexto laboral
-//   organization String?
-
-//   // Ubicación
-//   province String?
-//   city     String?
-
-//   // Estado
-//   status       AffiliateStatus       @default(ACTIVE)
-//   statusReason AffiliateStatusReason @default(NONE)
-
-//   // Fechas operativas
-//   activatedAt   DateTime?
-//   suspendedAt   DateTime?
-//   inactivatedAt DateTime?
-
-//   // Auditoría básica
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-//   deletedAt DateTime?
-
-//   tickets Ticket[]
-
-//   @@index([dni])
-//   @@index([status])
-//   @@index([organization])
-//   @@index([province, city])
-// }
-
 enum AffiliateStatus {
   ACTIVE
   SUSPENDED
@@ -136,6 +95,14 @@ model City {
   @@index([provinceId])
 }
 
+model Organization {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  affiliates Affiliate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Affiliate {
   id String @id @default(cuid())
@@ -148,7 +115,8 @@ model Affiliate {
   phone     String?
   email     String?
 
-  organization String?
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
 
   provinceId Int
   cityId     Int
@@ -171,7 +139,7 @@ model Affiliate {
 
   @@index([dni])
   @@index([status])
-  @@index([organization])
+  @@index([organizationId])
   @@index([provinceId])
   @@index([cityId])
 }

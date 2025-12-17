@@ -72,6 +72,8 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  
+
   return (
     <div className="w-full">
       {/* Top Bar */}

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  FormProvider,
-  Controller,
-  UseFormReturn,
-} from "react-hook-form";
+import { FormProvider, Controller, UseFormReturn } from "react-hook-form";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +15,7 @@ import {
 } from "@/components/ui/select";
 
 import { AffiliateFiltersForm } from "../schemas/affiliateFiltersSchema";
+import { useOrganizations } from "@/features/organizations/hooks/useOrganizations";
 
 type ProvinceOption = {
   id: number;
@@ -55,6 +52,8 @@ export function AffiliatesFilters({
     formState: { errors },
   } = form;
 
+  const { organizations, organizationsLoading } = useOrganizations()
+
   const selectedProvinceId = watch("provinceId");
 
   const filteredCities = selectedProvinceId
@@ -76,9 +75,7 @@ export function AffiliatesFilters({
                 <Controller
                   name="dni"
                   control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="DNI" />
-                  )}
+                  render={({ field }) => <Input {...field} placeholder="DNI" />}
                 />
                 {errors.dni && (
                   <p className="text-sm text-red-600 mt-1">
@@ -90,17 +87,33 @@ export function AffiliatesFilters({
               {/* Organización (string por ahora) */}
               <div>
                 <Controller
-                  name="organization"
+                  name="organizationId"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Organización" />
+                    <Select
+                      value={field.value ? String(field.value) : ""}
+                      onValueChange={(value) =>
+                        field.onChange(value ? Number(value) : undefined)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Organización" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {organizations.map((org) => (
+                          <SelectItem key={org.id} value={String(org.id)}>
+                            {org.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
                 />
-                {errors.organization && (
+                {/* {errors.organization && (
                   <p className="text-sm text-red-600 mt-1">
                     {errors.organization.message}
                   </p>
-                )}
+                )} */}
               </div>
 
               {/* Estado */}
@@ -193,10 +206,7 @@ export function AffiliatesFilters({
                       </SelectTrigger>
                       <SelectContent>
                         {filteredCities.map((city) => (
-                          <SelectItem
-                            key={city.id}
-                            value={String(city.id)}
-                          >
+                          <SelectItem key={city.id} value={String(city.id)}>
                             {city.name}
                           </SelectItem>
                         ))}

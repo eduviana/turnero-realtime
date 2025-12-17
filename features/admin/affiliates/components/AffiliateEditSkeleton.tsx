@@ -3,13 +3,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface Props {
-  className?: string;
-}
-
-export function UserViewSkeleton({ className = "" }: Props) {
+export function AffiliateEditSkeleton() {
   return (
-    <Card className={`overflow-hidden w-full ${className}`}>
+    <Card className={"overflow-hidden w-full"}>
       {/* Header */}
       <CardHeader className="flex flex-col items-center gap-4 p-6 bg-muted/30 border-b">
         {/* Avatar */}

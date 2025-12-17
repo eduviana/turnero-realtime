@@ -20,6 +20,7 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
     ----crear provincias y ciudades: npx tsx prisma/scripts/create-provinces-and-cities.ts
     ----crear 10 afiliados: npx tsx prisma/scripts/create-affiliates.ts
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
+    ----crear organizaciones: npx tsx prisma/scripts/create-organizations.ts
 
     hacer lo de organizationId?: string;  organization?: string;
     
@@ -76,8 +77,12 @@ Es un patrón de organización donde cada feature del negocio tiene un módulo a
 
 
 
+Mejoras a realizar: 
 
+1- Migrar búsquedas y edición de afiliados a TanStack Query
+  - Centralizar cache de afiliados
+  - Evitar prop drilling (onUpdated)
+  - Manejar sincronización post-mutation automáticamente
+  - Posibilitar invalidación / refetch selectivo
 
-
-
-
+2- En AffiliatesFilters.tsx cambiar Controller de react-hook-form por ...form.register("") en donde se pueda para simplificar.

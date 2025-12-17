@@ -1,64 +1,19 @@
-// import { AffiliateStatus, AffiliateStatusReason } from "@/generated/prisma/enums";
-
-// export type AffiliateSearchFilters = {
-//   dni?: string;
-//   status?: AffiliateStatus;
-//   statusReason?: AffiliateStatusReason;
-//   organization?: string;
-//   province?: string;
-//   city?: string;
-
-//   createdFrom?: Date;
-//   createdTo?: Date;
-
-//   limit?: number;
-// };
-
-// export type AffiliateTableRow = {
-//   id: string;
-
-//   dni: string;
-//   affiliateNumber?: string | null;
-
-//   fullName: string;
-
-//   status: AffiliateStatus;
-//   statusReason: AffiliateStatusReason;
-
-//   organization?: string | null;
-//   province?: string | null;
-//   city?: string | null;
-
-//   createdAt: Date;
-// };
-
-// export type FiltersState = {
-//   dni?: string;
-//   status?: AffiliateStatus;
-//   statusReason?: AffiliateStatusReason;
-//   organization?: string;
-//   province?: string;
-//   city?: string;
-//   createdFrom?: string;
-//   createdTo?: string;
-//   limit?: number;
-// };
-
-
-
-
-import { AffiliateStatus, AffiliateStatusReason } from "@/generated/prisma/enums";
+import {
+  AffiliateStatus,
+  AffiliateStatusReason,
+} from "@/generated/prisma/enums";
 
 /**
  * Filtros que viajan al backend
  * (IDs, no nombres)
+ * Aquí buscamos en la DB, por lo que debemos usar los IDs
  */
 export type AffiliateSearchFilters = {
   dni?: string;
   status?: AffiliateStatus;
   statusReason?: AffiliateStatusReason;
 
-  organization?: string; // falta normalizar esta tabla en la db
+  organizationId?: number; // normalizado
   provinceId?: number;
   cityId?: number;
 
@@ -71,6 +26,8 @@ export type AffiliateSearchFilters = {
 /**
  * Fila que se renderiza en la tabla
  * (strings ya resueltas)
+ * Mantenemos opcionalmente organizationId por si necesitamos alguna acción posterior (por ejemplo editar o link a la organización)
+ * Esto es el resultado de la búsqueda
  */
 export type AffiliateTableRow = {
   id: string;
@@ -78,12 +35,14 @@ export type AffiliateTableRow = {
   dni: string;
   affiliateNumber?: string | null;
 
-  fullName: string;
+  firstName: string;
+  lastName: string;
 
   status: AffiliateStatus;
   statusReason: AffiliateStatusReason;
 
-  organization?: string | null;
+  organizationId?: number; // opcional, para referenciar
+  organization?: string | null; // nombre legible
   province?: string | null;
   city?: string | null;
 
@@ -99,11 +58,61 @@ export type FiltersState = {
   status?: AffiliateStatus;
   statusReason?: AffiliateStatusReason;
 
-  organizationId?: string;
+  organizationId?: string; // select -> string
   provinceId?: string; // select -> string
-  cityId?: string;     // select -> string
+  cityId?: string; // select -> string
 
   createdFrom?: string;
   createdTo?: string;
   limit?: number;
+};
+
+
+export interface AffiliateDataViewModal {
+  id: string;
+
+  dni: string;
+  affiliateNumber: string | null;
+
+  firstName: string;
+  lastName: string;
+  fullName: string;
+
+  phone: string | null;
+  email: string | null;
+
+  organization: string | null;
+  organizationId: number;
+
+  province: string;
+  provinceId: number;
+
+  city: string;
+  cityId: number;
+
+  status: AffiliateStatus;
+  statusReason: AffiliateStatusReason;
+
+  activatedAt: string | null;
+  suspendedAt: string | null;
+  inactivatedAt: string | null;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type AffiliateEditFormData = {
+  dni: string;
+
+  firstName: string;
+  lastName: string;
+
+  phone: string | null;
+  email: string | null;
+
+  provinceId: number;
+  cityId: number;
+
+  status: AffiliateStatus;
+  statusReason: AffiliateStatusReason;
 };

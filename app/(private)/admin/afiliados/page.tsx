@@ -1,6 +1,3 @@
-
-
-
 import { AffiliatesTable } from "@/features/admin/affiliates/components/AffiliatesTable";
 
 export default function AffiliatesPage() {
