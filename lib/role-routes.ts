@@ -2,11 +2,12 @@ import { Role } from "@/generated/prisma/enums";
 
 export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string }>> = {
   ADMIN: [
+    { label: "Inicio", href: "/dashboard" },
     { label: "Usuarios", href: "/admin/usuarios" },
     { label: "Servicios", href: "/admin/servicios" },
     { label: "Afiliados", href: "/admin/afiliados" },
+    { label: "Auditoría", href: "/admin/auditorias" },
     { label: "Reportes", href: "/admin/reports" },
-    { label: "Auditoría", href: "/admin/audit-logs" },
     { label: "Configuración", href: "/admin/settings" },
   ],
 

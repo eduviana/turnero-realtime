@@ -1,6 +1,6 @@
 
 
-import { RoleLinks } from "@/features/dashboard/components/RoleLinks";
+import { RoleLinks } from "@/components/layout/RoleLinks";
 import { Role } from "@/generated/prisma/enums";
 
 

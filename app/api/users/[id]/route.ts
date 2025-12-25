@@ -9,6 +9,19 @@ export async function GET(req: Request, context: { params: { id: string } }) {
 
     const { id } = await context.params;
 
+    // const user = await db.user.findUnique({
+    //   where: { id },
+    //   select: {
+    //     id: true,
+    //     email: true,
+    //     firstName: true,
+    //     lastName: true,
+    //     profileImage: true,
+    //     role: true,
+    //     createdAt: true,
+    //     updatedAt: true,
+    //   },
+    // });
     const user = await db.user.findUnique({
       where: { id },
       select: {
@@ -20,6 +33,12 @@ export async function GET(req: Request, context: { params: { id: string } }) {
         role: true,
         createdAt: true,
         updatedAt: true,
+        userStatus: {
+          select: {
+            isOnline: true,
+            lastActivityAt: true,
+          },
+        },
       },
     });
 

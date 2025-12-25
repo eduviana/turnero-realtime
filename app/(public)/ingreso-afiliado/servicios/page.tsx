@@ -1,8 +1,9 @@
 import { Services } from "@/features/service/components/Services";
-import { getAllServices } from "@/features/service/services/getAllServices";
+import { getActiveServices } from "@/features/service/services/getActiveServices";
+
 
 export default async function ServiciosPage() {
-  const services = await getAllServices();
+  const services = await getActiveServices();
 
   return <Services services={services} />;
 }

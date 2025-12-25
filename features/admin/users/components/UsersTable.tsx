@@ -30,7 +30,7 @@ export default function UsersTable({ data }: UsersTableProps) {
       <DataTable
         columns={tableColumns}
         data={data}
-        filterColumn="email"
+        filterColumn="user"
         filterPlaceholder="Filtrar por email..."
       />
 

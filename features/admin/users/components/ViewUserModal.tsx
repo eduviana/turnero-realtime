@@ -11,8 +11,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { getUserById } from "../services/getUserById";
-import { UserDataViewModal } from "../types/users";
+import { UserWithStatus } from "../types/users";
 import { UserViewSkeleton } from "./UserViewSkeleton";
+import { formatLastActivity } from "../lib/formatLastActivity";
 
 interface ViewUserModalProps {
   userId: string | null;
@@ -21,12 +22,19 @@ interface ViewUserModalProps {
 
 // Altura consistente para skeleton y contenido final.
 // Ajustala si tu modal tiene otra altura real.
-const CARD_HEIGHT_CLASS = "h-[28rem]";
+const CARD_HEIGHT_CLASS = "h-[24rem]";
 
 export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<UserDataViewModal | null>(null);
+  const [user, setUser] = useState<UserWithStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const isOnline = user?.userStatus?.isOnline ?? false;
+  const lastActivityAt = user?.userStatus?.lastActivityAt
+    ? new Date(user.userStatus.lastActivityAt)
+    : null;
+
+  console.log(lastActivityAt, "PPPPPPPPPPPPPPPPP");
 
   useEffect(() => {
     if (!userId) return;
@@ -50,9 +58,9 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl w-full">
+      <DialogContent className="w-full px-10 py-8 gap-6">
         <DialogHeader>
-          <DialogTitle>Detalles del usuario</DialogTitle>
+          <DialogTitle className="text-xl">Detalles del usuario</DialogTitle>
         </DialogHeader>
 
         {/* LOADING */}
@@ -73,73 +81,110 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
 
         {/* CONTENT */}
         {!loading && !error && user && (
-          <Card className={`overflow-hidden w-full ${CARD_HEIGHT_CLASS}`}>
+          // <Card className={`overflow-hidden w-full p-0 ${CARD_HEIGHT_CLASS}`}>
+          // <Card className={`overflow-hidden w-full p-0`}>
+          //   {/* HEADER */}
+          //   <CardHeader className="flex flex-col items-center gap-4 bg-muted/30 border-b">
+          //     {user.profileImage ? (
+          //       <img
+          //         src={user.profileImage}
+          //         alt="Foto de perfil"
+          //         className="w-24 h-24 rounded-full object-cover border shadow-sm"
+          //       />
+          //     ) : (
+          //       <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-sm border shadow-sm">
+          //         Sin foto
+          //       </div>
+          //     )}
+
+          //     <div className="text-center">
+          //       <p className="font-semibold text-xl">
+          //         {user.firstName} {user.lastName}
+          //       </p>
+
+          //       {user.email && (
+          //         <p className="text-sm text-muted-foreground">{user.email}</p>
+          //       )}
+
+          //       <Badge
+          //         variant="default"
+          //         className="uppercase tracking-wide mt-2"
+          //       >
+          //         {user.role}
+          //       </Badge>
+          //     </div>
+          //   </CardHeader>
+          <Card className="overflow-hidden w-full p-0">
             {/* HEADER */}
-            <CardHeader className="flex flex-col items-center gap-4 p-6 bg-muted/30 border-b">
-              {user.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt="Foto de perfil"
-                  className="w-24 h-24 rounded-full object-cover border shadow-sm"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-sm border shadow-sm">
-                  Sin foto
+            <CardHeader className="bg-muted/30 p-0">
+              <div className="flex flex-col items-center gap-2 py-4 border-b">
+                {user.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Foto de perfil"
+                    className="w-24 h-24 rounded-full object-cover border shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-sm border shadow-sm">
+                    Sin foto
+                  </div>
+                )}
+
+                <div className="text-center">
+                  <p className="font-semibold text-xl">
+                    {user.firstName} {user.lastName}
+                  </p>
+
+                  {user.email && (
+                    <p className="text-sm text-muted-foreground">
+                      {user.email}
+                    </p>
+                  )}
+
+                  <Badge
+                    variant="default"
+                    className="uppercase tracking-wide mt-2"
+                  >
+                    {user.role}
+                  </Badge>
                 </div>
-              )}
-
-              <div className="text-center">
-                <p className="font-semibold text-xl">
-                  {user.firstName} {user.lastName}
-                </p>
-
-                <Badge
-                  variant="outline"
-                  className="uppercase tracking-wide mt-2"
-                >
-                  {user.role}
-                </Badge>
               </div>
             </CardHeader>
 
             {/* BODY */}
-            <CardContent className="px-6 space-y-4 overflow-auto">
-              {/* Email */}
-              <div className="space-y-1">
-                <Label>Email</Label>
-                <div className="text-sm text-muted-foreground">
-                  {user.email ?? "-"}
-                </div>
-              </div>
-
-              {/* Nombre y Apellido */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label>Nombre</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {user.firstName ?? "-"}
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <Label>Apellido</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {user.lastName ?? "-"}
-                  </div>
-                </div>
-              </div>
-
+            <CardContent className="px-0 space-y-4 overflow-auto py-4">
               {/* Fechas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label>Fecha de alta</Label>
+                <div className="space-y-1 text-center">
+                  <Badge
+                    className={`uppercase px-3 py-1 tracking-wide ${
+                      isOnline
+                        ? "bg-emerald-600 text-white"
+                        : "bg-red-700 text-white"
+                    }`}
+                  >
+                    {isOnline ? "ONLINE" : "OFFLINE"}
+                  </Badge>
+                </div>
+
+                <div className="space-y-1 text-center">
+                  <Label className="block text-center">Última actividad</Label>
+                  <div className="text-center text-sm text-muted-foreground">
+                    {formatLastActivity(lastActivityAt)}
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-center">
+                  <Label className="block text-center">Fecha de alta</Label>
                   <div className="text-sm text-muted-foreground">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <Label>Última actualización</Label>
+                <div className="space-y-1 text-center">
+                  <Label className="block text-center">
+                    Última actualización
+                  </Label>
                   <div className="text-sm text-muted-foreground">
                     {new Date(user.updatedAt).toLocaleDateString()}
                   </div>

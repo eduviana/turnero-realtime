@@ -280,9 +280,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -363,12 +360,11 @@ export function EditAffiliateModal({
         setLoading(true);
         setError(null);
 
-        const affiliate: AffiliateDataViewModal =
-          await getAffiliateById(affiliateId);
-
-        setCreatedAt(
-          new Date(affiliate.createdAt).toLocaleDateString("es-AR")
+        const affiliate: AffiliateDataViewModal = await getAffiliateById(
+          affiliateId
         );
+
+        setCreatedAt(new Date(affiliate.createdAt).toLocaleDateString("es-AR"));
 
         form.reset({
           dni: affiliate.dni,
@@ -415,10 +411,272 @@ export function EditAffiliateModal({
   }
 
   return (
+    // <Dialog open onOpenChange={onClose}>
+    //   <DialogContent className="w-full max-w-5xl p-6">
+    //     <DialogHeader>
+    //       <DialogTitle>Editar afiliado</DialogTitle>
+    //     </DialogHeader>
+
+    //     {error && (
+    //       <div className="text-center text-sm text-red-600 font-medium">
+    //         {error}
+    //       </div>
+    //     )}
+
+    //     <form
+    //       id="edit-affiliate-form"
+    //       onSubmit={form.handleSubmit(onSubmit)}
+    //       className="space-y-5"
+    //     >
+    //       {/* DATOS PERSONALES */}
+    //       <Card>
+    //         <CardHeader className="pb-3">
+    //           <h4 className="text-xs font-semibold uppercase text-muted-foreground">
+    //             Datos personales
+    //           </h4>
+    //         </CardHeader>
+
+    //         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    //           {/* Nombre */}
+    //           <div>
+    //             <Label>Nombre</Label>
+    //             <Input {...register("firstName")} />
+    //             {errors.firstName && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.firstName.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Apellido */}
+    //           <div>
+    //             <Label>Apellido</Label>
+    //             <Input {...register("lastName")} />
+    //             {errors.lastName && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.lastName.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Teléfono */}
+    //           <div>
+    //             <Label>Teléfono</Label>
+    //             <Input {...register("phone")} />
+    //             {errors.phone && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.phone.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Email */}
+    //           <div>
+    //             <Label>Email</Label>
+    //             <Input type="email" {...register("email")} />
+    //             {errors.email && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.email.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* DNI */}
+    //           <div className="md:col-span-2">
+    //             <Label>DNI</Label>
+    //             <Input {...register("dni")} />
+    //             {errors.dni && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.dni.message}
+    //               </p>
+    //             )}
+    //           </div>
+    //         </CardContent>
+    //       </Card>
+
+    //       {/* UBICACIÓN */}
+    //       <Card>
+    //         <CardHeader className="pb-3">
+    //           <h4 className="text-xs font-semibold uppercase text-muted-foreground">
+    //             Ubicación
+    //           </h4>
+    //         </CardHeader>
+
+    //         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    //           {/* Provincia */}
+    //           <div>
+    //             <Label>Provincia</Label>
+    //             <Controller
+    //               name="provinceId"
+    //               control={control}
+    //               render={({ field }) => (
+    //                 <Select
+    //                   value={field.value ? String(field.value) : ""}
+    //                   onValueChange={(v) => {
+    //                     field.onChange(Number(v));
+    //                     form.setValue("cityId", undefined as any);
+    //                   }}
+    //                 >
+    //                   <SelectTrigger>
+    //                     <SelectValue placeholder="Seleccionar provincia" />
+    //                   </SelectTrigger>
+    //                   <SelectContent>
+    //                     {provinces.map((p) => (
+    //                       <SelectItem key={p.id} value={String(p.id)}>
+    //                         {p.name}
+    //                       </SelectItem>
+    //                     ))}
+    //                   </SelectContent>
+    //                 </Select>
+    //               )}
+    //             />
+    //             {errors.provinceId && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.provinceId.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Ciudad */}
+    //           <div>
+    //             <Label>Ciudad</Label>
+    //             <Controller
+    //               name="cityId"
+    //               control={control}
+    //               render={({ field }) => (
+    //                 <Select
+    //                   value={field.value ? String(field.value) : ""}
+    //                   onValueChange={(v) => field.onChange(Number(v))}
+    //                   disabled={!selectedProvinceId}
+    //                 >
+    //                   <SelectTrigger>
+    //                     <SelectValue placeholder="Seleccionar ciudad" />
+    //                   </SelectTrigger>
+    //                   <SelectContent>
+    //                     {filteredCities.map((c) => (
+    //                       <SelectItem key={c.id} value={String(c.id)}>
+    //                         {c.name}
+    //                       </SelectItem>
+    //                     ))}
+    //                   </SelectContent>
+    //                 </Select>
+    //               )}
+    //             />
+    //             {errors.cityId && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.cityId.message}
+    //               </p>
+    //             )}
+    //           </div>
+    //         </CardContent>
+    //       </Card>
+
+    //       {/* ESTADO */}
+    //       <Card>
+    //         <CardHeader className="pb-3">
+    //           <h4 className="text-xs font-semibold uppercase text-muted-foreground">
+    //             Estado administrativo
+    //           </h4>
+    //         </CardHeader>
+
+    //         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    //           {/* Estado */}
+    //           <div>
+    //             <Label>Estado</Label>
+    //             <Controller
+    //               name="status"
+    //               control={control}
+    //               render={({ field }) => (
+    //                 <Select value={field.value} onValueChange={field.onChange}>
+    //                   <SelectTrigger>
+    //                     <SelectValue />
+    //                   </SelectTrigger>
+    //                   <SelectContent>
+    //                     <SelectItem value="ACTIVE">Activo</SelectItem>
+    //                     <SelectItem value="SUSPENDED">Suspendido</SelectItem>
+    //                     <SelectItem value="INACTIVE">Inactivo</SelectItem>
+    //                   </SelectContent>
+    //                 </Select>
+    //               )}
+    //             />
+    //             {errors.status && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.status.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Motivo */}
+    //           <div>
+    //             <Label>Motivo</Label>
+    //             <Controller
+    //               name="statusReason"
+    //               control={control}
+    //               render={({ field }) => (
+    //                 <Select value={field.value} onValueChange={field.onChange}>
+    //                   <SelectTrigger>
+    //                     <SelectValue />
+    //                   </SelectTrigger>
+    //                   <SelectContent>
+    //                     <SelectItem value="NONE">Ninguno</SelectItem>
+    //                     <SelectItem value="DEBT">Deuda</SelectItem>
+    //                     <SelectItem value="MISSING_DOCUMENTATION">
+    //                       Falta documentación
+    //                     </SelectItem>
+    //                     <SelectItem value="VOLUNTARY_LEAVE">
+    //                       Baja voluntaria
+    //                     </SelectItem>
+    //                     <SelectItem value="ADMIN_DECISION">
+    //                       Decisión administrativa
+    //                     </SelectItem>
+    //                   </SelectContent>
+    //                 </Select>
+    //               )}
+    //             />
+    //             {errors.statusReason && (
+    //               <p className="text-xs text-red-600 mt-1">
+    //                 {errors.statusReason.message}
+    //               </p>
+    //             )}
+    //           </div>
+
+    //           {/* Fecha creación */}
+    //           <div className="md:col-span-2">
+    //             <Label>Fecha de creación</Label>
+    //             <Input value={createdAt} disabled className="bg-muted" />
+    //           </div>
+    //         </CardContent>
+    //       </Card>
+    //     </form>
+
+    //     {/* ACTIONS */}
+    //     <div className="flex justify-end gap-3 pt-4 border-t mt-4">
+    //       <Button
+    //         type="button"
+    //         variant="outline"
+    //         onClick={onClose}
+    //         disabled={submitting}
+    //       >
+    //         Cancelar
+    //       </Button>
+
+    //       <Button
+    //         type="submit"
+    //         form="edit-affiliate-form"
+    //         disabled={submitting}
+    //       >
+    //         Guardar cambios
+    //       </Button>
+    //     </div>
+    //   </DialogContent>
+    // </Dialog>
+
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-5xl p-6">
-        <DialogHeader>
-          <DialogTitle>Editar afiliado</DialogTitle>
+      <DialogContent className="w-full max-w-6xl p-6 sm:p-8">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-lg font-semibold">
+            Editar afiliado
+          </DialogTitle>
         </DialogHeader>
 
         {error && (
@@ -430,63 +688,65 @@ export function EditAffiliateModal({
         <form
           id="edit-affiliate-form"
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-5"
+          className="space-y-6"
         >
-          {/* DATOS PERSONALES */}
+          {/* ================= DATOS PERSONALES ================= */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <h4 className="text-xs font-semibold uppercase text-muted-foreground">
                 Datos personales
               </h4>
             </CardHeader>
 
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Nombre */}
-              <div>
-                <Label>Nombre</Label>
-                <Input {...register("firstName")} />
-                {errors.firstName && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.firstName.message}
-                  </p>
-                )}
+            <CardContent className="space-y-4">
+              {/* Nombre + Apellido */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Nombre</Label>
+                  <Input {...register("firstName")} />
+                  {errors.firstName && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.firstName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Apellido</Label>
+                  <Input {...register("lastName")} />
+                  {errors.lastName && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.lastName.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              {/* Apellido */}
-              <div>
-                <Label>Apellido</Label>
-                <Input {...register("lastName")} />
-                {errors.lastName && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
+              {/* Teléfono + Email */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Teléfono</Label>
+                  <Input {...register("phone")} />
+                  {errors.phone && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
 
-              {/* Teléfono */}
-              <div>
-                <Label>Teléfono</Label>
-                <Input {...register("phone")} />
-                {errors.phone && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <Label>Email</Label>
-                <Input type="email" {...register("email")} />
-                {errors.email && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
+                <div>
+                  <Label>Email</Label>
+                  <Input type="email" {...register("email")} />
+                  {errors.email && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* DNI */}
-              <div className="md:col-span-2">
+              <div className="max-w-sm">
                 <Label>DNI</Label>
                 <Input {...register("dni")} />
                 {errors.dni && (
@@ -498,154 +758,163 @@ export function EditAffiliateModal({
             </CardContent>
           </Card>
 
-          {/* UBICACIÓN */}
+          {/* ================= UBICACIÓN ================= */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <h4 className="text-xs font-semibold uppercase text-muted-foreground">
                 Ubicación
               </h4>
             </CardHeader>
 
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Provincia */}
-              <div>
-                <Label>Provincia</Label>
-                <Controller
-                  name="provinceId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ? String(field.value) : ""}
-                      onValueChange={(v) => {
-                        field.onChange(Number(v));
-                        form.setValue("cityId", undefined as any);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar provincia" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {provinces.map((p) => (
-                          <SelectItem key={p.id} value={String(p.id)}>
-                            {p.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Provincia */}
+                <div>
+                  <Label>Provincia</Label>
+                  <Controller
+                    name="provinceId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={(v) => {
+                          field.onChange(Number(v));
+                          form.setValue("cityId", undefined as any);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar provincia" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {provinces.map((p) => (
+                            <SelectItem key={p.id} value={String(p.id)}>
+                              {p.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.provinceId && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.provinceId.message}
+                    </p>
                   )}
-                />
-                {errors.provinceId && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.provinceId.message}
-                  </p>
-                )}
-              </div>
+                </div>
 
-              {/* Ciudad */}
-              <div>
-                <Label>Ciudad</Label>
-                <Controller
-                  name="cityId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ? String(field.value) : ""}
-                      onValueChange={(v) => field.onChange(Number(v))}
-                      disabled={!selectedProvinceId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar ciudad" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filteredCities.map((c) => (
-                          <SelectItem key={c.id} value={String(c.id)}>
-                            {c.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                {/* Ciudad */}
+                <div>
+                  <Label>Ciudad</Label>
+                  <Controller
+                    name="cityId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={(v) => field.onChange(Number(v))}
+                        disabled={!selectedProvinceId}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar ciudad" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filteredCities.map((c) => (
+                            <SelectItem key={c.id} value={String(c.id)}>
+                              {c.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.cityId && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.cityId.message}
+                    </p>
                   )}
-                />
-                {errors.cityId && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.cityId.message}
-                  </p>
-                )}
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* ESTADO */}
+          {/* ================= ESTADO ================= */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <h4 className="text-xs font-semibold uppercase text-muted-foreground">
                 Estado administrativo
               </h4>
             </CardHeader>
 
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Estado */}
-              <div>
-                <Label>Estado</Label>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ACTIVE">Activo</SelectItem>
-                        <SelectItem value="SUSPENDED">Suspendido</SelectItem>
-                        <SelectItem value="INACTIVE">Inactivo</SelectItem>
-                      </SelectContent>
-                    </Select>
+            <CardContent className="space-y-4">
+              {/* Estado + Motivo */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Estado</Label>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ACTIVE">Activo</SelectItem>
+                          <SelectItem value="SUSPENDED">Suspendido</SelectItem>
+                          <SelectItem value="INACTIVE">Inactivo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.status && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.status.message}
+                    </p>
                   )}
-                />
-                {errors.status && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.status.message}
-                  </p>
-                )}
-              </div>
+                </div>
 
-              {/* Motivo */}
-              <div>
-                <Label>Motivo</Label>
-                <Controller
-                  name="statusReason"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="NONE">Ninguno</SelectItem>
-                        <SelectItem value="DEBT">Deuda</SelectItem>
-                        <SelectItem value="MISSING_DOCUMENTATION">
-                          Falta documentación
-                        </SelectItem>
-                        <SelectItem value="VOLUNTARY_LEAVE">
-                          Baja voluntaria
-                        </SelectItem>
-                        <SelectItem value="ADMIN_DECISION">
-                          Decisión administrativa
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                <div>
+                  <Label>Motivo</Label>
+                  <Controller
+                    name="statusReason"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NONE">Ninguno</SelectItem>
+                          <SelectItem value="DEBT">Deuda</SelectItem>
+                          <SelectItem value="MISSING_DOCUMENTATION">
+                            Falta documentación
+                          </SelectItem>
+                          <SelectItem value="VOLUNTARY_LEAVE">
+                            Baja voluntaria
+                          </SelectItem>
+                          <SelectItem value="ADMIN_DECISION">
+                            Decisión administrativa
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.statusReason && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.statusReason.message}
+                    </p>
                   )}
-                />
-                {errors.statusReason && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.statusReason.message}
-                  </p>
-                )}
+                </div>
               </div>
 
               {/* Fecha creación */}
-              <div className="md:col-span-2">
+              <div className="max-w-sm">
                 <Label>Fecha de creación</Label>
                 <Input value={createdAt} disabled className="bg-muted" />
               </div>
@@ -653,8 +922,8 @@ export function EditAffiliateModal({
           </Card>
         </form>
 
-        {/* ACTIONS */}
-        <div className="flex justify-end gap-3 pt-4 border-t mt-4">
+        {/* ================= ACTIONS ================= */}
+        <div className="flex justify-end gap-3 pt-4 border-t mt-6">
           <Button
             type="button"
             variant="outline"

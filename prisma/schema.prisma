@@ -23,13 +23,25 @@ enum Role {
   ADMIN
 }
 
-model OperatorStatus {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  isOnline      Boolean  @default(false)
-  lastHeartbeat DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+
+model UserStatus {
+  id String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Presencia lógica (login/logout)
+  isOnline      Boolean  @default(false) //webhook de clerk /api/sessions session.created → isOnline = true  session.ended / removed / revoked → isOnline = false
+  
+  // Actividad real
+  lastActivityAt DateTime? // acciones explicitas del sistema
+
+  // Auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isOnline])
+  @@index([lastActivityAt])
 }
 
 model User {
@@ -50,7 +62,7 @@ model User {
   ticketsCreated Ticket[]   @relation("TicketCreatedBy")
   ticketsHandled Ticket[]   @relation("TicketHandledBy")
 
-  operatorStatus OperatorStatus?
+  userStatus UserStatus?
 }
 
 enum AffiliateStatus {

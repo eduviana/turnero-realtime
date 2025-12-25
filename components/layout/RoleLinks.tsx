@@ -1,5 +1,5 @@
 import { Role } from "@/generated/prisma/enums";
-import { DASHBOARD_ROUTES } from "../utils/role-routes";
+import { DASHBOARD_ROUTES } from "../../lib/role-routes";
 import Link from "next/link";
 
 

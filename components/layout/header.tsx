@@ -10,6 +10,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { UserButton } from "@clerk/nextjs";
+import { SignOutButton } from "./SignOutButton";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -59,7 +60,8 @@ export function Header() {
       {/* Actions */}
       <div className="flex items-center gap-4">
         <Bell className="w-5 h-5 text-slate-600" />
-        <UserButton/>
+        {/* <UserButton/> */}
+        <SignOutButton />
       </div>
     </header>
   );
