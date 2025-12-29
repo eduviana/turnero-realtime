@@ -1,7 +1,13 @@
-import type { UserWithStatus } from "../types/users";
-import type { UserTableRow } from "../types/users";
+import type { UserWithStatus, UserTableRow } from "../types/users";
+import { calculateUserPresence } from "@/lib/userPresence";
 
 export function toUserTableRow(user: UserWithStatus): UserTableRow {
+  const activeServices = user.services.filter((us) => us.isActive);
+
+  const presence = calculateUserPresence(
+    user.userStatus?.lastActivityAt
+  );
+
   return {
     id: user.id,
     email: user.email,
@@ -11,7 +17,9 @@ export function toUserTableRow(user: UserWithStatus): UserTableRow {
     role: user.role,
     createdAt: user.createdAt.toISOString(),
 
-    isOnline: user.userStatus?.isOnline ?? false,
     lastActivityAt: user.userStatus?.lastActivityAt ?? null,
+    presenceStatus: presence.status,
+
+    serviceCodes: activeServices.map((us) => us.service.code),
   };
 }

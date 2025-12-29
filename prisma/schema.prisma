@@ -23,16 +23,33 @@ enum Role {
   ADMIN
 }
 
+model UserService {
+  id String @id @default(cuid())
+
+  userId    String
+  serviceId String
+
+  // Control operativo
+  isPrimary Boolean @default(false)
+  isActive  Boolean @default(true)
+
+  assignedAt   DateTime  @default(now())
+  unassignedAt DateTime?
+
+  user    User    @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@unique([userId, serviceId])
+  @@index([userId])
+  @@index([serviceId])
+}
 
 
 model UserStatus {
-  id String @id @default(cuid())
+  id     String @id @default(cuid())
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  // Presencia lógica (login/logout)
-  isOnline      Boolean  @default(false) //webhook de clerk /api/sessions session.created → isOnline = true  session.ended / removed / revoked → isOnline = false
-  
   // Actividad real
   lastActivityAt DateTime? // acciones explicitas del sistema
 
@@ -40,9 +57,9 @@ model UserStatus {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([isOnline])
   @@index([lastActivityAt])
 }
+
 
 model User {
   id      String  @id @default(cuid())
@@ -53,6 +70,8 @@ model User {
   firstName    String?
   lastName     String?
   profileImage String?
+
+  services UserService[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -164,6 +183,8 @@ model Service {
   currentIndex Int     @default(0)
   isActive     Boolean @default(true)
 
+  operators UserService[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -200,15 +221,74 @@ model Ticket {
   @@index([status])
 }
 
+enum AuditEventType {
+  FUNCTIONAL
+  SECURITY
+  SYSTEM
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+
+  LOGIN
+  LOGOUT
+
+  STATUS_CHANGE
+  SEARCH
+
+  ASSIGN
+  UNASSIGN
+
+  CALL
+  COMPLETE
+  CANCEL
+
+  FORBIDDEN_ACCESS
+  UNAUTHORIZED_ACCESS
+}
+
+enum AuditEntity {
+  USER
+  TICKET
+  AFFILIATE
+  SERVICE
+  ORGANIZATION
+  SYSTEM
+}
+
 model AuditLog {
-  id        String   @id @default(cuid())
-  eventType String // "FUNCTIONAL" | "SECURITY" | "SYSTEM"
-  action    String
-  metadata  Json?
+  id String @id @default(cuid())
+
+  // Clasificación del evento
+  eventType AuditEventType
+  action    AuditAction
+  entity    AuditEntity
+  entityId  String?
+
+  // Actor
   actorId   String?
-  ip        String? // útil para seguridad
-  userAgent String? // útil para seguridad
+  actorRole Role?
+
+  // Contexto de seguridad
+  ip        String?
+  userAgent String?
+
+  // Información adicional (no crítica para métricas)
+  metadata Json?
+
+  // Timestamp
   createdAt DateTime @default(now())
 
+  // Relaciones
   actor User? @relation("UserAuditLogs", fields: [actorId], references: [id])
+
+  // Índices pensados para dashboards
+  @@index([createdAt])
+  @@index([eventType])
+  @@index([action])
+  @@index([action, actorId])
+  @@index([entity, entityId])
+  @@index([actorId])
 }

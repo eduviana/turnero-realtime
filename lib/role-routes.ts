@@ -2,7 +2,7 @@ import { Role } from "@/generated/prisma/enums";
 
 export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string }>> = {
   ADMIN: [
-    { label: "Inicio", href: "/dashboard" },
+    { label: "Inicio", href: "/admin/dashboard" },
     { label: "Usuarios", href: "/admin/usuarios" },
     { label: "Servicios", href: "/admin/servicios" },
     { label: "Afiliados", href: "/admin/afiliados" },
@@ -12,11 +12,12 @@ export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string 
   ],
 
   SUPERVISOR: [
-    { label: "Panel de Tickets", href: "/supervisor/tickets" },
-    { label: "Colas y Servicios", href: "/supervisor/services" },
-    { label: "Operadores", href: "/supervisor/operators" },
-    { label: "Estadísticas", href: "/supervisor/stats" },
-    { label: "Vista en Vivo", href: "/supervisor/live" },
+    { label: "Inicio", href: "/supervisor/dashboard" },
+    { label: "Usuarios", href: "/supervisor/usuarios" },
+    { label: "Servicios", href: "/supervisor/servicios" },
+    { label: "Afiliados", href: "/supervisor/afiliados" },
+    { label: "Auditoría", href: "/supervisor/auditorias" },
+    { label: "Reportes", href: "/supervisor/reports" },
   ],
 
   OPERATOR: [

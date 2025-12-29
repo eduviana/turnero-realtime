@@ -22,7 +22,6 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
     ----crear organizaciones: npx tsx prisma/scripts/create-organizations.ts
 
-    hacer lo de organizationId?: string;  organization?: string;
     
 
 6- en app > api > services > find-all - route.ts se cachea la response con un tiempo de 1 semana ya que rara vez van a cambiar.
@@ -85,4 +84,6 @@ Mejoras a realizar:
   - Manejar sincronización post-mutation automáticamente
   - Posibilitar invalidación / refetch selectivo
 
-2- En AffiliatesFilters.tsx cambiar Controller de react-hook-form por ...form.register("") en donde se pueda para simplificar.
+usar la funcion updateUserActivity en las acciones que tengan que refrescar el estado online/offline
+
+agregar a la funcion formatLastActivity.ts que distinga dias. 

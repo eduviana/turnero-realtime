@@ -1,22 +1,34 @@
-import { DashboardGrid } from "@/features/dashboard/components/DashboardGrid";
-import { getDashboardAffiliatesStats } from "@/features/dashboard/services/getDashboardAffiliatesStats";
-import { getDashboardServicesStats } from "@/features/dashboard/services/getDashboardServicesStats";
-import { getDashboardUsersStats } from "@/features/dashboard/services/getDashboardUsersStats";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db/prisma";
 
-export default async function DashboardPage() {
-  const [usersStats, servicesStats, affiliatesStats] = await Promise.all([
-    getDashboardUsersStats(),
-    getDashboardServicesStats(),
-    getDashboardAffiliatesStats()
-  ]);
+export default async function DashboardRedirectPage() {
+  const { userId } = await auth();
 
-  return (
-    <div className="container mx-auto py-6">
-      <DashboardGrid
-        usersStats={usersStats}
-        servicesStats={servicesStats}
-        affiliatesStats={affiliatesStats}
-      />
-    </div>
-  );
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkId: userId },
+    select: { role: true },
+  });
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  switch (user.role) {
+    case "ADMIN":
+      redirect("/admin/dashboard");
+
+    case "SUPERVISOR":
+      redirect("/supervisor/dashboard");
+
+    case "OPERATOR":
+      redirect("/operator/dashboard");
+
+    default:
+      redirect("/sign-in");
+  }
 }

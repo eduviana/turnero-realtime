@@ -14,6 +14,10 @@ import { getUserById } from "../services/getUserById";
 import { UserWithStatus } from "../types/users";
 import { UserViewSkeleton } from "./UserViewSkeleton";
 import { formatLastActivity } from "../lib/formatLastActivity";
+import { useServices } from "@/features/service/hooks/useServices";
+
+import { calculateUserPresence, UserPresenceStatus } from "@/lib/userPresence";
+import { presenceBadge } from "@/lib/presenceBadge";
 
 interface ViewUserModalProps {
   userId: string | null;
@@ -29,12 +33,17 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
   const [user, setUser] = useState<UserWithStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const isOnline = user?.userStatus?.isOnline ?? false;
+  const {
+    services,
+    loading: loadingServices,
+    error: errorServices,
+  } = useServices();
+
   const lastActivityAt = user?.userStatus?.lastActivityAt
     ? new Date(user.userStatus.lastActivityAt)
     : null;
 
-  console.log(lastActivityAt, "PPPPPPPPPPPPPPPPP");
+  const presence = calculateUserPresence(lastActivityAt);
 
   useEffect(() => {
     if (!userId) return;
@@ -81,40 +90,7 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
 
         {/* CONTENT */}
         {!loading && !error && user && (
-          // <Card className={`overflow-hidden w-full p-0 ${CARD_HEIGHT_CLASS}`}>
-          // <Card className={`overflow-hidden w-full p-0`}>
-          //   {/* HEADER */}
-          //   <CardHeader className="flex flex-col items-center gap-4 bg-muted/30 border-b">
-          //     {user.profileImage ? (
-          //       <img
-          //         src={user.profileImage}
-          //         alt="Foto de perfil"
-          //         className="w-24 h-24 rounded-full object-cover border shadow-sm"
-          //       />
-          //     ) : (
-          //       <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-sm border shadow-sm">
-          //         Sin foto
-          //       </div>
-          //     )}
-
-          //     <div className="text-center">
-          //       <p className="font-semibold text-xl">
-          //         {user.firstName} {user.lastName}
-          //       </p>
-
-          //       {user.email && (
-          //         <p className="text-sm text-muted-foreground">{user.email}</p>
-          //       )}
-
-          //       <Badge
-          //         variant="default"
-          //         className="uppercase tracking-wide mt-2"
-          //       >
-          //         {user.role}
-          //       </Badge>
-          //     </div>
-          //   </CardHeader>
-          <Card className="overflow-hidden w-full p-0">
+          <Card className="overflow-hidden w-full p-0 gap-0">
             {/* HEADER */}
             <CardHeader className="bg-muted/30 p-0">
               <div className="flex flex-col items-center gap-2 py-4 border-b">
@@ -152,19 +128,46 @@ export function ViewUserModal({ userId, onClose }: ViewUserModalProps) {
             </CardHeader>
 
             {/* BODY */}
-            <CardContent className="px-0 space-y-4 overflow-auto py-4">
-              {/* Fechas */}
+            <CardContent className="px-0 space-y-6 overflow-auto py-4">
+              {/* Servicios asociados */}
+              <div className="space-y-2">
+                <Label className="block text-center">Servicios asociados</Label>
+
+                {user.services.length === 0 ? (
+                  <div className="text-center text-sm text-muted-foreground">
+                    El usuario no tiene servicios asignados
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {user.services
+                      .slice()
+                      .sort((a, b) => (a.isPrimary ? -1 : 1))
+                      .map((assignment) => (
+                        <Badge
+                          key={assignment.service.id}
+                          variant={
+                            assignment.isPrimary ? "default" : "secondary"
+                          }
+                          className="flex items-center gap-1"
+                        >
+                          {assignment.service.name}
+                          {assignment.isPrimary && (
+                            <span className="text-xs opacity-80">
+                              (Primary)
+                            </span>
+                          )}
+                        </Badge>
+                      ))}
+                  </div>
+                )}
+              </div>
+              {/* Información general */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 text-center">
-                  <Badge
-                    className={`uppercase px-3 py-1 tracking-wide ${
-                      isOnline
-                        ? "bg-emerald-600 text-white"
-                        : "bg-red-700 text-white"
-                    }`}
-                  >
-                    {isOnline ? "ONLINE" : "OFFLINE"}
-                  </Badge>
+                  <Label className="block text-center">Estado</Label>
+                  <div className="flex justify-center">
+                    {presenceBadge(presence.status)}
+                  </div>
                 </div>
 
                 <div className="space-y-1 text-center">

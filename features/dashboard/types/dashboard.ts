@@ -1,8 +1,9 @@
 
 export interface DashboardUsersStats {
   total: number;
-  online: number;
-  offline: number;
+  active: number;
+  away: number;
+  inactive: number;
 }
 
 export interface DashboardServicesStats {

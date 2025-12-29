@@ -1,9 +1,9 @@
 // import { Webhook } from "svix";
 // import { NextResponse } from "next/server";
 // import { auditService } from "@/lib/audit/auditService";
-// import { AuditActions } from "@/lib/audit/auditActions";
-// import { EventTypes } from "@/lib/audit/eventTypes";
 // import { db } from "@/lib/db/prisma";
+// import { AuditAction, AuditEntity, AuditEventType } from "@/generated/prisma/enums";
+
 
 // export async function POST(req: Request) {
 //   const svixSecret = process.env.CLERK_WEBHOOK_SECRET_SESSION;
@@ -12,9 +12,6 @@
 //     return NextResponse.json({ ok: false }, { status: 500 });
 //   }
 
-//   //
-//   // Clerk webhook envía JSON pero la verificación requiere el raw body
-//   //
 //   const payload = await req.text();
 
 //   const svixId = req.headers.get("svix-id");
@@ -41,128 +38,91 @@
 
 //   const { type, data } = event;
 
-//   //
-//   // USER IDENTIFICATION
-//   //
 //   const clerkUserId: string | undefined = data?.user_id;
 //   if (!clerkUserId) {
-//     console.warn("Received session event without user_id");
 //     return NextResponse.json({ ok: true });
 //   }
 
-//   // Fetch local user
 //   const user = await db.user.findUnique({
 //     where: { clerkId: clerkUserId },
 //     select: { id: true, role: true },
 //   });
 
-//   //
-//   // Define actions per role
-//   //
-//   const getLoginAction = (role: string) => {
-//     switch (role) {
-//       case "ADMIN":
-//         return AuditActions.ADMIN_LOGIN;
-//       case "SUPERVISOR":
-//         return AuditActions.SUPERVISOR_LOGIN;
-//       case "OPERATOR":
-//         return AuditActions.OPERATOR_LOGIN;
-//       default:
-//         return undefined;
-//     }
-//   };
-
-//   const getLogoutAction = (role: string) => {
-//     switch (role) {
-//       case "ADMIN":
-//         return AuditActions.ADMIN_LOGOUT;
-//       case "SUPERVISOR":
-//         return AuditActions.SUPERVISOR_LOGOUT;
-//       case "OPERATOR":
-//         return AuditActions.OPERATOR_LOGOUT;
-//       default:
-//         return undefined;
-//     }
-//   };
+//   if (!user) {
+//     return NextResponse.json({ ok: true });
+//   }
 
 //   //
-//   // PROCESS LOGIN
+//   // LOGIN
 //   //
 //   if (type === "session.created") {
-//     if (user) {
-//       // 👉 USER STATUS (presence)
-//       await db.userStatus.upsert({
-//         where: { userId: user.id },
-//         update: {
-//           isOnline: true,
-//           lastHeartbeat: new Date(),
-//         },
-//         create: {
-//           userId: user.id,
-//           isOnline: true,
-//           lastHeartbeat: new Date(),
-//         },
-//       });
+//     await db.userStatus.upsert({
+//       where: { userId: user.id },
+//       update: {
+//         isOnline: true,
+//         lastActivityAt: new Date(),
+//       },
+//       create: {
+//         userId: user.id,
+//         isOnline: true,
+//         lastActivityAt: new Date(),
+//       },
+//     });
 
-//       const action = getLoginAction(user.role);
+//     await auditService.record({
+//       eventType: AuditEventType.SYSTEM,
+//       action: AuditAction.LOGIN,
+//       entity: AuditEntity.USER,
+//       entityId: user.id,
 
-//       if (action) {
-//         await auditService.record({
-//           eventType: EventTypes.SYSTEM,
-//           action,
-//           actorId: user.id,
-//           metadata: {
-//             clerkUserId,
-//             sessionId: data.id,
-//           },
-//           ip: req.headers.get("x-forwarded-for"),
-//           userAgent: req.headers.get("user-agent"),
-//         });
-//       }
-//     }
+//       actorId: user.id,
+//       actorRole: user.role,
+
+//       metadata: {
+//         clerkUserId,
+//         sessionId: data.id,
+//       },
+
+//       ip: req.headers.get("x-forwarded-for"),
+//       userAgent: req.headers.get("user-agent"),
+//     });
 
 //     return NextResponse.json({ ok: true });
 //   }
 
 //   //
-//   // PROCESS LOGOUT EVENTS (solo los habilitados en Clerk)
+//   // LOGOUT
 //   //
 //   const logoutEvents = ["session.ended", "session.removed", "session.revoked"];
 
 //   if (logoutEvents.includes(type)) {
-//     if (user) {
-//       await db.userStatus.updateMany({
-//         where: { userId: user.id },
-//         data: {
-//           isOnline: false,
-//           lastHeartbeat: new Date(),
-//         },
-//       });
+//     await db.userStatus.updateMany({
+//       where: { userId: user.id },
+//       data: { isOnline: false },
+//     });
 
-//       const action = getLogoutAction(user.role);
+//     await auditService.record({
+//       eventType: AuditEventType.SYSTEM,
+//       action: AuditAction.LOGOUT,
+//       entity: AuditEntity.USER,
+//       entityId: user.id,
 
-//       if (action) {
-//         await auditService.record({
-//           eventType: EventTypes.SYSTEM,
-//           action,
-//           actorId: user.id,
-//           metadata: {
-//             clerkUserId,
-//             sessionId: data.id,
-//             eventType: type,
-//           },
-//           ip: req.headers.get("x-forwarded-for"),
-//           userAgent: req.headers.get("user-agent"),
-//         });
-//       }
-//     }
+//       actorId: user.id,
+//       actorRole: user.role,
+
+//       metadata: {
+//         clerkUserId,
+//         sessionId: data.id,
+//         event: type,
+//       },
+
+//       ip: req.headers.get("x-forwarded-for"),
+//       userAgent: req.headers.get("user-agent"),
+//     });
 
 //     return NextResponse.json({ ok: true });
 //   }
 
-//   //
-//   // Ignore anything else
-//   //
 //   return NextResponse.json({ ok: true });
 // }
 
@@ -174,9 +134,12 @@
 import { Webhook } from "svix";
 import { NextResponse } from "next/server";
 import { auditService } from "@/lib/audit/auditService";
-import { AuditActions } from "@/lib/audit/auditActions";
-import { EventTypes } from "@/lib/audit/eventTypes";
 import { db } from "@/lib/db/prisma";
+import {
+  AuditAction,
+  AuditEntity,
+  AuditEventType,
+} from "@/generated/prisma/enums";
 
 export async function POST(req: Request) {
   const svixSecret = process.env.CLERK_WEBHOOK_SECRET_SESSION;
@@ -225,95 +188,76 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const getLoginAction = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return AuditActions.ADMIN_LOGIN;
-      case "SUPERVISOR":
-        return AuditActions.SUPERVISOR_LOGIN;
-      case "OPERATOR":
-        return AuditActions.OPERATOR_LOGIN;
-      default:
-        return undefined;
-    }
-  };
-
-  const getLogoutAction = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return AuditActions.ADMIN_LOGOUT;
-      case "SUPERVISOR":
-        return AuditActions.SUPERVISOR_LOGOUT;
-      case "OPERATOR":
-        return AuditActions.OPERATOR_LOGOUT;
-      default:
-        return undefined;
-    }
-  };
-
-  //
-  // LOGIN
-  //
+  /**
+   * LOGIN
+   * Se considera una actividad válida.
+   * Inicializa lastActivityAt.
+   */
   if (type === "session.created") {
+    const now = new Date();
+
     await db.userStatus.upsert({
       where: { userId: user.id },
       update: {
-        isOnline: true,
-        lastActivityAt: new Date(), // actividad inicial
+        lastActivityAt: now,
       },
       create: {
         userId: user.id,
-        isOnline: true,
-        lastActivityAt: new Date(),
+        lastActivityAt: now,
       },
     });
 
-    const action = getLoginAction(user.role);
-    if (action) {
-      await auditService.record({
-        eventType: EventTypes.SYSTEM,
-        action,
-        actorId: user.id,
-        metadata: {
-          clerkUserId,
-          sessionId: data.id,
-        },
-        ip: req.headers.get("x-forwarded-for"),
-        userAgent: req.headers.get("user-agent"),
-      });
-    }
+    await auditService.record({
+      eventType: AuditEventType.SYSTEM,
+      action: AuditAction.LOGIN,
+      entity: AuditEntity.USER,
+      entityId: user.id,
+
+      actorId: user.id,
+      actorRole: user.role,
+
+      metadata: {
+        clerkUserId,
+        sessionId: data.id,
+      },
+
+      ip: req.headers.get("x-forwarded-for"),
+      userAgent: req.headers.get("user-agent"),
+    });
 
     return NextResponse.json({ ok: true });
   }
 
-  //
-  // LOGOUT
-  //
-  const logoutEvents = ["session.ended", "session.removed", "session.revoked"];
+  /**
+   * LOGOUT
+   * NO se modifica UserStatus.
+   * La presencia se deriva únicamente de lastActivityAt.
+   */
+  const logoutEvents = [
+    "session.ended",
+    "session.removed",
+    "session.revoked",
+  ];
 
   if (logoutEvents.includes(type)) {
-    await db.userStatus.updateMany({
-      where: { userId: user.id },
-      data: {
-        isOnline: false,
-      },
-    });
+    await auditService.record({
+      eventType: AuditEventType.SYSTEM,
+      action: AuditAction.LOGOUT,
+      entity: AuditEntity.USER,
+      entityId: user.id,
 
-    const action = getLogoutAction(user.role);
-    if (action) {
-      await auditService.record({
-        eventType: EventTypes.SYSTEM,
-        action,
-        actorId: user.id,
-        metadata: {
-          clerkUserId,
-          sessionId: data.id,
-          eventType: type,
-        },
-        ip: req.headers.get("x-forwarded-for"),
-        userAgent: req.headers.get("user-agent"),
-      });
-    }
+      actorId: user.id,
+      actorRole: user.role,
+
+      metadata: {
+        clerkUserId,
+        sessionId: data.id,
+        event: type,
+      },
+
+      ip: req.headers.get("x-forwarded-for"),
+      userAgent: req.headers.get("user-agent"),
+    });
 
     return NextResponse.json({ ok: true });
   }
