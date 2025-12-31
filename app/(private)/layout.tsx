@@ -4,6 +4,7 @@ import { db } from "@/lib/db/prisma";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { MainWrapper } from "@/components/layout/MainWrapper";
+import { AuthProvider } from "@/features/auth/AuthContext";
 
 
 export default async function PrivateLayout({
@@ -53,13 +54,15 @@ export default async function PrivateLayout({
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-      
-      <Sidebar accountRole={user.role} />
+    <AuthProvider role={user.role}>
+      {/* le sigo pasando la prop al sidebar para no tener que hacerlo use client */}
+      <Sidebar accountRole={user.role} /> 
 
       <div className="flex flex-1 flex-col min-h-screen">
         <Header />
         <MainWrapper>{children}</MainWrapper>
       </div>
-    </div>
+    </AuthProvider>
+  </div>
   );
 }

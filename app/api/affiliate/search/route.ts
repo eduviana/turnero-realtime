@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireRole } from "@/lib/roles/requireRole";
-import { searchAffiliates } from "@/features/admin/affiliates/services/searchAffiliates";
-import { affiliateFiltersSchema } from "@/features/admin/affiliates/schemas/affiliateFiltersSchema";
-import { AffiliateSearchFilters } from "@/features/admin/affiliates/types/affiliate";
+import { searchAffiliates } from "@/features/affiliates/services/searchAffiliates";
+import { affiliateFiltersSchema } from "@/features/affiliates/schemas/affiliateFiltersSchema";
+import { AffiliateSearchFilters } from "@/features/affiliates/types/affiliate";
 
 export async function POST(req: Request) {
   // 🔐 Autenticación + autorización
-  const auth = await requireRole("ADMIN");
+  const auth = await requireRole("SUPERVISOR");
   if (!auth.ok) {
     return auth.response;
   }

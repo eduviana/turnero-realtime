@@ -7,7 +7,6 @@ export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string 
     { label: "Servicios", href: "/admin/servicios" },
     { label: "Afiliados", href: "/admin/afiliados" },
     { label: "Auditoría", href: "/admin/auditorias" },
-    { label: "Reportes", href: "/admin/reports" },
     { label: "Configuración", href: "/admin/settings" },
   ],
 
@@ -17,7 +16,6 @@ export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string 
     { label: "Servicios", href: "/supervisor/servicios" },
     { label: "Afiliados", href: "/supervisor/afiliados" },
     { label: "Auditoría", href: "/supervisor/auditorias" },
-    { label: "Reportes", href: "/supervisor/reports" },
   ],
 
   OPERATOR: [

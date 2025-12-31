@@ -2,7 +2,7 @@ import { db } from "@/lib/db/prisma";
 import { requireRole } from "@/lib/roles/requireRole";
 
 export async function getAuditLogs() {
-  await requireRole("ADMIN");
+  await requireRole("SUPERVISOR");
 
   const logs = await db.auditLog.findMany({
     orderBy: {

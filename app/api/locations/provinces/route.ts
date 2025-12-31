@@ -6,7 +6,7 @@ export const revalidate = 60 * 60 * 24; // 24h
 
 export async function GET() {
   // 🔐 Autenticación + autorización
-  const auth = await requireRole("ADMIN");
+  const auth = await requireRole("SUPERVISOR");
   if (!auth.ok) {
     return auth.response;
   }

@@ -6,7 +6,9 @@
 // import { Badge } from "@/components/ui/badge";
 
 // import { UserTableRow } from "./types/users";
+// import { UserPresenceStatus } from "@/lib/userPresence";
 // import { formatLastActivity } from "./lib/formatLastActivity";
+// import { presenceBadge } from "@/lib/presenceBadge";
 
 // interface BuildColumnsArgs {
 //   onView: (id: string) => void;
@@ -19,7 +21,7 @@
 // }: BuildColumnsArgs): ColumnDef<UserTableRow>[] {
 //   return [
 //     // ───────────────────────────────
-//     // Usuario (nombre + email)
+//     // Usuario
 //     // ───────────────────────────────
 //     {
 //       id: "user",
@@ -73,53 +75,43 @@
 //     // ───────────────────────────────
 //     // Servicios
 //     // ───────────────────────────────
-//    {
-//   accessorKey: "serviceCodes",
-//   header: () => <div className="text-center">Servicios</div>,
-//   cell: ({ row }) => {
-//     const codes = row.getValue("serviceCodes") as string[];
-
-//     return (
-//       <div className="flex justify-center gap-1 flex-wrap">
-//         {codes.length > 0 ? (
-//           codes.map(code => (
-//             <Badge
-//               key={code}
-//               variant="secondary"
-//               className="px-3 py-1 tracking-wide"
-//             >
-//               {code}
-//             </Badge>
-//           ))
-//         ) : (
-//           <span className="text-muted-foreground text-sm">—</span>
-//         )}
-//       </div>
-//     );
-//   },
-// },
-
-//     // ───────────────────────────────
-//     // Estado online
-//     // ───────────────────────────────
 //     {
-//       accessorKey: "isOnline",
-//       header: () => <div className="text-center">Estado</div>,
+//       accessorKey: "serviceCodes",
+//       header: () => <div className="text-center">Servicios</div>,
 //       cell: ({ row }) => {
-//         const isOnline = row.getValue("isOnline") as boolean;
+//         const codes = row.getValue("serviceCodes") as string[];
 
 //         return (
-//           <div className="flex justify-center">
-//             <Badge
-//               className={`uppercase px-3 py-1 tracking-wide ${
-//                 isOnline ? "bg-emerald-600 text-white" : "bg-red-700 text-white"
-//               }`}
-//             >
-//               {isOnline ? "ONLINE" : "OFFLINE"}
-//             </Badge>
+//           <div className="flex justify-center gap-1 flex-wrap">
+//             {codes.length > 0 ? (
+//               codes.map((code) => (
+//                 <Badge
+//                   key={code}
+//                   variant="secondary"
+//                   className="px-3 py-1 tracking-wide"
+//                 >
+//                   {code}
+//                 </Badge>
+//               ))
+//             ) : (
+//               <span className="text-muted-foreground text-sm">—</span>
+//             )}
 //           </div>
 //         );
 //       },
+//     },
+
+//     // ───────────────────────────────
+//     // Estado (presencia)
+//     // ───────────────────────────────
+//     {
+//       accessorKey: "presenceStatus",
+//       header: () => <div className="text-center">Estado</div>,
+//       cell: ({ row }) => (
+//         <div className="flex justify-center">
+//           {presenceBadge(row.getValue("presenceStatus") as UserPresenceStatus)}
+//         </div>
+//       ),
 //     },
 
 //     // ───────────────────────────────
@@ -151,7 +143,6 @@
 
 //         return (
 //           <div className="flex justify-center gap-2">
-//             {/* Ver */}
 //             <button
 //               onClick={() => onView(user.id)}
 //               className="flex items-center justify-center w-8 h-8 rounded-md bg-emerald-600 hover:bg-emerald-500 transition"
@@ -160,7 +151,6 @@
 //               <Eye size={18} className="text-white" />
 //             </button>
 
-//             {/* Editar servicios */}
 //             <button
 //               onClick={() => onEdit(user.id)}
 //               className="flex items-center justify-center w-8 h-8 rounded-md bg-sky-600 hover:bg-sky-500 transition"
@@ -174,6 +164,12 @@
 //     },
 //   ];
 // }
+
+
+
+
+
+
 
 "use client";
 
@@ -189,10 +185,8 @@ import { presenceBadge } from "@/lib/presenceBadge";
 
 interface BuildColumnsArgs {
   onView: (id: string) => void;
-  onEdit: (id: string) => void;
+  onEdit?: (id: string) => void; // 👈 opcional
 }
-
-
 
 export function columns({
   onView,
@@ -218,7 +212,9 @@ export function columns({
             </span>
 
             {email && (
-              <span className="text-xs text-muted-foreground">{email}</span>
+              <span className="text-xs text-muted-foreground">
+                {email}
+              </span>
             )}
           </div>
         );
@@ -235,7 +231,9 @@ export function columns({
           <Button
             variant="ghost"
             className="text-base font-medium"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
           >
             Rol
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -281,34 +279,36 @@ export function columns({
     },
 
     // ───────────────────────────────
-    // Estado (presencia)
+    // Estado
     // ───────────────────────────────
     {
       accessorKey: "presenceStatus",
       header: () => <div className="text-center">Estado</div>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          {presenceBadge(row.getValue("presenceStatus") as UserPresenceStatus)}
+          {presenceBadge(
+            row.getValue("presenceStatus") as UserPresenceStatus
+          )}
         </div>
       ),
     },
 
     // ───────────────────────────────
-// Última actividad
-// ───────────────────────────────
-{
-  accessorKey: "lastActivityAt",
-  header: () => <div className="text-center">Última actividad</div>,
-  cell: ({ row }) => {
-    const date = row.getValue("lastActivityAt") as Date | null;
+    // Última actividad
+    // ───────────────────────────────
+    {
+      accessorKey: "lastActivityAt",
+      header: () => <div className="text-center">Última actividad</div>,
+      cell: ({ row }) => {
+        const date = row.getValue("lastActivityAt") as Date | null;
 
-    return (
-      <div className="text-center text-sm text-muted-foreground">
-        {formatLastActivity(date)}
-      </div>
-    );
-  },
-},
+        return (
+          <div className="text-center text-sm text-muted-foreground">
+            {formatLastActivity(date)}
+          </div>
+        );
+      },
+    },
 
     // ───────────────────────────────
     // Acciones
@@ -322,6 +322,7 @@ export function columns({
 
         return (
           <div className="flex justify-center gap-2">
+            {/* Ver */}
             <button
               onClick={() => onView(user.id)}
               className="flex items-center justify-center w-8 h-8 rounded-md bg-emerald-600 hover:bg-emerald-500 transition"
@@ -330,13 +331,16 @@ export function columns({
               <Eye size={18} className="text-white" />
             </button>
 
-            <button
-              onClick={() => onEdit(user.id)}
-              className="flex items-center justify-center w-8 h-8 rounded-md bg-sky-600 hover:bg-sky-500 transition"
-              title="Asignar servicios"
-            >
-              <Pencil size={18} className="text-white" />
-            </button>
+            {/* Editar (solo si hay permiso) */}
+            {onEdit && (
+              <button
+                onClick={() => onEdit(user.id)}
+                className="flex items-center justify-center w-8 h-8 rounded-md bg-sky-600 hover:bg-sky-500 transition"
+                title="Editar usuario"
+              >
+                <Pencil size={18} className="text-white" />
+              </button>
+            )}
           </div>
         );
       },

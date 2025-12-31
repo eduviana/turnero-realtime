@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getColumnLabel } from "@/features/admin/users/lib/getColumnLabel";
+import { getColumnLabel } from "@/features/users/lib/getColumnLabel";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

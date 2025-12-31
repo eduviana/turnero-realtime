@@ -5,7 +5,8 @@ import {
   AffiliateStatus,
   AffiliateStatusReason,
 } from "@/generated/prisma/enums";
-import { affiliateEditSchema } from "@/features/admin/affiliates/schemas/affiliateEdit";
+import { affiliateEditSchema } from "@/features/affiliates/schemas/affiliateEdit";
+
 
 export async function GET(req: Request, context: { params: { id: string } }) {
   try {

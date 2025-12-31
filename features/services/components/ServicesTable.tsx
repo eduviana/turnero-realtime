@@ -5,12 +5,16 @@ import { ServiceTableRow } from "../types/service";
 import { columns as buildColumns } from "../columns";
 import { DataTable } from "@/components/ui/data-table";
 import { ConfirmToggleDialog } from "./ConfirmToggleDialog";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface ServicesTableProps {
   data: ServiceTableRow[];
 }
 
 export default function ServicesTable({ data }: ServicesTableProps) {
+  const permissions = usePermissions();
+  const canToggleServices = permissions.canToggleServices;
+
   const [services, setServices] = useState<ServiceTableRow[]>(data);
 
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -20,6 +24,8 @@ export default function ServicesTable({ data }: ServicesTableProps) {
   const servicePending = services.find((s) => s.id === pendingId);
 
   const requestToggleService = (id: string, newValue: boolean) => {
+    if (!canToggleServices) return; // seguridad UI
+
     setPendingId(id);
     setPendingValue(newValue);
     setDialogOpen(true);
@@ -45,7 +51,7 @@ export default function ServicesTable({ data }: ServicesTableProps) {
         throw new Error("No se pudo actualizar el servicio");
       }
     } catch (error) {
-      // revert if failed
+      // revertir cambio optimista
       setServices((prev) =>
         prev.map((s) =>
           s.id === pendingId ? { ...s, isActive: !pendingValue } : s
@@ -64,7 +70,7 @@ export default function ServicesTable({ data }: ServicesTableProps) {
   };
 
   const tableColumns = buildColumns({
-    onToggleActive: requestToggleService,
+    onToggleActive: canToggleServices ? requestToggleService : undefined,
   });
 
   return (
@@ -76,13 +82,15 @@ export default function ServicesTable({ data }: ServicesTableProps) {
         filterPlaceholder="Filtrar por nombre..."
       />
 
-      <ConfirmToggleDialog
-        open={dialogOpen}
-        serviceName={servicePending?.name}
-        newValue={pendingValue}
-        onConfirm={confirmToggle}
-        onCancel={cancelToggle}
-      />
+      {canToggleServices && (
+        <ConfirmToggleDialog
+          open={dialogOpen}
+          serviceName={servicePending?.name}
+          newValue={pendingValue}
+          onConfirm={confirmToggle}
+          onCancel={cancelToggle}
+        />
+      )}
     </>
   );
 }

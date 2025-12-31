@@ -9,11 +9,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { UserButton } from "@clerk/nextjs";
 import { SignOutButton } from "./SignOutButton";
+
 
 export function Header() {
   const [open, setOpen] = useState(false);
+
+
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white p-4 md:px-6">
