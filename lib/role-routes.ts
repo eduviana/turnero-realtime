@@ -19,8 +19,6 @@ export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string 
   ],
 
   OPERATOR: [
-    { label: "Mis Tickets", href: "/operator/tickets" },
-    { label: "Crear Ticket", href: "/operator/new-ticket" },
-    { label: "Historial", href: "/operator/history" },
+    { label: "Inicio", href: "/operator/dashboard" },
   ],
 };
