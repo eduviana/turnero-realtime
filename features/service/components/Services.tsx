@@ -18,13 +18,13 @@ export function Services({ services }: ServicesProps) {
   const [createdTicket, setCreatedTicket] = useState<Ticket | null>(null);
 
   const serviceIcons: Record<string, string> = {
-    A: "🩺",
-    B: "💳",
-    C: "🛠️",
-    D: "🧾",
-    P: "⭐️",
+    AC: "🩺",
+    PF: "💳",
+    // ST: "🛠️",
+    AF: "🧾",
+    AP: "⭐️",
     FM: "💊",
-    FNM: "🧴",
+    FG: "🧴",
   };
 
   async function handleSelect(service: Service) {
@@ -57,7 +57,7 @@ export function Services({ services }: ServicesProps) {
               className="
                 group
                 rounded-2xl border shadow-md bg-white
-                p-6 flex flex-col items-center justify-center
+                px-6 flex flex-col items-center justify-center
                 gap-4
                 transition-all duration-200
                 hover:shadow-lg hover:border-gray-300

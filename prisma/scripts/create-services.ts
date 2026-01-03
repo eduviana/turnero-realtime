@@ -10,37 +10,37 @@ async function main() {
     data: [
       {
         name: "Atención al Cliente",
-        code: "A",
+        code: "AC",
         description: "Gestiones generales, consultas, cambios de datos personales.",
       },
       {
         name: "Pagos y Facturación",
-        code: "B",
+        code: "PF",
         description: "Pagos, facturas, planes y deudas.",
       },
-      {
-        name: "Soporte Técnico",
-        code: "C",
-        description: "Problemas técnicos, instalaciones, mantenimiento.",
-      },
+      // {
+      //   name: "Soporte Técnico",
+      //   code: "ST",
+      //   description: "Problemas técnicos, instalaciones, mantenimiento.",
+      // },
       {
         name: "Afiliaciones",
-        code: "D",
+        code: "AF",
         description: "Altas, bajas, renovaciones y gestiones de afiliados.",
       },
       {
         name: "Atención Prioritaria",
-        code: "P",
+        code: "AP",
         description: "Personas con prioridad: mayores, embarazadas, movilidad reducida.",
       },
       {
-        name: "Farmacia - Medicamentos",
+        name: "Farmacia Medicamentos",
         code: "FM",
         description: "Dispensación de medicamentos con cobertura.",
       },
       {
-        name: "Farmacia - No Medicinales",
-        code: "FNM",
+        name: "Farmacia General",
+        code: "FG",
         description: "Productos de perfumería, cosmética y artículos sin cobertura.",
       },
     ],
