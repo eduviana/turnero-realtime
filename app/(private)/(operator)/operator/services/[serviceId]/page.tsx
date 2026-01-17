@@ -1,38 +1,37 @@
-"use client"
+"use client";
+import { PharmacyMedicationsArea } from "@/features/operator-workspace/areas/pharmacy-medications/components/PharmacyMedicationsArea";
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
-
-// Views específicas por servicio
-// import { CustomerServiceView } from "@/features/operator-workspace/services-ui/CustomerServiceView";
-// import { BillingServiceView } from "@/features/operator-workspace/services-ui/BillingServiceView";
-// import { AffiliationsServiceView } from "@/features/operator-workspace/services-ui/AffiliationsServiceView";
-// import { PriorityServiceView } from "@/features/operator-workspace/services-ui/PriorityServiceView";
-// import { PharmacyMedicinesServiceView } from "@/features/operator-workspace/services-ui/PharmacyMedicinesServiceView";
-// import { PharmacyGeneralServiceView } from "@/features/operator-workspace/services-ui/PharmacyGeneralServiceView";
-// import { DefaultServiceView } from "@/features/operator-workspace/services-ui/DefaultServiceView";
 
 export default function OperatorServicePage() {
   const { service } = useOperatorService();
 
-//   switch (service.code) {
-//     case "AC":
-//       return <CustomerServiceView service={service} />;
+  if (!service) {
+    return <div>Cargando servicio...</div>;
+  }
 
-//     case "PF":
-//       return <BillingServiceView service={service} />;
+  switch (service.code) {
+    case "FM":
+      return (
+        
+          <PharmacyMedicationsArea />
+        
+      );
+    case "FG":
+      return <div>farmacia general</div>;
 
-//     case "AF":
-//       return <AffiliationsServiceView service={service} />;
+    case "AC":
+      return <div>ac</div>;
 
-//     case "AP":
-//       return <PriorityServiceView service={service} />;
+    case "PF":
+      return <div>pf</div>;
 
-//     case "FM":
-//       return <PharmacyMedicinesServiceView service={service} />;
+    case "AF":
+      return <div>af</div>;
 
-//     case "FG":
-//       return <PharmacyGeneralServiceView service={service} />;
+    case "AP":
+      return <div>ap</div>;
 
-//     default:
-//       return <DefaultServiceView service={service} />;
-//   }
+    default:
+      return <div>Servicio no soportado</div>;
+  }
 }

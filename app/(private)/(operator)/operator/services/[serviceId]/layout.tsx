@@ -4,7 +4,9 @@ import { redirect, notFound } from "next/navigation";
 
 import { getOperatorServiceContext } from "@/features/operator-workspace/services/getOperatorServiceContext";
 import { OperatorServiceProvider } from "@/features/operator-workspace/context/OperatorServiceContext";
-import { TurnQueuePanel } from "@/features/operator-workspace/components/TurnQueuePanel";
+import { TurnQueuePanel } from "@/features/turn-queue/components/TurnQueuePanel";
+import { OperatorServiceHeader } from "@/features/operator-workspace/components/OperatorServiceHeader";
+import { PharmacyMedicationCartProvider } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
 
 interface OperatorServiceLayoutProps {
   children: ReactNode;
@@ -17,7 +19,7 @@ export default async function OperatorServiceLayout({
   children,
   params,
 }: OperatorServiceLayoutProps) {
-  // ✅ UNWRAP params (clave del problema)
+  // ✅ unwrap params (Next 15)
   const { serviceId } = await params;
 
   // 1️⃣ Autenticación
@@ -32,35 +34,34 @@ export default async function OperatorServiceLayout({
     serviceId,
   });
 
-  // 3️⃣ Acceso inválido o servicio no asociado
+  // 3️⃣ Acceso inválido
   if (!serviceContext) {
     notFound();
   }
 
+  const layoutContent = (
+  <div className="min-h-screen space-y-4">
+    <OperatorServiceHeader />
+
+    {/* TurnQueuePanel a la derecha */}
+    <div className="flex justify-end container mx-auto">
+      <TurnQueuePanel />
+    </div>
+
+    <main>{children}</main>
+  </div>
+);
+
   // 4️⃣ Layout compartido del servicio
   return (
-    <OperatorServiceProvider value={serviceContext}>
-      <div className="min-h-screen p-6">
-        {/* Header + turnos */}
-        <header className="mb-6 flex items-start justify-between gap-6 bg-red-100">
-          <div>
-            <h1 className="text-2xl font-bold">
-              {serviceContext.service.name}
-            </h1>
-
-            {serviceContext.service.description && (
-              <p className="text-sm text-muted-foreground">
-                {serviceContext.service.description}
-              </p>
-            )}
-          </div>
-
-          <TurnQueuePanel serviceCode={serviceContext.service.code} />
-        </header>
-
-        {/* Vista específica del servicio */}
-        <main>{children}</main>
-      </div>
-    </OperatorServiceProvider>
-  );
+  <OperatorServiceProvider value={serviceContext}>
+    {serviceContext.service.code === "FM" ? (
+      <PharmacyMedicationCartProvider>
+        {layoutContent}
+      </PharmacyMedicationCartProvider>
+    ) : (
+      layoutContent
+    )}
+  </OperatorServiceProvider>
+);
 }

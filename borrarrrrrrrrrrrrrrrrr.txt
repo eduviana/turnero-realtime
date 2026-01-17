@@ -21,6 +21,7 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
     ----crear 10 afiliados: npx tsx prisma/scripts/create-affiliates.ts
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
     ----crear organizaciones: npx tsx prisma/scripts/create-organizations.ts
+    ----crear medicamentos: npx tsx prisma/scripts/create-pharmacy-medications.ts
 
     
 
@@ -87,3 +88,34 @@ Mejoras a realizar:
 usar la funcion updateUserActivity en las acciones que tengan que refrescar el estado online/offline
 
 agregar a la funcion formatLastActivity.ts que distinga dias. 
+
+
+Mapa mental de como funciona:
+
+OperatorServiceContext
+
+identidad (operador + servicio)
+
+vive en el layout
+
+siempre activo
+
+TurnQueue
+
+estado de turnos
+
+propio del panel
+
+NO conoce farmacia
+
+PharmacyMedicationCart
+
+estado operativo de atención
+
+compartido entre:
+
+área de farmacia
+
+botón “Finalizar turno”
+
+requiere Provider común

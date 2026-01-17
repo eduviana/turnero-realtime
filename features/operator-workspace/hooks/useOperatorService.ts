@@ -1,10 +1,10 @@
 "use client";
 
 import { useContext } from "react";
-import { OperatorServiceContext } from "../context/OperatorServiceContext";
+import { OperatorServiceReactContext } from "../context/OperatorServiceContext";
 
 export function useOperatorService() {
-  const context = useContext(OperatorServiceContext);
+  const context = useContext(OperatorServiceReactContext);
 
   if (!context) {
     throw new Error(

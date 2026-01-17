@@ -6,7 +6,6 @@ import { Header } from "@/components/layout/Header";
 import { MainWrapper } from "@/components/layout/MainWrapper";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
-
 export default async function PrivateLayout({
   children,
 }: {
@@ -24,7 +23,11 @@ export default async function PrivateLayout({
       clerkId: userId,
       deletedAt: null,
     },
-    select: { role: true },
+    select: {
+      role: true,
+      firstName: true,
+      lastName: true,
+    },
   });
 
   // 🔐 Fallback: crear usuario si no existe
@@ -34,8 +37,7 @@ export default async function PrivateLayout({
 
     const email = clerkUser.primaryEmailAddressId
       ? clerkUser.emailAddresses.find(
-          (e: { id: string; emailAddress: string }) =>
-            e.id === clerkUser.primaryEmailAddressId
+          (e) => e.id === clerkUser.primaryEmailAddressId
         )?.emailAddress ?? null
       : null;
 
@@ -48,21 +50,31 @@ export default async function PrivateLayout({
         profileImage: clerkUser.imageUrl ?? null,
         role: "OPERATOR",
       },
-      select: { role: true },
+      select: {
+        role: true,
+        firstName: true,
+        lastName: true,
+      },
     });
   }
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-    <AuthProvider role={user.role}>
-      {/* le sigo pasando la prop al sidebar para no tener que hacerlo use client */}
-      <Sidebar accountRole={user.role} /> 
+      <AuthProvider
+        user={{
+          role: user.role,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }}
+      >
+        {/* Sidebar sigue recibiendo la info sin volverse client */}
+        <Sidebar accountRole={user.role} />
 
-      <div className="flex flex-1 flex-col min-h-screen">
-        <Header />
-        <MainWrapper>{children}</MainWrapper>
-      </div>
-    </AuthProvider>
-  </div>
+        <div className="flex flex-1 flex-col min-h-screen">
+          <Header />
+          <MainWrapper>{children}</MainWrapper>
+        </div>
+      </AuthProvider>
+    </div>
   );
 }

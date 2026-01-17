@@ -20,7 +20,6 @@ export function Services({ services }: ServicesProps) {
   const serviceIcons: Record<string, string> = {
     AC: "🩺",
     PF: "💳",
-    // ST: "🛠️",
     AF: "🧾",
     AP: "⭐️",
     FM: "💊",

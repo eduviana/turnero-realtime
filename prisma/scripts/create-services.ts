@@ -18,11 +18,6 @@ async function main() {
         code: "PF",
         description: "Pagos, facturas, planes y deudas.",
       },
-      // {
-      //   name: "Soporte Técnico",
-      //   code: "ST",
-      //   description: "Problemas técnicos, instalaciones, mantenimiento.",
-      // },
       {
         name: "Afiliaciones",
         code: "AF",

@@ -1,24 +1,14 @@
 "use client";
 
 import { createContext } from "react";
+import type { OperatorServiceContext } from "../types/operator";
 
-export interface OperatorServiceContextValue {
-  operatorId: string;
-  operatorName: string | null;
-
-  service: {
-    id: string;
-    name: string;
-    code: string;
-    description?: string | null;
-  };
-}
-
-export const OperatorServiceContext =
-  createContext<OperatorServiceContextValue | null>(null);
+// 👇 nombre distinto al type
+export const OperatorServiceReactContext =
+  createContext<OperatorServiceContext | null>(null);
 
 interface OperatorServiceProviderProps {
-  value: OperatorServiceContextValue;
+  value: OperatorServiceContext;
   children: React.ReactNode;
 }
 
@@ -27,8 +17,8 @@ export function OperatorServiceProvider({
   children,
 }: OperatorServiceProviderProps) {
   return (
-    <OperatorServiceContext.Provider value={value}>
+    <OperatorServiceReactContext.Provider value={value}>
       {children}
-    </OperatorServiceContext.Provider>
+    </OperatorServiceReactContext.Provider>
   );
 }

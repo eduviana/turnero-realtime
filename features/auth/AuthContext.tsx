@@ -3,21 +3,27 @@
 import { createContext, useContext } from "react";
 import { Role } from "@/generated/prisma/enums";
 
-interface AuthContextValue {
+export interface AuthUser {
   role: Role;
+  firstName: string | null;
+  lastName: string | null;
+}
+
+interface AuthContextValue {
+  user: AuthUser;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({
-  role,
+  user,
   children,
 }: {
-  role: Role;
+  user: AuthUser;
   children: React.ReactNode;
 }) {
   return (
-    <AuthContext.Provider value={{ role }}>
+    <AuthContext.Provider value={{ user }}>
       {children}
     </AuthContext.Provider>
   );
@@ -25,8 +31,10 @@ export function AuthProvider({
 
 export function useAuthContext() {
   const ctx = useContext(AuthContext);
+
   if (!ctx) {
     throw new Error("useAuthContext must be used within AuthProvider");
   }
+
   return ctx;
 }

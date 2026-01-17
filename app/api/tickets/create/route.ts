@@ -1,4 +1,5 @@
 import { db } from "@/lib/db/prisma";
+import { pusherServer } from "@/lib/pusher/server";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -12,6 +13,27 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!dni) {
+      return NextResponse.json(
+        { message: "dni es requerido" },
+        { status: 400 }
+      );
+    }
+
+    // 🔍 Resolver afiliado
+    const affiliate = await db.affiliate.findUnique({
+      where: { dni },
+      select: { id: true },
+    });
+
+    if (!affiliate) {
+      return NextResponse.json(
+        { message: "Afiliado no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    // 🔍 Servicio
     const service = await db.service.findUnique({
       where: { id: serviceId },
       select: { id: true, code: true, currentIndex: true, name: true },
@@ -27,9 +49,11 @@ export async function POST(req: Request) {
     const nextNumber = service.currentIndex + 1;
     const ticketCode = `${service.code}-${nextNumber}`;
 
+    // 🎟️ Crear ticket CON affiliateId
     const ticket = await db.ticket.create({
       data: {
         serviceId,
+        affiliateId: affiliate.id,
         number: nextNumber,
         code: ticketCode,
       },
@@ -46,6 +70,9 @@ export async function POST(req: Request) {
       where: { id: serviceId },
       data: { currentIndex: nextNumber },
     });
+
+    // 🔔 Evento de cola
+    await pusherServer.trigger(`turn-queue-${serviceId}`, "updated", {});
 
     return NextResponse.json(ticket, { status: 201 });
   } catch (err) {

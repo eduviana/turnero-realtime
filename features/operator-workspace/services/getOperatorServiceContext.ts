@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { OperatorServiceContextValue } from "../context/OperatorServiceContext";
+import type { OperatorServiceContext } from "../types/operator";
 
 interface GetOperatorServiceContextParams {
   clerkUserId: string;
@@ -8,7 +8,7 @@ interface GetOperatorServiceContextParams {
 
 export async function getOperatorServiceContext(
   params: GetOperatorServiceContextParams
-): Promise<OperatorServiceContextValue | null> {
+): Promise<OperatorServiceContext | null> {
   const user = await prisma.user.findFirst({
     where: {
       clerkId: params.clerkUserId,
@@ -24,12 +24,15 @@ export async function getOperatorServiceContext(
     select: {
       id: true,
       firstName: true,
+      lastName: true,
       services: {
         where: {
           serviceId: params.serviceId,
           isActive: true,
         },
         select: {
+          id: true,
+          assignedAt: true,
           service: {
             select: {
               id: true,
@@ -47,16 +50,23 @@ export async function getOperatorServiceContext(
     return null;
   }
 
-  const service = user.services[0].service;
+  const userService = user.services[0];
 
   return {
-    operatorId: user.id,
-    operatorName: user.firstName,
+    operator: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
     service: {
-      id: service.id,
-      name: service.name,
-      code: service.code,
-      description: service.description,
+      id: userService.service.id,
+      name: userService.service.name,
+      code: userService.service.code,
+      description: userService.service.description,
+    },
+    userService: {
+      id: userService.id,
+      assignedAt: userService.assignedAt,
     },
   };
 }

@@ -7,16 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum TicketStatus {
-  PENDING
-  WAITING
-  CALLED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-  NO_SHOW
-}
-
 enum Role {
   OPERATOR
   SUPERVISOR
@@ -44,7 +34,6 @@ model UserService {
   @@index([serviceId])
 }
 
-
 model UserStatus {
   id     String @id @default(cuid())
   userId String @unique
@@ -59,7 +48,6 @@ model UserStatus {
 
   @@index([lastActivityAt])
 }
-
 
 model User {
   id      String  @id @default(cuid())
@@ -82,6 +70,11 @@ model User {
   ticketsHandled Ticket[]   @relation("TicketHandledBy")
 
   userStatus UserStatus?
+
+  //nuevo
+  pharmacyMedicationOrders PharmacyMedicationOrder[]
+
+  
 }
 
 enum AffiliateStatus {
@@ -168,6 +161,9 @@ model Affiliate {
 
   tickets Ticket[]
 
+  //nuevo
+  pharmacyMedicationOrders PharmacyMedicationOrder[]
+
   @@index([dni])
   @@index([status])
   @@index([organizationId])
@@ -184,11 +180,26 @@ model Service {
   isActive     Boolean @default(true)
 
   operators UserService[]
+  tickets Ticket[]
+
+   //nuevo
+  pharmacyMedicationOrders PharmacyMedicationOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tickets Ticket[]
+
+ 
+}
+
+enum TicketStatus {
+  PENDING
+  WAITING
+  CALLED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
 }
 
 model Ticket {
@@ -203,8 +214,8 @@ model Ticket {
   note        String?
 
   // Timestamps útiles para dashboard y métricas
-  waitingSeconds  Int?
-  durationSeconds Int?
+  waitingSeconds  Int? // Representa cuánto tardó el afiliado en llegar y acercarse al mostrador
+  durationSeconds Int? // Representa la duración real de la atención del operador
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -217,8 +228,13 @@ model Ticket {
   createdBy User?      @relation("TicketCreatedBy", fields: [createdById], references: [id])
   handledBy User?      @relation("TicketHandledBy", fields: [handledById], references: [id])
 
+   //nuevo
+  pharmacyMedicationOrder PharmacyMedicationOrder?
+
   @@unique([serviceId, number])
   @@index([status])
+
+ 
 }
 
 enum AuditEventType {
@@ -291,4 +307,49 @@ model AuditLog {
   @@index([action, actorId])
   @@index([entity, entityId])
   @@index([actorId])
+}
+
+// --------- PHARMACY MEDICATION AREA ------------
+
+model PharmacyMedicationProduct {
+  id       String  @id @default(cuid())
+  name     String
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PharmacyMedicationOrderItem[]
+}
+
+model PharmacyMedicationOrder {
+  id String @id @default(cuid())
+
+  ticketId    String  @unique
+  serviceId   String
+  operatorId  String
+  affiliateId String?
+
+  createdAt DateTime @default(now())
+
+  ticket    Ticket     @relation(fields: [ticketId], references: [id])
+  service   Service    @relation(fields: [serviceId], references: [id])
+  operator  User       @relation(fields: [operatorId], references: [id])
+  affiliate Affiliate? @relation(fields: [affiliateId], references: [id])
+
+  items PharmacyMedicationOrderItem[]
+}
+
+model PharmacyMedicationOrderItem {
+  id String @id @default(cuid())
+
+  orderId   String
+  productId String
+  quantity  Int
+
+  order PharmacyMedicationOrder @relation(fields: [orderId], references: [id])
+
+  product PharmacyMedicationProduct @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
 }
