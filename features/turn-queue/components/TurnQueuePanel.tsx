@@ -7,6 +7,16 @@ import { useTurnQueue } from "../hooks/useTurnQueue";
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
 import { TicketStatus } from "@/generated/prisma/enums";
 import { usePharmacyMedicationCart } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
+import { Badge } from "@/components/ui/badge";
+import {
+  Check,
+  CheckCircle,
+  CheckCircle2,
+  Circle,
+  UserX,
+  X,
+  XCircle,
+} from "lucide-react";
 
 export function TurnQueuePanel() {
   //hook que retorna el context
@@ -67,11 +77,18 @@ export function TurnQueuePanel() {
   };
 
   return (
-    <Card className="w-[320px] rounded-xl shadow-sm">
+    <Card className="w-[340px] rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          Turnos · {service.code}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-medium text-gray-400">
+            TURNOS · {service.code}
+          </CardTitle>
+
+          <Badge className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            EN ATENCIÓN
+          </Badge>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -82,7 +99,7 @@ export function TurnQueuePanel() {
         <div className="text-center">
           <p className="text-xs text-muted-foreground">Turno actual</p>
 
-          <p className="text-3xl font-bold tracking-tight">
+          <p className="text-4xl font-bold tracking-tight">
             {currentCode ?? "—"}
           </p>
 
@@ -104,7 +121,7 @@ export function TurnQueuePanel() {
             Llamar siguiente
           </Button>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-6">
             {canStart && (
               <Button
                 className="w-full"
@@ -117,28 +134,39 @@ export function TurnQueuePanel() {
 
             {canComplete && (
               <Button
-                className="w-full"
+                className="w-full rounded-xl py-6 font-bold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
                 disabled={isLoading || items.length === 0}
                 onClick={handleCompleteWithSale}
               >
+                <CheckCircle2 className="h-6! w-6!" />
                 Finalizar turno
               </Button>
             )}
 
+       
             <div className="grid grid-cols-2 gap-2">
+              {/* No se presentó */}
               <Button
-                variant="outline"
+                type="button"
                 disabled={isLoading || !canCancel}
                 onClick={() => actOnCurrent("NO_SHOW")}
+                className="flex items-center justify-center gap-1 rounded-xl border bg-white text-slate-700 border-slate-200 px-2 py-3 text-sm font-semibold hover:bg-slate-50 transition-colors disabled:opacity-50"
               >
+                <UserX className="h-4 w-4 text-primary" />
                 No se presentó
               </Button>
 
+              {/* Cancelar */}
               <Button
-                variant="destructive"
+                type="button"
                 disabled={isLoading || !canCancel}
                 onClick={() => actOnCurrent("CANCEL")}
+                className="flex items-center justify-center gap-1 rounded-xl border bg-red-50 text-red-600 border-red-100 px-2 py-3 text-sm font-semibold hover:bg-red-100 transition-colors disabled:opacity-50 "
               >
+                <span className="relative inline-flex h-4 w-4 items-center justify-center">
+                  <Circle className="absolute h-4 w-4 fill-red-600 text-red-600" />
+                  <X className="relative h-2.5 w-2.5 text-white" />
+                </span>
                 Cancelar
               </Button>
             </div>

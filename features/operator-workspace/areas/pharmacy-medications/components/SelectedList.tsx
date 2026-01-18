@@ -64,6 +64,7 @@
 "use client";
 
 import { SelectedMedication } from "../types/pharmacy-medications";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   items: SelectedMedication[];
@@ -87,45 +88,47 @@ export function SelectedList({
   }
 
   return (
-    <div className="mt-6">
-      <h2 className="text-sm font-medium mb-2">Medicamentos seleccionados</h2>
+    <div>
+      <h2 className="mb-2 text-sm font-medium">Medicamentos agregados</h2>
 
       <ul className="space-y-2">
         {items.map((item) => (
           <li
             key={item.productId}
-            className={`flex items-center justify-between rounded-md border px-3 py-2 ${
+            className={`flex items-center justify-between rounded-md border bg-white px-3 py-2 ${
               disabled ? "opacity-50" : ""
             }`}
           >
             <span className="text-sm">{item.name}</span>
 
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 type="button"
+                size="icon"
                 disabled={disabled}
                 onClick={() => {
                   if (disabled) return;
                   onDecrease(item.productId);
                 }}
-                className="px-2 py-1 border rounded disabled:cursor-not-allowed"
+                className="h-8 w-8 bg-slate-700"
               >
                 −
-              </button>
+              </Button>
 
-              <span className="text-sm w-6 text-center">{item.quantity}</span>
+              <span className="w-6 text-center text-sm">{item.quantity}</span>
 
-              <button
+              <Button
                 type="button"
+                size="icon"
                 disabled={disabled}
                 onClick={() => {
                   if (disabled) return;
                   onIncrease(item.productId);
                 }}
-                className="px-2 py-1 border rounded disabled:cursor-not-allowed"
+                className="h-8 w-8 bg-slate-700"
               >
                 +
-              </button>
+              </Button>
             </div>
           </li>
         ))}

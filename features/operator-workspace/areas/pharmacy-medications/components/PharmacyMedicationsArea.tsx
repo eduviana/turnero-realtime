@@ -91,10 +91,14 @@ export function PharmacyMedicationsArea() {
 
   return (
     <section className="container mx-auto">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Columna izquierda: búsqueda */}
-        <div className="md:col-span-2 space-y-2">
-          <SearchInput onSearch={setQuery} disabled={!canAddItems} />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mt-20">
+        {/* Columna 1 */}
+        <div className="md:col-span-1 space-y-2">
+          <SearchInput
+            value={query}
+            onSearch={setQuery}
+            disabled={!canAddItems}
+          />
 
           {!canAddItems && (
             <p className="text-xs text-muted-foreground">
@@ -105,12 +109,16 @@ export function PharmacyMedicationsArea() {
           <SearchResults
             results={results}
             isSearching={isSearching}
+            query={query}
             onSelect={handleSelectProduct}
             disabled={!canAddItems}
           />
         </div>
 
-        {/* Columna derecha: seleccionados */}
+        {/* Columna 2 VACÍA */}
+        <div className="hidden md:block" />
+
+        {/* Columna 3 */}
         <div className="md:col-span-1">
           <SelectedList
             items={items}

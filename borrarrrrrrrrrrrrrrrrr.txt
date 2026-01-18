@@ -119,3 +119,236 @@ compartido entre:
 botón “Finalizar turno”
 
 requiere Provider común
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Farmacia Medicamentos - Gestión de Pedidos</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0f172a", // Deep Navy
+              secondary: "#3b82f6", // Vibrant Blue
+              "background-light": "#f8fafc",
+              "background-dark": "#020617",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+              'xl': '1rem',
+            },
+          },
+        },
+      };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 glass-card">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-secondary text-3xl">local_pharmacy</span>
+<span class="text-xl font-bold tracking-tight text-primary dark:text-white">Farmacia <span class="text-secondary">Medicamentos</span></span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end mr-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">prueba probando</span>
+<span class="text-xs text-slate-500">Farmacéutico de Turno</span>
+</div>
+<div class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center border border-slate-300 dark:border-slate-600">
+<span class="material-icons-round text-slate-600 dark:text-slate-300">person</span>
+</div>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-round dark:hidden text-slate-600">dark_mode</span>
+<span class="material-icons-round hidden dark:block text-slate-300">light_mode</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<div class="lg:col-span-8 space-y-8">
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2" for="search">Buscar medicamento</label>
+<div class="relative group">
+<span class="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-secondary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent transition-all outline-none" id="search" placeholder="Ej. Ibuprofeno, Paracetamol, Amoxicilina..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+<span class="hidden sm:inline-block px-2 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-[10px] text-slate-400 font-mono">⌘K</span>
+</div>
+</div>
+<div class="mt-4 flex flex-wrap gap-2">
+<span class="text-xs text-slate-500 dark:text-slate-400">Sugerencias:</span>
+<button class="text-xs font-medium text-secondary hover:underline">Aspirina</button>
+<button class="text-xs font-medium text-secondary hover:underline">Loratadina</button>
+<button class="text-xs font-medium text-secondary hover:underline">Omeprazol</button>
+</div>
+</section>
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm min-h-[400px]">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-lg font-bold flex items-center gap-2">
+<span class="material-icons-round text-secondary">shopping_basket</span>
+                            Medicamentos seleccionados
+                        </h2>
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-sm font-medium">2 productos</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+<span class="material-icons-round">medication</span>
+</div>
+<div>
+<h4 class="font-semibold text-slate-800 dark:text-slate-100">Paracetamol 500mg</h4>
+<p class="text-xs text-slate-500">Caja x 20 comprimidos</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-1">
+<button class="w-8 h-8 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">-</button>
+<span class="w-8 text-center font-medium">1</span>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">+</button>
+</div>
+<button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-icons-round text-lg">delete_outline</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
+<span class="material-icons-round">medication</span>
+</div>
+<div>
+<h4 class="font-semibold text-slate-800 dark:text-slate-100">Ibuprofeno 600mg</h4>
+<p class="text-xs text-slate-500">Suspensión oral</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-1">
+<button class="w-8 h-8 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">-</button>
+<span class="w-8 text-center font-medium">1</span>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">+</button>
+</div>
+<button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-icons-round text-lg">delete_outline</span>
+</button>
+</div>
+</div>
+</div>
+<div class="hidden flex-col items-center justify-center py-20 text-slate-400">
+<span class="material-icons-round text-6xl mb-4 opacity-20">inventory_2</span>
+<p>No hay medicamentos seleccionados</p>
+</div>
+</section>
+</div>
+<aside class="lg:col-span-4 space-y-6">
+<div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden">
+<div class="p-1 bg-secondary w-full"></div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-8">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-400">Turnos · FM</span>
+<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[10px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                EN ATENCIÓN
+                            </span>
+</div>
+<div class="text-center mb-8">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Turno actual</p>
+<h1 class="text-6xl font-black text-primary dark:text-white tracking-tighter">FM-51</h1>
+</div>
+<div class="space-y-3">
+<button class="w-full bg-primary dark:bg-slate-100 dark:text-primary text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-icons-round">check_circle</span>
+                                Finalizar turno
+                            </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-3 px-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm flex items-center justify-center gap-1">
+<span class="material-icons-round text-lg">person_off</span>
+                                    No se presentó
+                                </button>
+<button class="flex-1 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 font-semibold py-3 px-2 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm flex items-center justify-center gap-1">
+<span class="material-icons-round text-lg">cancel</span>
+                                    Cancelar
+                                </button>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] font-bold">FM</div>
+<div class="w-7 h-7 rounded-full bg-secondary border-2 border-white dark:border-slate-900"></div>
+</div>
+<span class="text-xs text-slate-400">Próximo: <b>FM-52</b></span>
+</div>
+</div>
+<div class="p-6 bg-slate-100 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+<h5 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-4 flex items-center gap-2">
+<span class="material-icons-round text-sm">keyboard</span>
+                        Atajos rápidos
+                    </h5>
+<ul class="space-y-2">
+<li class="flex justify-between items-center text-sm">
+<span class="text-slate-600 dark:text-slate-400 text-xs">Siguiente turno</span>
+<kbd class="px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-mono text-[10px]">Space</kbd>
+</li>
+<li class="flex justify-between items-center text-sm">
+<span class="text-slate-600 dark:text-slate-400 text-xs">Limpiar búsqueda</span>
+<kbd class="px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-mono text-[10px]">Esc</kbd>
+</li>
+<li class="flex justify-between items-center text-sm">
+<span class="text-slate-600 dark:text-slate-400 text-xs">Finalizar pedido</span>
+<kbd class="px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-mono text-[10px]">Enter</kbd>
+</li>
+</ul>
+</div>
+</aside>
+</div>
+</main>
+<button class="fixed bottom-6 right-6 lg:hidden w-14 h-14 rounded-full bg-primary text-white shadow-2xl flex items-center justify-center z-[100]">
+<span class="material-icons-round">add</span>
+</button>
+
+</body></html>
