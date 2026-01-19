@@ -109,6 +109,11 @@ export function PharmacyMedicationsArea() {
               onSearch={setQuery}
               onKeyDown={keyboard.onKeyDown}
               disabled={!canAddItems}
+              helperText={
+                !canAddItems
+                  ? "Iniciá la atención del turno para poder agregar productos"
+                  : undefined
+              }
             />
           </div>
         </div>
@@ -123,12 +128,6 @@ export function PharmacyMedicationsArea() {
           activeIndex={keyboard.activeIndex}
         />
       </div>
-
-      {!canAddItems && (
-        <p className="text-xs text-muted-foreground">
-          Iniciá la atención del turno para poder agregar productos
-        </p>
-      )}
 
       {/* BLOQUE LISTA (100%) */}
       <SelectedList

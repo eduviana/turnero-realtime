@@ -28,6 +28,8 @@ export function useTurnAttentionTimer({
 
   const maxSeconds = maxMinutes * 60;
 
+  
+
   const [elapsedSeconds, setElapsedSeconds] = useState(() => {
     return Math.floor((Date.now() - startTimestamp) / 1000);
   });

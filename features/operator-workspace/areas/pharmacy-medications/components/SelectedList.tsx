@@ -103,7 +103,7 @@ export function SelectedList({
   const isEmpty = items.length === 0;
 
   return (
-    <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <section className="min-h-[500px] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <h2 className="flex items-center gap-2 font-semibold text-slate-800">

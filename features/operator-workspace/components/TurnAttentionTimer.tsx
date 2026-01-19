@@ -11,6 +11,8 @@ export function TurnAttentionTimer({ startedAt, maxMinutes }: Props) {
   const { elapsedMinutes, elapsedSeconds, percentage, status } =
     useTurnAttentionTimer({ startedAt, maxMinutes });
 
+    
+
   const colorClass =
     status === "ok"
       ? "bg-emerald-500"

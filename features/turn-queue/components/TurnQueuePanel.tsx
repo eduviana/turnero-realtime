@@ -8,15 +8,7 @@ import { useOperatorService } from "@/features/operator-workspace/hooks/useOpera
 import { TicketStatus } from "@/generated/prisma/enums";
 import { usePharmacyMedicationCart } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
 import { Badge } from "@/components/ui/badge";
-import {
-  Check,
-  CheckCircle,
-  CheckCircle2,
-  Circle,
-  UserX,
-  X,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, Circle, UserX, X } from "lucide-react";
 
 export function TurnQueuePanel() {
   //hook que retorna el context
@@ -77,17 +69,19 @@ export function TurnQueuePanel() {
   };
 
   return (
-    <Card className="w-[340px] rounded-xl shadow-sm">
+    <Card className="w-[340px] h-[300px] rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium text-gray-400">
             TURNOS · {service.code}
           </CardTitle>
 
-          <Badge className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            EN ATENCIÓN
-          </Badge>
+          {currentTicket?.status === "CALLED" && (
+            <Badge className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              EN ATENCIÓN
+            </Badge>
+          )}
         </div>
       </CardHeader>
 
@@ -105,7 +99,7 @@ export function TurnQueuePanel() {
 
           {isIdle && (
             <p className="mt-1 text-xs text-muted-foreground">
-              Sin turno en atención
+              No existen turnos
             </p>
           )}
         </div>
@@ -143,7 +137,6 @@ export function TurnQueuePanel() {
               </Button>
             )}
 
-       
             <div className="grid grid-cols-2 gap-2">
               {/* No se presentó */}
               <Button
