@@ -153,7 +153,7 @@ export function TurnQueuePanel() {
                 className="flex items-center justify-center gap-1 rounded-xl border bg-white text-slate-700 border-slate-200 px-2 py-3 text-sm font-semibold hover:bg-slate-50 transition-colors disabled:opacity-50"
               >
                 <UserX className="h-4 w-4 text-primary" />
-                No se presentó
+                Ausente
               </Button>
 
               {/* Cancelar */}

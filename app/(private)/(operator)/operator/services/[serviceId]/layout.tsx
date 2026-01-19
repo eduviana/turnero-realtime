@@ -39,29 +39,31 @@ export default async function OperatorServiceLayout({
     notFound();
   }
 
-  const layoutContent = (
-  <div className="min-h-screen space-y-4">
-    <OperatorServiceHeader />
+  const content = (
+    <div className="min-h-screen">
+      <OperatorServiceHeader />
 
-    {/* TurnQueuePanel a la derecha */}
-    <div className="flex justify-end container mx-auto">
-      <TurnQueuePanel />
+      <main className="container mx-auto mt-12 grid grid-cols-1 gap-12 md:grid-cols-[1fr_320px]">
+        {/* Columna izquierda: contenido del servicio */}
+        <div>{children}</div>
+
+        {/* Columna derecha: turnos */}
+        <aside className="flex justify-end">
+          <TurnQueuePanel />
+        </aside>
+      </main>
     </div>
+  );
 
-    <main>{children}</main>
-  </div>
-);
-
-  // 4️⃣ Layout compartido del servicio
   return (
-  <OperatorServiceProvider value={serviceContext}>
-    {serviceContext.service.code === "FM" ? (
-      <PharmacyMedicationCartProvider>
-        {layoutContent}
-      </PharmacyMedicationCartProvider>
-    ) : (
-      layoutContent
-    )}
-  </OperatorServiceProvider>
-);
+    <OperatorServiceProvider value={serviceContext}>
+      {serviceContext.service.code === "FM" ? (
+        <PharmacyMedicationCartProvider>
+          {content}
+        </PharmacyMedicationCartProvider>
+      ) : (
+        content
+      )}
+    </OperatorServiceProvider>
+  );
 }

@@ -52,11 +52,12 @@ import { SearchInput } from "./SearchInput";
 
 import { usePharmacyMedicationSearch } from "../hooks/usePharmacyMedicationSearch";
 import { usePharmacyMedicationCart } from "../context/PharmacyMedicationCartContext";
+import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
 
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
+import { useTurnQueue } from "@/features/turn-queue/hooks/useTurnQueue";
 
 import { TicketStatus } from "@/generated/prisma/enums";
-import { useTurnQueue } from "@/features/turn-queue/hooks/useTurnQueue";
 
 export function PharmacyMedicationsArea() {
   /**
@@ -70,64 +71,72 @@ export function PharmacyMedicationsArea() {
   /**
    * Search
    */
-  const { query, setQuery, results, isSearching } =
+  const { query, setQuery, results, isSearching, hasSearched } =
     usePharmacyMedicationSearch();
 
   /**
-   * Business rule:
-   * Solo se pueden agregar items si el turno está IN_PROGRESS
+   * Business rule
    */
   const canAddItems = state?.currentTicket?.status === TicketStatus.IN_PROGRESS;
 
   /**
-   * Handlers
+   * Select product
    */
   const handleSelectProduct = (product: { id: string; name: string }) => {
     if (!canAddItems) return;
 
     addProduct(product);
-    setQuery(""); // limpia búsqueda
+    setQuery("");
+    keyboard.reset();
   };
 
+  /**
+   * Keyboard navigation
+   */
+  const keyboard = useSearchKeyboardNavigation({
+    results,
+    onSelect: handleSelectProduct,
+  });
+
   return (
-    <section className="container mx-auto">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mt-20">
-        {/* Columna 1 */}
-        <div className="md:col-span-1 space-y-2">
-          <SearchInput
-            value={query}
-            onSearch={setQuery}
-            disabled={!canAddItems}
-          />
-
-          {!canAddItems && (
-            <p className="text-xs text-muted-foreground">
-              Iniciá la atención del turno para poder agregar productos
-            </p>
-          )}
-
-          <SearchResults
-            results={results}
-            isSearching={isSearching}
-            query={query}
-            onSelect={handleSelectProduct}
-            disabled={!canAddItems}
-          />
+    <section className="space-y-12">
+      {/* BLOQUE BÚSQUEDA (70%) */}
+      <div className="relative w-full max-w-[70%] mx-auto">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+          <div className="p-5">
+            <SearchInput
+              value={query}
+              onSearch={setQuery}
+              onKeyDown={keyboard.onKeyDown}
+              disabled={!canAddItems}
+            />
+          </div>
         </div>
 
-        {/* Columna 2 VACÍA */}
-        <div className="hidden md:block" />
-
-        {/* Columna 3 */}
-        <div className="md:col-span-1">
-          <SelectedList
-            items={items}
-            onIncrease={increase}
-            onDecrease={decrease}
-            disabled={!canAddItems}
-          />
-        </div>
+        <SearchResults
+          results={results}
+          isSearching={isSearching}
+          query={query}
+          hasSearched={hasSearched}
+          onSelect={handleSelectProduct}
+          disabled={!canAddItems}
+          activeIndex={keyboard.activeIndex}
+        />
       </div>
+
+      {!canAddItems && (
+        <p className="text-xs text-muted-foreground">
+          Iniciá la atención del turno para poder agregar productos
+        </p>
+      )}
+
+      {/* BLOQUE LISTA (100%) */}
+      <SelectedList
+        items={items}
+        onIncrease={increase}
+        onDecrease={decrease}
+        disabled={!canAddItems}
+      />
     </section>
   );
 }

@@ -12,16 +12,19 @@ interface UsePharmacyMedicationSearchResult {
   setQuery: (value: string) => void;
   results: PharmacyMedicationSearchResult[];
   isSearching: boolean;
+  hasSearched: boolean;
 }
 
 export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PharmacyMedicationSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     if (!query || query.trim().length < 2) {
       setResults([]);
+      setHasSearched(false);
       return;
     }
 
@@ -30,6 +33,7 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
     const search = async () => {
       try {
         setIsSearching(true);
+        setHasSearched(false);
 
         const res = await fetch(
           `/api/pharmacy-medications/search?q=${encodeURIComponent(query)}`,
@@ -41,13 +45,14 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
         }
 
         const data: PharmacyMedicationSearchResult[] = await res.json();
-
         setResults(data);
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
+          setResults([]);
         }
       } finally {
         setIsSearching(false);
+        setHasSearched(true);
       }
     };
 
@@ -63,5 +68,6 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
     setQuery,
     results,
     isSearching,
+    hasSearched,
   };
 }
