@@ -8,8 +8,13 @@ export interface QueueTicket {
   serviceCode?: string;
 }
 
+export interface ActiveQueueTicket extends QueueTicket {
+  calledAt: string | null;
+  startedAt: string | null;
+}
+
 export interface ServiceQueueState {
-  currentTicket: QueueTicket | null;
+  currentTicket: ActiveQueueTicket | null;
   lastCalledTickets: QueueTicket[];
   pendingCount: number;
 }

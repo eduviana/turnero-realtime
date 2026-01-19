@@ -7,6 +7,7 @@ import { OperatorServiceProvider } from "@/features/operator-workspace/context/O
 import { TurnQueuePanel } from "@/features/turn-queue/components/TurnQueuePanel";
 import { OperatorServiceHeader } from "@/features/operator-workspace/components/OperatorServiceHeader";
 import { PharmacyMedicationCartProvider } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
+import { OperatorServiceSidebar } from "@/features/operator-workspace/components/OperatorServiceSidebar";
 
 interface OperatorServiceLayoutProps {
   children: ReactNode;
@@ -44,13 +45,9 @@ export default async function OperatorServiceLayout({
       <OperatorServiceHeader />
 
       <main className="container mx-auto mt-12 grid grid-cols-1 gap-12 md:grid-cols-[1fr_320px]">
-        {/* Columna izquierda: contenido del servicio */}
         <div>{children}</div>
 
-        {/* Columna derecha: turnos */}
-        <aside className="flex justify-end">
-          <TurnQueuePanel />
-        </aside>
+        <OperatorServiceSidebar />
       </main>
     </div>
   );

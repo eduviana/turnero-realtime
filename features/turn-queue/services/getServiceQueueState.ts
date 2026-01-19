@@ -1,30 +1,41 @@
-import { prisma } from "@/lib/db/prisma";
+import { db } from "@/lib/db/prisma";
 import { ServiceQueueState } from "../types/ServiceQueueState";
 
 export async function getServiceQueueState(
-  serviceId: string
+  serviceId: string,
 ): Promise<ServiceQueueState> {
-  const currentTicket = await prisma.ticket.findFirst({
+  const currentTicketRaw = await db.ticket.findFirst({
     where: {
       serviceId,
-      OR: [
-        { status: "IN_PROGRESS" },
-        { status: "CALLED" },
-      ],
+      OR: [{ status: "IN_PROGRESS" }, { status: "CALLED" }],
     },
-    orderBy: [
-      { status: "asc" },
-      { calledAt: "desc" },
-    ],
+    orderBy: [{ status: "asc" }, { calledAt: "desc" }],
     select: {
       id: true,
       number: true,
       code: true,
       status: true,
+      startedAt: true,
+      calledAt: true,
     },
   });
 
-  const lastCalledTickets = await prisma.ticket.findMany({
+  const currentTicket = currentTicketRaw
+    ? {
+        id: currentTicketRaw.id,
+        number: currentTicketRaw.number,
+        code: currentTicketRaw.code,
+        status: currentTicketRaw.status,
+        startedAt: currentTicketRaw.startedAt
+          ? currentTicketRaw.startedAt.toISOString()
+          : null,
+        calledAt: currentTicketRaw.calledAt
+          ? currentTicketRaw.calledAt.toISOString()
+          : null,
+      }
+    : null;
+
+  const lastCalledTickets = await db.ticket.findMany({
     where: {
       serviceId,
       status: {
@@ -43,7 +54,7 @@ export async function getServiceQueueState(
     },
   });
 
-  const pendingCount = await prisma.ticket.count({
+  const pendingCount = await db.ticket.count({
     where: {
       serviceId,
       status: "PENDING",
