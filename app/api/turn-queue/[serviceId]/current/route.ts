@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/db/prisma";
+
 import { pusherServer } from "@/lib/pusher/server";
 
 import { handleCurrentTicket } from "@/features/turn-queue/services/handleCurrentTicket";
@@ -8,6 +8,8 @@ import {
   TURN_QUEUE_ACTIONS,
   TurnQueueAction,
 } from "@/features/turn-queue/types/TurnQueueAction";
+import { db } from "@/lib/db/prisma";
+import { updateUserActivity } from "@/lib/updateUserActivity";
 
 interface CompletePayloadItem {
   productId: string;
@@ -16,7 +18,7 @@ interface CompletePayloadItem {
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ serviceId: string }> }
+  { params }: { params: Promise<{ serviceId: string }> },
 ) {
   const { serviceId } = await params;
 
@@ -26,7 +28,7 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const operator = await prisma.user.findUnique({
+  const operator = await db.user.findUnique({
     where: { clerkId },
     select: { id: true },
   });
@@ -40,10 +42,7 @@ export async function POST(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   const { action, items } = body as {
@@ -54,7 +53,7 @@ export async function POST(
   if (!TURN_QUEUE_ACTIONS.includes(action as TurnQueueAction)) {
     return NextResponse.json(
       { error: "Invalid or missing action" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -68,16 +67,19 @@ export async function POST(
   if (!ticket) {
     return NextResponse.json(
       { error: "Invalid ticket state for action" },
-      { status: 409 }
+      { status: 409 },
     );
   }
+
+  // ✅ ACTIVIDAD REAL CONFIRMADA
+await updateUserActivity(operator.id);
 
   /**
    * 🧠 Side effect: Farmacia Medicamentos
    * Se ejecuta SOLO al completar el turno
    */
   if (action === "COMPLETE") {
-    const service = await prisma.service.findUnique({
+    const service = await db.service.findUnique({
       where: { id: serviceId },
       select: { code: true },
     });
@@ -85,12 +87,9 @@ export async function POST(
     if (service?.code === "FM") {
       if (!Array.isArray(items) || items.length === 0) {
         // Decisión explícita: permitir finalizar sin medicamentos
-        console.warn(
-          "[POST /current] COMPLETE FM without medication items",
-          { ticketId: ticket.id }
-        );
+      
       } else {
-        await prisma.pharmacyMedicationOrder.create({
+        await db.pharmacyMedicationOrder.create({
           data: {
             ticketId: ticket.id,
             serviceId,
@@ -111,11 +110,7 @@ export async function POST(
   /**
    * 🔔 UI update (cola)
    */
-  await pusherServer.trigger(
-    `turn-queue-${serviceId}`,
-    "updated",
-    {}
-  );
+  await pusherServer.trigger(`turn-queue-${serviceId}`, "updated", {});
 
   /**
    * 🔔 Evento genérico de dominio

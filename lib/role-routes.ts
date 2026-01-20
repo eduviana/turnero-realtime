@@ -7,7 +7,7 @@ export const DASHBOARD_ROUTES: Record<Role, Array<{ label: string; href: string 
     { label: "Servicios", href: "/admin/servicios" },
     { label: "Afiliados", href: "/admin/afiliados" },
     { label: "Auditoría", href: "/admin/auditorias" },
-    { label: "Configuración", href: "/admin/settings" },
+    { label: "Estadísticas", href: "/admin/estadisticas" },
   ],
 
   SUPERVISOR: [

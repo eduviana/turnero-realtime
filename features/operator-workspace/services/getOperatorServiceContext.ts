@@ -25,6 +25,7 @@ export async function getOperatorServiceContext(
       id: true,
       firstName: true,
       lastName: true,
+      profileImage: true,
       services: {
         where: {
           serviceId: params.serviceId,
@@ -57,6 +58,7 @@ export async function getOperatorServiceContext(
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
+      profileImage: user.profileImage,
     },
     service: {
       id: userService.service.id,

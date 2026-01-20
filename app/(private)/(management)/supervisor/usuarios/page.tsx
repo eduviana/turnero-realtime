@@ -1,11 +1,12 @@
 import UsersTable from "@/features/users/components/UsersTable";
 import { toUserTableRow } from "@/features/users/lib/toUserTableRow";
-import { getAllUsers } from "@/features/users/services/getAllUsers";
+import { getOperators } from "@/features/users/services/getOperators";
+
 
 
 export default async function UsersPage() {
 
-  const users = await getAllUsers();
+  const users = await getOperators();
   const rows = users.map(toUserTableRow);
 
   return (

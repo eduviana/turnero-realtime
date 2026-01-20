@@ -4,13 +4,14 @@ import { prisma } from "@/lib/db/prisma";
 import { pusherServer } from "@/lib/pusher/server";
 
 import { callNextTicket } from "@/features/turn-queue/services/callNextTicket";
+import { updateUserActivity } from "@/lib/updateUserActivity";
 
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ serviceId: string }> }
 ) {
   const { serviceId } = await params;
-  console.log("[POST /call-next]", serviceId);
+
 
   const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
@@ -41,6 +42,9 @@ export async function POST(
       { status: 409 }
     );
   }
+
+  // ✅ ACTIVIDAD REAL CONFIRMADA
+  await updateUserActivity(operator.id);
 
   await pusherServer.trigger(
     `turn-queue-${serviceId}`,

@@ -7,7 +7,10 @@ import {
 
 export async function getDashboardUsersStats(): Promise<DashboardUsersStats> {
   const users = await db.user.findMany({
-    where: { deletedAt: null },
+    where: { 
+      deletedAt: null,
+      role: "OPERATOR",
+    },
     select: {
       id: true,
       userStatus: {

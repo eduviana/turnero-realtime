@@ -11,11 +11,7 @@ export default function OperatorServicePage() {
 
   switch (service.code) {
     case "FM":
-      return (
-        
-          <PharmacyMedicationsArea />
-        
-      );
+      return <PharmacyMedicationsArea />;
     case "FG":
       return <div>farmacia general</div>;
 

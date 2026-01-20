@@ -1,10 +1,11 @@
 import { db } from "@/lib/db/prisma";
 import type { UserWithStatus } from "../types/users";
 
-export async function getAllUsers(): Promise<UserWithStatus[]> {
+export async function getOperators(): Promise<UserWithStatus[]> {
   return db.user.findMany({
     where: {
       deletedAt: null,
+      role: "OPERATOR",
     },
 
     include: {

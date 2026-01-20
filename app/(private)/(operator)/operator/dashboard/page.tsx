@@ -14,20 +14,25 @@ export default async function OperatorDashboardPage() {
   const { operatorName, services } = await getOperatorServices(userId);
 
   return (
-    <div className="min-h-screen relative">
-      {/* Título flotante */}
-      <header className="absolute top-16 left-0 right-0 px-8">
-        <h1 className="text-3xl font-bold text-center">
+    <div className="min-h-screen flex flex-col bg-slate-50">
+      {/* Header */}
+      <header className="h-20 bg-primary flex items-center justify-center px-8">
+        <h1 className="text-3xl font-bold text-center text-white">
           Bienvenido{operatorName ? `, ${operatorName}` : ""}
         </h1>
       </header>
 
-      {/* Cards centradas REALMENTE */}
-      <main className="min-h-screen flex items-center justify-center px-8">
+      {/* Cards */}
+      <main className="flex-1 flex items-center justify-center px-8">
         <div className="w-full max-w-5xl">
-          <div className="grid gap-6 justify-center grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+          <div className="grid gap-6 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
-              <ServiceCard key={service.userServiceId} service={service} />
+              <div
+                key={service.userServiceId}
+                className="aspect-square w-full max-w-[280px] justify-self-center"
+              >
+                <ServiceCard service={service} />
+              </div>
             ))}
           </div>
         </div>
