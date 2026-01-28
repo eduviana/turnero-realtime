@@ -16,7 +16,7 @@ export default async function OperatorDashboardPage() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       {/* Header */}
-      <header className="h-20 bg-primary flex items-center justify-center px-8">
+      <header className="h-20 bg-blue-950 flex items-center justify-center px-8">
         <h1 className="text-3xl font-bold text-center text-white">
           Bienvenido{operatorName ? `, ${operatorName}` : ""}
         </h1>

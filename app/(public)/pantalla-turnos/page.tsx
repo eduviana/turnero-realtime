@@ -5,7 +5,7 @@ export default async function TurnosScreenPage() {
   const state = await getTurnScreenState();
 
   return (
-    <main className="p-8">
+    <main className="">
       <TurnScreenRealtime initialState={state} />
     </main>
   );

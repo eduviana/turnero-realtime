@@ -7,10 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function OperatorServiceHeader() {
   const { operator, service } = useOperatorService();
-  console.log(operator, "PPPPPPPPPPPPPPPPPPPPPPPP");
 
   return (
-    <header className="bg-primary">
+    <header className="bg-blue-950">
       <div className="container mx-auto flex justify-between p-6">
         <div className="flex gap-2 items-center">
           <BriefcaseMedical className="h-8 w-8 text-blue-400" />
