@@ -46,11 +46,8 @@ export async function POST(
   // ✅ ACTIVIDAD REAL CONFIRMADA
   await updateUserActivity(operator.id);
 
-  await pusherServer.trigger(
-    `turn-queue-${serviceId}`,
-    "updated",
-    {}
-  );
+  await pusherServer.trigger(`turn-queue-${serviceId}`,"updated",{});
+  await pusherServer.trigger("turn-screen", "updated", {});
 
   return NextResponse.json(ticket);
 }

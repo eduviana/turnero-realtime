@@ -2,13 +2,9 @@
 
 import { getCompletedTicketsByUserAndService } from "../services/getCompletedTicketsByUserAndService";
 
-
-
-export async function getCompletedTicketsByUserAndServiceAction(
-  serviceId: string
-) {
+export async function getCompletedTicketsByUserAndServiceAction(serviceId: string) {
   if (!serviceId) {
-    throw new Error("serviceId is required");
+    return [];
   }
 
   return getCompletedTicketsByUserAndService(serviceId);

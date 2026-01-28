@@ -1,0 +1,78 @@
+"use client";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { TurnScreenState } from "../types/TurnScreenState";
+
+interface TurnsScreenTableProps {
+  state: TurnScreenState;
+}
+
+export function TurnsScreenTable({ state }: TurnsScreenTableProps) {
+  const { current, history } = state;
+
+  const hasTickets = Boolean(current) || history.length > 0;
+
+  // 👇 más antiguo → más nuevo
+  const orderedHistory = [...history].reverse();
+
+  return (
+    <div className="rounded-xl border bg-white overflow-hidden">
+      <Table>
+        <TableHeader className="bg-blue-950">
+          <TableRow>
+            <TableHead className="text-center text-white text-2xl font-bold py-6">
+              Afiliado
+            </TableHead>
+            <TableHead className="text-right text-white text-2xl font-bold py-6 pr-24">
+              Turno
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {!hasTickets && (
+            <TableRow>
+              <TableCell colSpan={2} className="text-center text-2xl py-12">
+                No hay turnos en pantalla
+              </TableCell>
+            </TableRow>
+          )}
+
+          {/* Historial (arriba) */}
+          {orderedHistory.map((ticket) => (
+            <TableRow key={ticket.id}>
+              <TableCell className="text-center text-2xl py-6">
+                {ticket.affiliateName}
+              </TableCell>
+
+              <TableCell className="text-right pr-24 py-6 text-4xl font-bold text-gray-700">
+                {ticket.code}
+              </TableCell>
+            </TableRow>
+          ))}
+
+          {/* Turno actual (abajo, destacado) */}
+          {current && (
+            <TableRow className="bg-emerald-50">
+              <TableCell className="text-center text-3xl font-semibold py-8">
+                {current.affiliateName}
+              </TableCell>
+
+              <TableCell className="text-right pr-24 py-8 text-emerald-600 text-6xl font-extrabold">
+                {current.code}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}

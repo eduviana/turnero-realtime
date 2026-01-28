@@ -1,39 +1,81 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UsersStatsView from "../areas/users/UsersStatsView";
+import ServicesStatsView from "../areas/services/ServicesStatsView";
+import AffiliatesStatsView from "../areas/affiliates/AffiliatesStatsView";
 
-// import UsersTab from "./tabs/UsersTab";
-// import ServicesTab from "./tabs/ServicesTab";
-// import AffiliatesTab from "./tabs/AffiliatesTab";
-// import AuditsTab from "./tabs/AuditsTab";
+const tabBase =
+  "h-10 px-4 text-sm font-medium rounded-md transition-colors " +
+  "focus-visible:outline-none focus-visible:ring-0 flex-none";
 
 export default function StatsTabs() {
   return (
     <Tabs defaultValue="users" className="w-full">
-      <TabsList className="grid grid-cols-4 w-full max-w-xl">
-        <TabsTrigger value="users">Usuarios</TabsTrigger>
-        <TabsTrigger value="services">Servicios</TabsTrigger>
-        <TabsTrigger value="affiliates">Afiliados</TabsTrigger>
-        <TabsTrigger value="audits">Auditorías</TabsTrigger>
+      {/* Tabs header */}
+      <TabsList className="flex w-fit justify-start gap-2 bg-transparent mx-auto my-4">
+        <TabsTrigger
+          value="users"
+          className={`${tabBase}
+            text-muted-foreground
+            hover:bg-muted
+            data-[state=active]:bg-primary
+            data-[state=active]:text-primary-foreground
+            data-[state=active]:hover:bg-primary`}
+        >
+          Usuarios
+        </TabsTrigger>
+
+        <TabsTrigger
+          value="services"
+          className={`${tabBase}
+            text-muted-foreground
+            hover:bg-muted
+            data-[state=active]:bg-primary
+            data-[state=active]:text-primary-foreground
+            data-[state=active]:hover:bg-primary`}
+        >
+          Servicios
+        </TabsTrigger>
+
+        <TabsTrigger
+          value="affiliates"
+          className={`${tabBase}
+            text-muted-foreground
+            hover:bg-muted
+            data-[state=active]:bg-primary
+            data-[state=active]:text-primary-foreground
+            data-[state=active]:hover:bg-primary`}
+        >
+          Afiliados
+        </TabsTrigger>
+
+        <TabsTrigger
+          value="audits"
+          className={`${tabBase}
+            text-muted-foreground
+            hover:bg-muted
+            data-[state=active]:bg-primary
+            data-[state=active]:text-primary-foreground
+            data-[state=active]:hover:bg-primary`}
+        >
+          Auditorías
+        </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="users">
+      {/* Content */}
+      <TabsContent value="users" className="pt-6">
         <UsersStatsView />
       </TabsContent>
 
-      <TabsContent value="services">
-        {/* <ServicesTab /> */}
-        <div>servicios</div>
+      <TabsContent value="services" className="pt-6">
+        <ServicesStatsView />
       </TabsContent>
 
-      <TabsContent value="affiliates">
-        {/* <AffiliatesTab /> */}
-        <div>afiliados</div>
+      <TabsContent value="affiliates" className="pt-6">
+        <AffiliatesStatsView />
       </TabsContent>
 
-      <TabsContent value="audits">
-        {/* <AuditsTab /> */}
-        <div>auditorias</div>
+      <TabsContent value="audits" className="pt-6">
+        <div>auditorías</div>
       </TabsContent>
     </Tabs>
   );

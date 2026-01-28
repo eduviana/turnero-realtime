@@ -7,8 +7,6 @@ export async function GET(
 ) {
   const { serviceId } = await context.params;
 
-  console.log("[GET /turn-queue]", serviceId);
-
   const state = await getServiceQueueState(serviceId);
 
   return NextResponse.json(state);

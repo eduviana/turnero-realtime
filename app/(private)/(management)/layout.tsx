@@ -59,7 +59,7 @@ export default async function PrivateLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="min-h-screen flex">
       <AuthProvider
         user={{
           role: user.role,

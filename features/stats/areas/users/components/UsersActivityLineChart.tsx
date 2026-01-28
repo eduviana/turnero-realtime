@@ -52,10 +52,17 @@ export default function UsersActivityLineChart({
   }
 
   return (
-    <div className="rounded-md border p-4 space-y-4">
+    <div className="rounded-md border p-4 space-y-4 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Usuarios activos en el tiempo</h3>
+        <div className="flex flex-col gap-0">
+          <h3 className="text-lg font-bold text-black dark:text-white">
+            Usuarios activos en el tiempo
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Evolución del flujo de usuarios por período seleccionado
+          </p>
+        </div>
 
         <div className="flex gap-2">
           {(["day", "week", "month"] as Granularity[]).map((g) => (
@@ -64,7 +71,7 @@ export default function UsersActivityLineChart({
               onClick={() => handleChange(g)}
               className={`px-3 py-1 text-sm rounded ${
                 granularity === g
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-slate-700 text-primary-foreground"
                   : "border"
               }`}
             >

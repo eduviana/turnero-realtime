@@ -1,8 +1,5 @@
-
-
 import { RoleLinks } from "@/components/layout/RoleLinks";
 import { Role } from "@/generated/prisma/enums";
-
 
 interface SidebarProps {
   accountRole: Role;
@@ -10,20 +7,23 @@ interface SidebarProps {
 
 export function Sidebar({ accountRole }: SidebarProps) {
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-white">
-        <div className="flex h-16 items-center px-6 border-b">
-          <h1 className="text-xl font-semibold">Dashboard</h1>
-          <h2>{accountRole}</h2>
-        </div>
+    <aside className="hidden md:flex w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+      {/* Header */}
+      <div className="flex items-center h-16 gap-2 px-6 border-b border-sidebar-border">
+        <h1 className="flex items-center gap-2 text-xl font-bold">
+          <span className="text-sidebar-primary font-black tracking-tighter">
+            DASHBOARD
+          </span>
+          <span className="text-lg font-medium text-muted-foreground">
+            {accountRole}
+          </span>
+        </h1>
+      </div>
 
-        <nav className="flex flex-col p-4 gap-2">
-          <RoleLinks role={accountRole} />
-        </nav>
-      </aside>
-    </>
+      {/* Navigation */}
+      <nav className="flex flex-1 flex-col gap-1 mt-8">
+        <RoleLinks role={accountRole} />
+      </nav>
+    </aside>
   );
 }
-
-

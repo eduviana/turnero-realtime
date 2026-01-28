@@ -121,6 +121,8 @@ await updateUserActivity(operator.id);
     action,
   });
 
+  await pusherServer.trigger("turn-screen", "updated", {});
+
   return NextResponse.json({
     action,
     ticket,

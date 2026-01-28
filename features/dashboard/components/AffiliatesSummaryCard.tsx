@@ -1,6 +1,3 @@
-
-
-
 import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +12,7 @@ export function AffiliatesSummaryCard({ stats }: AffiliatesSummaryCardProps) {
   return (
     <Card className="flex flex-col justify-between p-0 gap-0">
       {/* Header */}
-      <CardHeader className="p-3 gap-0 bg-primary rounded-t-md">
+      <CardHeader className="p-3 gap-0 bg-blue-950 rounded-t-md">
         <h3 className="text-lg text-center font-medium text-secondary">
           Afiliados
         </h3>
@@ -25,12 +22,8 @@ export function AffiliatesSummaryCard({ stats }: AffiliatesSummaryCardProps) {
       <CardContent className="flex flex-col gap-4 p-4 pb-0">
         {/* Resumen principal */}
         <div className="text-center">
-          <p className="text-3xl font-semibold leading-none">
-            {stats.total}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Afiliados registrados
-          </p>
+          <p className="text-3xl font-semibold leading-none">{stats.total}</p>
+          <p className="text-sm text-muted-foreground">Afiliados registrados</p>
         </div>
 
         {/* Estados */}

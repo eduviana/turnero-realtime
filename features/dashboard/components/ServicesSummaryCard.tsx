@@ -15,7 +15,7 @@ export function ServicesSummaryCard({ stats }: ServicesSummaryCardProps) {
   return (
     <Card className="flex flex-col justify-between p-0 gap-0">
       {/* Header */}
-      <CardHeader className="p-3 gap-0 bg-primary rounded-t-md">
+      <CardHeader className="p-3 gap-0 bg-blue-950 rounded-t-md">
         <h3 className="text-lg m-0 text-center font-medium text-secondary">
           Servicios
         </h3>
