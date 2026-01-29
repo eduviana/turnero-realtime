@@ -4,7 +4,6 @@ import { redirect, notFound } from "next/navigation";
 
 import { getOperatorServiceContext } from "@/features/operator-workspace/services/getOperatorServiceContext";
 import { OperatorServiceProvider } from "@/features/operator-workspace/context/OperatorServiceContext";
-import { TurnQueuePanel } from "@/features/turn-queue/components/TurnQueuePanel";
 import { OperatorServiceHeader } from "@/features/operator-workspace/components/OperatorServiceHeader";
 import { PharmacyMedicationCartProvider } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
 import { OperatorServiceSidebar } from "@/features/operator-workspace/components/OperatorServiceSidebar";
