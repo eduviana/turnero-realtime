@@ -71,10 +71,9 @@ model User {
 
   userStatus UserStatus?
 
-  //nuevo
+  // Órdenes por área
   pharmacyMedicationOrders PharmacyMedicationOrder[]
-
-  
+  pharmacyGeneralOrders    PharmacyGeneralOrder[]
 }
 
 enum AffiliateStatus {
@@ -161,8 +160,9 @@ model Affiliate {
 
   tickets Ticket[]
 
-  //nuevo
+  // Órdenes por área
   pharmacyMedicationOrders PharmacyMedicationOrder[]
+  pharmacyGeneralOrders    PharmacyGeneralOrder[]
 
   @@index([dni])
   @@index([status])
@@ -182,8 +182,10 @@ model Service {
   operators UserService[]
   tickets Ticket[]
 
-   //nuevo
+   // Órdenes por área
   pharmacyMedicationOrders PharmacyMedicationOrder[]
+  pharmacyGeneralOrders    PharmacyGeneralOrder[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -226,13 +228,12 @@ model Ticket {
   createdBy User?      @relation("TicketCreatedBy", fields: [createdById], references: [id])
   handledBy User?      @relation("TicketHandledBy", fields: [handledById], references: [id])
 
-   //acá faltan las otras areas, por ahora tengo esta sola completa
+   // Relaciones por área (una sola se completa según el servicio)
   pharmacyMedicationOrder PharmacyMedicationOrder?
+  pharmacyGeneralOrder    PharmacyGeneralOrder?
 
   @@unique([serviceId, number])
   @@index([status])
-
- 
 }
 
 enum AuditEventType {
@@ -348,6 +349,51 @@ model PharmacyMedicationOrderItem {
   order PharmacyMedicationOrder @relation(fields: [orderId], references: [id])
 
   product PharmacyMedicationProduct @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
+}
+
+
+// --------- PHARMACY GENERAL AREA ------------
+
+model PharmacyGeneralProduct {
+  id       String  @id @default(cuid())
+  name     String
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PharmacyGeneralOrderItem[]
+}
+
+model PharmacyGeneralOrder {
+  id String @id @default(cuid())
+
+  ticketId    String  @unique
+  serviceId   String
+  operatorId  String
+  affiliateId String?
+
+  createdAt DateTime @default(now())
+
+  ticket    Ticket     @relation(fields: [ticketId], references: [id])
+  service   Service    @relation(fields: [serviceId], references: [id])
+  operator  User       @relation(fields: [operatorId], references: [id])
+  affiliate Affiliate? @relation(fields: [affiliateId], references: [id])
+
+  items PharmacyGeneralOrderItem[]
+}
+
+model PharmacyGeneralOrderItem {
+  id String @id @default(cuid())
+
+  orderId   String
+  productId String
+  quantity  Int
+
+  order PharmacyGeneralOrder @relation(fields: [orderId], references: [id])
+  product PharmacyGeneralProduct @relation(fields: [productId], references: [id])
 
   @@unique([orderId, productId])
 }

@@ -21,7 +21,8 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
     ----crear 10 afiliados: npx tsx prisma/scripts/create-affiliates.ts
     ----crear 7 servicios: npx tsx prisma/scripts/create-services.ts
     ----crear organizaciones: npx tsx prisma/scripts/create-organizations.ts
-    ----crear medicamentos: npx tsx prisma/scripts/create-pharmacy-medications.ts
+    ----crear productos para farmacia-medicamentos: npx tsx prisma/scripts/create-pharmacy-medications.ts
+    ----crear productos para farmacia-general: npx tsx prisma/scripts/create-pharmacy-general.ts
 
     
 
@@ -105,3 +106,4 @@ En TurnQueuePanel, la propiedad state que viene del hook useTurnQueue devuelve:
 
 en la seccion del carrito, todos los productos dicen "Medicamento seleccionado" debajo del nombre, hay que crear una propiedad nueva en el model para guardar si son comprimidos, tabletas, gotas ,etc
 
+La lógica de negocio específica de cada servicio debe estar desacoplada de los elementos transversales de la UI, delegándose mediante adapters para evitar dependencias cruzadas y permitir que cada servicio evolucione de forma independiente.

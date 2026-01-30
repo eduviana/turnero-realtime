@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
-interface MedicationSearchInputProps {
+interface PharmacyGeneralSearchInputProps {
   value: string;
   onSearch: (query: string) => void;
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
@@ -17,14 +17,14 @@ export function SearchInput({
   onKeyDown,
   disabled = false,
   helperText,
-}: MedicationSearchInputProps) {
+}: PharmacyGeneralSearchInputProps) {
   return (
     <div>
       <label
-        htmlFor="medication-search"
+        htmlFor="pharmacy-general-search"
         className="mb-2 block text-sm font-semibold text-slate-700"
       >
-        Buscar medicamento
+        Buscar producto
       </label>
 
       <div className="relative group">
@@ -35,10 +35,10 @@ export function SearchInput({
         />
 
         <input
-          id="medication-search"
+          id="pharmacy-general-search"
           type="text"
           value={value}
-          placeholder="Ej. Ibuprofeno, Paracetamol, Amoxicilina..."
+          placeholder="Ej. Alcohol, Gasas, Termómetro..."
           disabled={disabled}
           autoComplete="off"
           autoCorrect="off"

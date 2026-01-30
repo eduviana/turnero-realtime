@@ -7,6 +7,7 @@ import { OperatorServiceProvider } from "@/features/operator-workspace/context/O
 import { OperatorServiceHeader } from "@/features/operator-workspace/components/OperatorServiceHeader";
 import { PharmacyMedicationCartProvider } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
 import { OperatorServiceSidebar } from "@/features/operator-workspace/components/OperatorServiceSidebar";
+import { PharmacyGeneralCartProvider } from "@/features/operator-workspace/areas/pharmacy-general/context/PharmacyGeneralCartContext";
 
 interface OperatorServiceLayoutProps {
   children: ReactNode;
@@ -51,15 +52,20 @@ export default async function OperatorServiceLayout({
     </div>
   );
 
-  return (
-    <OperatorServiceProvider value={serviceContext}>
-      {serviceContext.service.code === "FM" ? (
-        <PharmacyMedicationCartProvider>
-          {content}
-        </PharmacyMedicationCartProvider>
-      ) : (
-        content
-      )}
-    </OperatorServiceProvider>
-  );
+ return (
+  <OperatorServiceProvider value={serviceContext}>
+    {serviceContext.service.code === "FM" ? (
+      <PharmacyMedicationCartProvider>
+        {content}
+      </PharmacyMedicationCartProvider>
+    ) : serviceContext.service.code === "FG" ? (
+      <PharmacyGeneralCartProvider>
+        {content}
+      </PharmacyGeneralCartProvider>
+    ) : (
+      content
+    )}
+  </OperatorServiceProvider>
+);
 }
+

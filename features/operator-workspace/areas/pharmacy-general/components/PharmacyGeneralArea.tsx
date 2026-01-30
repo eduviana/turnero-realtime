@@ -1,34 +1,43 @@
 "use client";
 
+
 import { SelectedList } from "./SelectedList";
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
-import { usePharmacyMedicationSearch } from "../hooks/usePharmacyMedicationSearch";
-import { usePharmacyMedicationCart } from "../context/PharmacyMedicationCartContext";
-import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
+
+
+// import { usePharmacyGeneralSearch } from "../hooks/usePharmacyGeneralSearch";
+import { usePharmacyGeneralCart } from "../context/PharmacyGeneralCartContext";
+// import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
+
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
 import { useTurnQueue } from "@/features/turn-queue/hooks/useTurnQueue";
-import { TicketStatus } from "@/generated/prisma/enums";
 
-export function PharmacyMedicationsArea() {
+import { TicketStatus } from "@/generated/prisma/enums";
+import { usePharmacyGeneralSearch } from "../hooks/usePharmacyGeneralSearch";
+import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
+
+export function PharmacyGeneralArea() {
   /**
    * Contexts
    */
   const { service } = useOperatorService();
   const { state } = useTurnQueue(service?.id ?? "");
 
-  const { items, increase, decrease, addProduct } = usePharmacyMedicationCart();
+  const { items, increase, decrease, addProduct } =
+    usePharmacyGeneralCart();
 
   /**
    * Search
    */
   const { query, setQuery, results, isSearching, hasSearched } =
-    usePharmacyMedicationSearch();
+    usePharmacyGeneralSearch();
 
   /**
    * Business rule
    */
-  const canAddItems = state?.currentTicket?.status === TicketStatus.IN_PROGRESS;
+  const canAddItems =
+    state?.currentTicket?.status === TicketStatus.IN_PROGRESS;
 
   /**
    * Select product

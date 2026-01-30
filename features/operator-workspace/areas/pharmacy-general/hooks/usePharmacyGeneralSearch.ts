@@ -1,28 +1,25 @@
-
-
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 
-export interface PharmacyMedicationSearchResult {
+export interface PharmacyGeneralSearchResult {
   id: string;
   name: string;
 }
 
-interface UsePharmacyMedicationSearchResult {
+interface UsePharmacyGeneralSearchResult {
   query: string;
   setQuery: (value: string) => void;
-  results: PharmacyMedicationSearchResult[];
+  results: PharmacyGeneralSearchResult[];
   isSearching: boolean;
   hasSearched: boolean;
 }
 
 const SKELETON_DELAY_MS = 250;
 
-export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult {
+export function usePharmacyGeneralSearch(): UsePharmacyGeneralSearchResult {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<PharmacyMedicationSearchResult[]>([]);
+  const [results, setResults] = useState<PharmacyGeneralSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -33,14 +30,13 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
 
     if (trimmedQuery.length < 2) {
       setResults([]);
-      setHasSearched(false); // 🔑 reset real
+      setHasSearched(false);
       setIsSearching(false);
       return;
     }
 
     const controller = new AbortController();
 
-    // ⏳ mostrar skeleton solo si la búsqueda tarda
     skeletonTimerRef.current = setTimeout(() => {
       setIsSearching(true);
     }, SKELETON_DELAY_MS);
@@ -48,7 +44,7 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
     const search = async () => {
       try {
         const res = await fetch(
-          `/api/pharmacy-medications/search?q=${encodeURIComponent(trimmedQuery)}`,
+          `/api/pharmacy-general/search?q=${encodeURIComponent(trimmedQuery)}`,
           { signal: controller.signal }
         );
 
@@ -56,20 +52,19 @@ export function usePharmacyMedicationSearch(): UsePharmacyMedicationSearchResult
           throw new Error("Search failed");
         }
 
-        const data: PharmacyMedicationSearchResult[] = await res.json();
+        const data: PharmacyGeneralSearchResult[] = await res.json();
         setResults(data);
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          console.error("[usePharmacyMedicationSearch]", err);
+          console.error("[usePharmacyGeneralSearch]", err);
         }
       } finally {
-        // 🧹 limpiar skeleton siempre
         if (skeletonTimerRef.current) {
           clearTimeout(skeletonTimerRef.current);
         }
 
         setIsSearching(false);
-        setHasSearched(true); // ✅ SOLO cuando terminó la búsqueda
+        setHasSearched(true);
       }
     };
 
