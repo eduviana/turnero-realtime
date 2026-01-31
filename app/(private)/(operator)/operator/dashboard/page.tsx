@@ -17,7 +17,7 @@ export default async function OperatorDashboardPage() {
     <div className="min-h-screen flex flex-col bg-slate-50">
       {/* Header */}
       <header className="h-20 bg-blue-950 flex items-center justify-center px-8">
-        <h1 className="text-3xl font-bold text-center text-white">
+        <h1 className="text-3xl font-bold text-white text-center">
           Bienvenido{operatorName ? `, ${operatorName}` : ""}
         </h1>
       </header>
@@ -25,12 +25,15 @@ export default async function OperatorDashboardPage() {
       {/* Cards */}
       <main className="flex-1 flex items-center justify-center px-8">
         <div className="w-full max-w-5xl">
-          <div className="grid gap-6 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className="
+        grid gap-6
+        justify-center
+        grid-cols-[repeat(auto-fit,minmax(280px,280px))]
+      "
+          >
             {services.map((service) => (
-              <div
-                key={service.userServiceId}
-                className="aspect-square w-full max-w-[280px] justify-self-center"
-              >
+              <div key={service.userServiceId} className="aspect-square">
                 <ServiceCard service={service} />
               </div>
             ))}

@@ -11,21 +11,19 @@ export function TurnAttentionTimer({ startedAt, maxMinutes }: Props) {
   const { elapsedMinutes, elapsedSeconds, percentage, status } =
     useTurnAttentionTimer({ startedAt, maxMinutes });
 
-    
-
   const colorClass =
     status === "ok"
       ? "bg-emerald-500"
       : status === "warning"
-      ? "bg-yellow-400"
-      : "bg-red-500";
+        ? "bg-yellow-400"
+        : "bg-red-500";
 
   const textClass =
     status === "ok"
       ? "text-emerald-700"
       : status === "warning"
-      ? "text-yellow-700"
-      : "text-red-700";
+        ? "text-yellow-700"
+        : "text-red-700";
 
   const minutes = elapsedMinutes;
   const seconds = elapsedSeconds % 60;

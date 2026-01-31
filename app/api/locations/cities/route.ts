@@ -6,7 +6,7 @@ export const revalidate = 60 * 60 * 24; // 24h
 
 export async function GET(req: Request) {
   // 🔐 Autenticación + autorización
-  const auth = await requireRole("SUPERVISOR");
+  const auth = await requireRole("OPERATOR");
   if (!auth.ok) {
     return auth.response;
   }

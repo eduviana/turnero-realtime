@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/roles/requireRole";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const auth = await requireRole("SUPERVISOR");
+  const auth = await requireRole("OPERATOR");
   if (!auth.ok) {
     return auth.response; // debería ser 401/403, no throw
   }

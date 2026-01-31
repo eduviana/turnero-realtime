@@ -1,10 +1,6 @@
 import { db } from "@/lib/db/prisma";
 import { requireRole } from "@/lib/roles/requireRole";
 import { NextResponse } from "next/server";
-import {
-  AffiliateStatus,
-  AffiliateStatusReason,
-} from "@/generated/prisma/enums";
 import { affiliateEditSchema } from "@/features/affiliates/schemas/affiliateEdit";
 
 

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Bell, Menu } from "lucide-react";
 import {
@@ -15,7 +14,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 md:px-8 ">
+    <header className="flex h-16 items-center justify-between border-b border-border bg-white px-4 md:px-8 ">
       {/* Left */}
       <div className="flex items-center gap-3">
         {/* Mobile menu */}
@@ -57,9 +56,9 @@ export function Header() {
         </Sheet>
 
         {/* Title */}
-        <h2 className="text-lg font-semibold text-foreground">
+        {/* <h2 className="text-lg font-semibold text-foreground">
           Panel de control
-        </h2>
+        </h2> */}
       </div>
 
       {/* Right actions */}

@@ -43,6 +43,8 @@ import { FMServiceTurnAdapter } from "@/features/operator-workspace/areas/pharma
 import { FGServiceTurnAdapter } from "../areas/pharmacy-general/components/FGServiceTurnAdapter";
 
 
+
+
 export function OperatorServiceSidebar() {
   const { service } = useOperatorService();
   const { state } = useTurnQueue(service!.id);
