@@ -306,6 +306,7 @@ model AuditLog {
   @@index([action, actorId])
   @@index([entity, entityId])
   @@index([actorId])
+  // @@index([createdAt, action])
 }
 
 // --------- PHARMACY MEDICATION AREA ------------

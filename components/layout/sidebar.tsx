@@ -14,9 +14,6 @@ export function Sidebar({ accountRole }: SidebarProps) {
           <span className="text-sidebar-primary font-black tracking-tighter">
             DASHBOARD
           </span>
-          <span className="text-lg font-medium text-muted-foreground">
-            {accountRole}
-          </span>
         </h1>
       </div>
 

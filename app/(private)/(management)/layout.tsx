@@ -27,6 +27,7 @@ export default async function PrivateLayout({
       role: true,
       firstName: true,
       lastName: true,
+      profileImage: true,
     },
   });
 
@@ -54,6 +55,7 @@ export default async function PrivateLayout({
         role: true,
         firstName: true,
         lastName: true,
+        profileImage: true,
       },
     });
   }
@@ -65,6 +67,7 @@ export default async function PrivateLayout({
           role: user.role,
           firstName: user.firstName,
           lastName: user.lastName,
+          profileImage: user.profileImage,
         }}
       >
         {/* Sidebar sigue recibiendo la info sin volverse client */}
