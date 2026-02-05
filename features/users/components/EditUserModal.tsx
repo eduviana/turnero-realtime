@@ -49,14 +49,6 @@ export function EditUserModal(props: EditUserModalProps) {
     handleSave,
   } = useEditUser(props);
 
-  //   const handleAddService = () => {
-  //   const service = availableServices.find(s => s.id === selectedServiceId);
-  //   if (!service) return;
-
-  //   addService(service);
-  //   setSelectedServiceId(undefined);
-  // };
-
   return (
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent className="w-full px-10 py-8 gap-6">
@@ -138,26 +130,7 @@ export function EditUserModal(props: EditUserModalProps) {
                       <span className="font-medium text-sm truncate">
                         {service.name}
                       </span>
-
-                      {/* {service.isPrimary && (
-                        <Badge variant="secondary" className="ml-2">
-                          Primario
-                        </Badge>
-                      )} */}
                     </div>
-                    {/* 
-                    {service.assigned && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setPrimaryService(service.serviceId)
-                        }
-                        disabled={service.isPrimary}
-                      >
-                        Marcar primario
-                      </Button>
-                    )} */}
                   </div>
                 ))}
               </div>
@@ -192,7 +165,7 @@ export function EditUserModal(props: EditUserModalProps) {
                     <Button
                       onClick={() => {
                         const service = availableServices.find(
-                          (s) => s.id === selectedServiceId
+                          (s) => s.id === selectedServiceId,
                         );
                         if (service) addService(service);
                       }}
@@ -223,3 +196,8 @@ export function EditUserModal(props: EditUserModalProps) {
     </Dialog>
   );
 }
+
+
+
+
+

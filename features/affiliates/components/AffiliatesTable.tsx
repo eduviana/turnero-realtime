@@ -11,79 +11,7 @@ import { ViewAffiliateModal } from "./ViewAffiliateModal";
 import { EditAffiliateModal } from "./EditAffiliateModal";
 import { usePermissions } from "@/hooks/usePermissions";
 
-// export function AffiliatesTable() {
-//   const permissions = usePermissions();
-//   const canEditUser = permissions.canEditUsers;
 
-//   const [viewAffiliateId, setViewAffiliateId] = useState<string | null>(null);
-//   const [editAffiliateId, setEditAffiliateId] = useState<string | null>(null);
-
-//   const {
-//     form,
-//     data,
-//     loading,
-//     hasSearched,
-//     submitSearch,
-//     resetFilters,
-//     updateAffiliateInTable,
-//   } = useAffiliateSearch();
-
-//   const { provinces, cities, loading: locationsLoading } = useLocations();
-
-//   const handleView = (id: string) => setViewAffiliateId(id);
-//   const handleEdit = (id: string) => {
-//     if (!canEditUser) return;
-//     setEditAffiliateId(id);
-//   };
-
-//   const closeViewModal = () => setViewAffiliateId(null);
-//   const closeEditModal = () => setEditAffiliateId(null);
-
-//   const tableColumns = buildColumns({
-//     onView: handleView,
-//     // onEdit: handleEdit,
-//     onEdit: canEditUser ? handleEdit : undefined,
-//   });
-
-//   return (
-//     <div className="space-y-6">
-//       <AffiliatesFilters
-//         form={form}
-//         loading={loading || locationsLoading}
-//         onSubmit={submitSearch}
-//         onReset={resetFilters}
-//         provinces={provinces}
-//         cities={cities}
-//       />
-
-//       {loading && <AffiliatesTableSkeleton />}
-
-//       {!loading && hasSearched && (
-//         <DataTable
-//           columns={tableColumns}
-//           data={data}
-//           filterColumn="dni"
-//           filterPlaceholder="Filtrar por DNI..."
-//         />
-//       )}
-
-//       {viewAffiliateId && (
-//         <ViewAffiliateModal
-//           affiliateId={viewAffiliateId}
-//           onClose={closeViewModal}
-//         />
-//       )}
-
-//       {canEditUser && editAffiliateId && (
-//         <EditAffiliateModal
-//           affiliateId={editAffiliateId}
-//           onClose={closeEditModal}
-//           onUpdated={updateAffiliateInTable}
-//         />
-//       )}
-//     </div>
-//   );
-// }
 
 export function AffiliatesTable() {
   const permissions = usePermissions();

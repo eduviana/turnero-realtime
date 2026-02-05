@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { ClipboardList, LucideIcon } from "lucide-react";
 
 export type DashboardRoute = {
   label: string;
@@ -39,6 +39,11 @@ export const DASHBOARD_ROUTES: Record<Role, DashboardRoute[]> = {
       icon: BadgeCheck,
     },
     {
+      label: "Órdenes",
+      href: "/admin/ordenes",
+      icon: ClipboardList,
+    },
+    {
       label: "Auditorías",
       href: "/admin/auditorias",
       icon: ShieldCheck,
@@ -70,6 +75,11 @@ export const DASHBOARD_ROUTES: Record<Role, DashboardRoute[]> = {
       label: "Afiliados",
       href: "/supervisor/afiliados",
       icon: BadgeCheck,
+    },
+    {
+      label: "Órdenes",
+      href: "/admin/ordenes",
+      icon: ClipboardList,
     },
     {
       label: "Auditorías",

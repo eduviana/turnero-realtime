@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UsersStatsView from "../areas/users/UsersStatsView";
 import ServicesStatsView from "../areas/services/ServicesStatsView";
 import AffiliatesStatsView from "../areas/affiliates/AffiliatesStatsView";
+import { AuditsStatsView } from "../areas/audits/AuditsStatsView";
 
 const tabBase =
   "h-10 px-4 text-sm font-medium rounded-md transition-colors " +
@@ -75,7 +76,7 @@ export default function StatsTabs() {
       </TabsContent>
 
       <TabsContent value="audits" className="pt-6">
-        <div>auditorías</div>
+        <AuditsStatsView />
       </TabsContent>
     </Tabs>
   );

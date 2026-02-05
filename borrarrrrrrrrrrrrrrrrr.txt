@@ -108,3 +108,5 @@ En TurnQueuePanel, la propiedad state que viene del hook useTurnQueue devuelve:
 en la seccion del carrito, todos los productos dicen "Medicamento seleccionado" debajo del nombre, hay que crear una propiedad nueva en el model para guardar si son comprimidos, tabletas, gotas ,etc
 
 La lógica de negocio específica de cada servicio debe estar desacoplada de los elementos transversales de la UI, delegándose mediante adapters para evitar dependencias cruzadas y permitir que cada servicio evolucione de forma independiente.
+
+formatear metadata del modal de auditorias segun action
