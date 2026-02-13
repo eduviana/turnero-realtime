@@ -1,4 +1,4 @@
-import { getPharmacyGeneralOrderDetail } from "@/features/orders/areas/pharmacy-general/services/getPharmacyGeneralOrderDetail";
+import {getPharmacyGeneralOrderDetail} from "@/features/orders/areas/pharmacy-medication/services/getPharmacyMedicationOrderDetail"
 
 interface Params {
   params: { id: string };

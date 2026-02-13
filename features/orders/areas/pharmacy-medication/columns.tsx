@@ -2,16 +2,17 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
-import { PharmacyGeneralOrderRow } from "./types/pharmacy-general";
+
+import { PharmacyMedicationOrderRow } from "./types/pharmacy-medication";
 import { formatCurrency } from "@/lib/formatCurrency";
 
 interface BuildColumnsArgs {
   onView: (id: string) => void;
 }
 
-export function pharmacyGeneralOrdersColumns({
+export function pharmacyMedicationOrdersColumns({
   onView,
-}: BuildColumnsArgs): ColumnDef<PharmacyGeneralOrderRow>[] {
+}: BuildColumnsArgs): ColumnDef<PharmacyMedicationOrderRow>[] {
   return [
     // ───────────────────────────────
     // Orden (ID)

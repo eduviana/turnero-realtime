@@ -28,7 +28,7 @@ Esto crea/edita/elimina la/las cuentas en la base de datos para utilizar en las 
 
 6- en app > api > services > find-all - route.ts se cachea la response con un tiempo de 1 semana ya que rara vez van a cambiar.
     
-7- stablecí en la configuracion de clerk en el apartado Sessions que el Maximun lifetime sea de 1 dia en vez de 7, si bien se puede hacer, pero en el plan free esto solo funciona en development, para produccion hay que pagar.
+7- establecí en la configuracion de clerk en el apartado Sessions que el Maximun lifetime sea de 1 dia en vez de 7, si bien se puede hacer, pero en el plan free esto solo funciona en development, para produccion hay que pagar.
 
 8- en el layout.tsx principal configuré en el ClerkProvider que se redireccione a "/" cuando se cierra sesión.
 
@@ -90,23 +90,51 @@ usar la funcion updateUserActivity en las acciones que tengan que refrescar el e
 
 agregar a la funcion formatLastActivity.ts que distinga dias. 
 
-En TurnQueuePanel, la propiedad state que viene del hook useTurnQueue devuelve: 
-{
-    "currentTicket": null,
-    "lastCalledTickets": [ //////////////creo que no lo estamos usando
-        {
-            "id": "cmkl92zw80000w89xcf35qvkg",
-            "number": 52,
-            "code": "FM-52",
-            "status": "COMPLETED"
-        }
-    ],
-    "pendingCount": 0
-}
-
 
 en la seccion del carrito, todos los productos dicen "Medicamento seleccionado" debajo del nombre, hay que crear una propiedad nueva en el model para guardar si son comprimidos, tabletas, gotas ,etc
 
 La lógica de negocio específica de cada servicio debe estar desacoplada de los elementos transversales de la UI, delegándose mediante adapters para evitar dependencias cruzadas y permitir que cada servicio evolucione de forma independiente.
 
 formatear metadata del modal de auditorias segun action
+
+
+
+
+
+
+
+
+
+este proyecto tuvo dos objetivos principales: 1- desarrollar un sistema mas grande y complejo de los que venia haciendo, 2- utilizar alguna tecnologia de realtime ya que no habia utilizado ninguna.
+otro de los objetivos fué tener que implementar arquitectura de software mas compleja, ya que al ser un proyecto más grande, la cantidad de archivos, carpetas, routas etc es mucho mayor. hubo decisiones de arquitectura que pude identificar desde un principio y otras que tuve que enfrentarme al problema para luego refatorizar e implementar dicha solucion. este proceso fué lo más enriquecedor de este proyecto, ya que al haber sucedido de esta manera me acuerdo de los procesos que tuve que pasar hasta llegar a una solucion acorde al problema(lo hice como yo pensaba que era lo mejor, me di cuenta de los problemas que esto generaba, recalculé, pensé, investigué, evalué y refactoricé implementando la solucion que consideré mas adecuada). la aplicacion está desarrollada con nextjs, tailwind, sahdcn, prisma, postgressql. la base de datos se ejecuta en un contenedor docker. utilizo clerk para la autenticacion. a las cuentas de los usuarios del sistema las creo yó desde el panel de clerk, no permito que un usuario (por mas que sea admin) pueda crear nuevas cuentas, esto lo decidí para evitar problemas a futuro. las cuentas pueden tener 3 tipos de roles: ADMIN, SUPERVISOR, OPERATOR. los roles ADMIN y SUPERVISOR comparten la misma interfaz grafica, la diferencia radica en las acciones que pueden ejecutar. el rol ADMIN tiene permisos para hacer todo lo que permite la aplicacion, el rol SUPERVISOR puede ver lo mismo que el ADMIN pero no puede modificar nada. el rol OPERATOR es para los trabajadores de la obra social. el usuario ADMIN puede asociar el/los servicios que se requieran a una determinada cuenta OPERATOR (esto permite que un usuario OPERATOR tenga la opcion de entrar a, por ejemplo, el area de afiliaciones y al area de farmacia-general). el sistema utiliza dos webhooks de clerk: uno para las sesiones de usuario y otro para la sincronizacion de las cuentas entre clerk y la base de datos. las cuentas son creadas desde el panel de clerk, y al iniciar sesion por primera vez en el sistema con dicha cuenta, esta cuenta es creada en la base de datos. el segundo inicio de sesion con esta cuenta, al ya existir en la base de datos no se vuelve a crear. cualquier cambio en la informacion de las cuentas (nombre, apellido, email, imagen de perfil) que se modifique en clerk se sincroniza automaticamente en la base de datos. la pagina principal (localhost:3000) muestra 3 opciones. la primera opcion es "iniciar sesion", a la cual se accede a distintos dashboards dependiendo el rol de la cuenta con la que se acceda. si se accede como ADMIN se muestra el dashboard para admins a donde se permite ver toda la informacion correspondiente como asi tambien modificar informacion (activar/desactivar servicios activos, editar un usuario, etc). si se accede con una cuenta cuyo rol es Supervisor, se muestra la misma interfaz grafica que para el ADMIN con la diferencia que no se permiten ediciones de informacion (solo lectura). si se accede con una cuenta OPERATOR, se muestra una pagina que lista el/los servicios que dicha cuenta tiene asociados, esto permite que una cuenta OPERATOR pueda trabajar en 1 o más areas con la misma cuenta. todas las areas comparten un layout que consta de un header que muestra el nombre del area a la que se accedió, el nombre, apellido y rol de la cuenta autenticada y un boton para cerrar sesion y lo mas importante: el panel de turnos. el panel de turnos funciona en realtime utilizando "pusher". cuando un afiliado genera un turno a una determianda área, el usuario OPERATOR que está autenticado en dicha area vé de manera inmediata que el boton "llamar siguiente turno" se activa, al presionar dicho boton el turno es llamado, mostrando en el panel de turnos el código del ticket (por ejemplo: FM-1), esto sirve para que el afiliado se presente en el box para ser atendido debe presentar el ticket y el usuario OPERATOR constatar que el ticket es el correcto. ademas, cuando el usuario OPERATOR llama a un turno, este llamado impacta directamente en otra pagina llamada "Visor de turnos" que es la página que se muestra en diversas pantallas repartidas en la/las salas de espera, a donde los afiliados pueden ver un historial de los ultimos 5 turnos llamados y el que está siendo llamado (esta pagina muestra el nombre, apellido y el codigo del ticket). esta pagina tambien funciona en realtime con pusher. cuando el usuario OPERATOR llama a un turno debe esperar a que el afiliado se presente en el box correspondiente, y luego de constatar que el ticket que presenta el afiliado es correcto, debe presionar el boton "Iniciar atencion" que se encuentra en el panel de turnos. esto lo diseñé asi porque el sistema registra todas las unidades de tiempo, por ejemplo: segundos transcurridos desde que el afiliado generó un turno hasta que fué llamado, segundos transcurridos desde que se inició la atencion hasta que se finializó el turno. de esta manera, el tiempo que el afiliado pudiera tardar desde que es llamado hasta que se presenta en el box correspondiente, no se lo cuente como tiempo de atencion al usuario OPERATOR, ya que al mostrar graficos estadisticos sobre la duracion de la atencion de los turnos, turnos atendidos por x usuario, promedio de turnos atendidos por area etc, si contara el tiempo que el afiliado tarda en presentarse seria una desicronizacion que penalizaria a los usuarios OPERATOR. otra funcionalidad que comparten todas las areas y que forma parte del layout es un pequeño panel debajo del panel de turnos que inicia cuando se inicia la atencion del turno, que muestra el tiempo transcurrido desde que se inició la atencion. se muestra una barra de carga que empieza en verde, y dependiendo del tiempo transcurrido cambia a amarillo y finalmente a rojo. la barra de carga tiene un tiempo maximo preestablecido de 12 minutos que es la convencion del tiempo máximo que un usuario OPERATOR deberia tardar como maximo en atender un turno. esto no tiene una penalizacion directa al usuario OPERATOR que exeda este tiempo (el peido del afiliado puede ser muy grande y es normal que se tarde más), es solo una interfaz gráfica para que el usuario OPERATOR pueda ver el tiempo transcurrido y si está dentro de los limites ideales. esto si puede repercutir en los graficos estadisticos que pueden ver el/los usuarios ADMIN y SUPERVISOR desde los cuales se puede observar que usuario está tardando mas de lo estipulado en despachar un turno, de que area es, etc. lueg de llamar a un turno, en le panel de turnos se muestran las opciones: iniciar atencion (al clikearlo el turno se llama, se muestra la barra de tiempo, se muestra el turno llamado en la/las pantalla de visor de turnos), en el caso de que el usuario OPERATOR llame a un turno y el afiliado llamado no se presente, el panel de tunos tiene un boton "Ausente", en el caso de que el afiliado se presente y no se concreta una orden (el afiliado se arrepiente, se retira del establecimiento, no hay el/los productos que solicita, es decir que el turno se inicia correctamente pero no se carga ningun producto a la orden, el sistema no permite finalizar un turno con una orden vaciá, por lo que el usuario OPERATOR debe presionar en "cancelar" en el panel de turnos). el sistema utiliza un archivo proxy que funciona como Middleware de Seguridad y Enrutamiento Dinámico (RBAC)
+Este archivo actúa como el "Guardián" (Gatekeeper) de la aplicación. Es un Middleware de Next.js que centraliza la autenticación con Clerk, la autorización basada en roles (RBAC) con Prisma y la auditoría de seguridad.
+
+🚀 Funcionalidades Clave
+Redirección Inteligente (Smart Dashboard):
+En lugar de tener múltiples URLs de inicio, implementé un punto de entrada único (/dashboard). El middleware consulta el rol del usuario en la base de datos y lo redirige automáticamente a su panel correspondiente (/admin, /supervisor u /operator), mejorando la fluidez de la navegación.
+
+Sistema de Permisos por Jerarquía:
+No utilizo simples comparaciones de strings. Implementé una jerarquía de roles (ROLE_HIERARCHY). Esto permite que un Administrador tenga acceso intrínseco a las rutas de Supervisor y Operador sin necesidad de duplicar permisos, siguiendo el principio de "menor privilegio".
+
+Auditoría de Seguridad Activa:
+Si un usuario intenta acceder a una ruta para la cual no tiene nivel suficiente, el sistema no solo bloquea el acceso, sino que utiliza un auditService para registrar el incidente:
+
+Quién intentó entrar.
+
+Qué ruta solicitó.
+
+Desde qué IP y dispositivo.
+
+Qué rol era requerido.
+
+Gestión de Rutas Públicas:
+Utilizo createRouteMatcher para definir una lista blanca de rutas (landing page, pantallas de turnos, APIs públicas) que deben ser accesibles sin autenticación, garantizando que el rendimiento de la app no se vea afectado innecesariamente.
+"Si un Operador intenta entrar manualmente a /admin/settings, el middleware detecta que su nivel de jerarquía es inferior al requerido, dispara una alerta silenciosa en el sistema de auditoría para el equipo de seguridad y redirige al usuario al inicio de sesión."
+
+con respecto a la arquitectura utilizada para la creacion de archivos y carpetas: 1- Modular Feature Architecture (Feature Modules).
+Cada feature contiene sus piezas internas, mientras que app/ contiene únicamente el routing.
+Es un patrón de organización donde cada feature del negocio tiene un módulo autocontenido que incluye UI, lógica, tipos y utilidades, mientras que las rutas viven aparte (en app/) y funcionan como puntos de entrada.
+
+todo lo que puede server component es server component, y lo que requiere de interacion es use client. si un client component necesita informacion de la base de datos, creo un endpoint en la carpeta app > api. los server components que necesitan interactuar con la base de datos no necesitan un endpoint, pueden acceder directamente, para esto utilizo las carpetas services que cada modulo define en su estructura interna.
+
+otra arquitectura de software que utilicé es la de adapters. dado que tengo 2 areas de la obra social que cuentan con venta de productos (farmacia general y farmacia medicamentos), opté por crearlas como areas separadas e independientes entre si, porque si bien actualmente los modelos de la base de datos de ambas areas actualmente son iguales, estas podrian evolucionar en un futuro y tomé la decision de crearlas por separado. en una priemra instancia esto me parecia repetir codigo pero prefiero que sean independientes entre si, ya que, por ejemplo, si implementara la funcionalidad de que en farmacia medicamentos el afiliado tiene que presentar la receta firmada por un medico para x medicamento, esta funcionalidad no aplica a farmacia general, y si compartiera los mismos modelos, ambos quedarian acoplados. 

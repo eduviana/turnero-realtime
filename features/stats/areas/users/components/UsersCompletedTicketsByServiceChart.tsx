@@ -248,18 +248,14 @@ export function UsersCompletedTicketsByServiceChart({ services }: Props) {
   }, [serviceId]);
 
   return (
-    <div className="rounded-md border px-8 pt-4 bg-white">
+    <div className="rounded-md border bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col items-center justify-between gap-4 pt-4">
         {/* Title */}
-        <div className="flex flex-col">
-          <h3 className="text-lg font-bold text-black dark:text-white">
-            Turnos completados por usuario
-          </h3>
-          {/* <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            cambiar subtitulo
-          </p> */}
-        </div>
+
+        <h3 className="text-lg font-bold text-black dark:text-white">
+          Turnos completados por usuario
+        </h3>
 
         {/* Select */}
         <Select value={serviceId} onValueChange={setServiceId}>
@@ -284,7 +280,7 @@ export function UsersCompletedTicketsByServiceChart({ services }: Props) {
           No hay turnos completados para este servicio
         </p>
       ) : (
-        <div className="w-full h-[500px]">
+        <div className="w-full h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart
               margin={{

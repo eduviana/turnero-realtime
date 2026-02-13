@@ -37,7 +37,7 @@ export function TurnQueuePanel({
   const allowComplete =
     currentStatus === TicketStatus.IN_PROGRESS && !!canComplete;
 
-    console.log(currentStatus, "SDADASDASDASDASDASD")
+    
 
   return (
     <Card className="w-[340px] h-[300px] rounded-xl shadow-sm">

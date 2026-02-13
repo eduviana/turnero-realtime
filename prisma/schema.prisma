@@ -314,6 +314,7 @@ model AuditLog {
 model PharmacyMedicationProduct {
   id       String  @id @default(cuid())
   name     String
+  price     Decimal @db.Decimal(10, 2)
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -346,9 +347,9 @@ model PharmacyMedicationOrderItem {
   orderId   String
   productId String
   quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
 
   order PharmacyMedicationOrder @relation(fields: [orderId], references: [id])
-
   product PharmacyMedicationProduct @relation(fields: [productId], references: [id])
 
   @@unique([orderId, productId])
@@ -360,6 +361,7 @@ model PharmacyMedicationOrderItem {
 model PharmacyGeneralProduct {
   id       String  @id @default(cuid())
   name     String
+  price     Decimal @db.Decimal(10, 2)
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -392,6 +394,7 @@ model PharmacyGeneralOrderItem {
   orderId   String
   productId String
   quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
 
   order PharmacyGeneralOrder @relation(fields: [orderId], references: [id])
   product PharmacyGeneralProduct @relation(fields: [productId], references: [id])

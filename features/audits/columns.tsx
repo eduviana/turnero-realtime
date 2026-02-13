@@ -14,10 +14,7 @@ interface AuditColumnsProps {
  * Mapa explícito de estilos por tipo de auditoría.
  * Si se agrega un nuevo AuditEventType, TypeScript falla acá.
  */
-const EVENT_TYPE_BADGE_CLASS: Record<
-  AuditLogRow["eventType"],
-  string
-> = {
+const EVENT_TYPE_BADGE_CLASS: Record<AuditLogRow["eventType"], string> = {
   SECURITY: "bg-red-600 text-white px-2 py-1",
   SYSTEM: "bg-blue-600 text-white px-2 py-1",
   FUNCTIONAL: "bg-emerald-600 text-white px-2 py-1",
@@ -100,7 +97,7 @@ export function auditColumns({
       header: () => <div className="text-center">Fecha</div>,
       cell: ({ row }) => (
         <div className="text-center whitespace-nowrap text-sm text-muted-foreground">
-          {new Date(row.original.createdAt).toLocaleString()}
+          {row.original.createdAt}
         </div>
       ),
     },

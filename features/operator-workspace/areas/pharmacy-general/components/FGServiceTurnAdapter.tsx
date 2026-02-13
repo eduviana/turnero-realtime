@@ -20,8 +20,7 @@ export function FGServiceTurnAdapter() {
    * - al menos un item en el carrito
    */
   const canComplete =
-    currentTicket?.status === TicketStatus.IN_PROGRESS &&
-    items.length > 0;
+    currentTicket?.status === TicketStatus.IN_PROGRESS && items.length > 0;
 
   const handleComplete = async () => {
     if (!currentTicket) return;
@@ -36,8 +35,15 @@ export function FGServiceTurnAdapter() {
       }),
     });
 
+    // if (!res.ok) {
+    //   throw new Error("No se pudo crear la orden de farmacia general");
+    // }
     if (!res.ok) {
-      throw new Error("No se pudo crear la orden de farmacia general");
+      const error = await res.json().catch(() => null);
+      console.error("Error creating FG order:", error);
+      throw new Error(
+        error?.error ?? "No se pudo crear la orden de farmacia general",
+      );
     }
 
     await actOnCurrent("COMPLETE");
@@ -45,9 +51,6 @@ export function FGServiceTurnAdapter() {
   };
 
   return (
-    <TurnQueuePanel
-      canComplete={canComplete}
-      onComplete={handleComplete}
-    />
+    <TurnQueuePanel canComplete={canComplete} onComplete={handleComplete} />
   );
 }

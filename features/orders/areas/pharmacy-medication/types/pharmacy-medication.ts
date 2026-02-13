@@ -3,7 +3,7 @@ import { OrderBase } from "@/features/orders/types/orders-base";
 /**
  * Orden de farmacia medicamentos (lista / backend)
  */
-export interface PharmacyGeneralOrder extends OrderBase {
+export interface PharmacyMedicationOrder extends OrderBase {
   itemsCount: number;
   totalAmount: string;
 }
@@ -11,7 +11,7 @@ export interface PharmacyGeneralOrder extends OrderBase {
 /**
  * Fila de la tabla (UI)
  */
-export interface PharmacyGeneralOrderRow {
+export interface PharmacyMedicationOrderRow {
   id: string;
   affiliate: string;
   operator: string;
@@ -22,7 +22,7 @@ export interface PharmacyGeneralOrderRow {
 /**
  * Ítem dentro de una orden (modal / detalle)
  */
-export interface PharmacyGeneralOrderItem {
+export interface PharmacyMedicationOrderItem {
   id: string;
   productName: string;
   quantity: number;
@@ -33,7 +33,7 @@ export interface PharmacyGeneralOrderItem {
 /**
  * Detalle completo de una orden (modal)
  */
-export interface PharmacyGeneralOrderDetail {
+export interface PharmacyMedicationOrderDetail {
   id: string;
   ticketCode: string;
 
@@ -47,8 +47,8 @@ export interface PharmacyGeneralOrderDetail {
   service: string;
   createdAt: string;
 
-  items: PharmacyGeneralOrderItem[];
+  items: PharmacyMedicationOrderItem[];
   totalItems: number;
 
-  totalAmount: string; // 👈 agregar esto
+  totalAmount: string;
 }

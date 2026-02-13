@@ -23,8 +23,7 @@ export default function PublicLandingPage() {
 
           {/* Descripción */}
           <p className="mt-6 text-lg text-slate-500 max-w-xl mx-auto leading-relaxed">
-            Acceda a sus servicios médicos de forma ágil y segura. Seleccione
-            una de las siguientes opciones para comenzar.
+            Seleccione una opción para continuar.
           </p>
         </header>
 

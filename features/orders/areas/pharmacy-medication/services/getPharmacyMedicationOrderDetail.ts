@@ -1,11 +1,12 @@
 import { db } from "@/lib/db/prisma";
-import { PharmacyGeneralOrderDetail } from "../types/pharmacy-general";
+
 import { Prisma } from "@/generated/prisma/client";
+import { PharmacyMedicationOrderDetail } from "../types/pharmacy-medication";
 
 export async function getPharmacyGeneralOrderDetail(
   orderId: string
-): Promise<PharmacyGeneralOrderDetail | null> {
-  const order = await db.pharmacyGeneralOrder.findUnique({
+): Promise<PharmacyMedicationOrderDetail | null> {
+  const order = await db.pharmacyMedicationOrder.findUnique({
     where: { id: orderId },
     include: {
       ticket: {

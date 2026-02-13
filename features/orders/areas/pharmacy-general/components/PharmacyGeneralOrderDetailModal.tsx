@@ -1,5 +1,3 @@
-
-
 // "use client";
 
 // import { useEffect, useState } from "react";
@@ -247,10 +245,6 @@
 //   );
 // }
 
-
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -265,6 +259,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { PharmacyGeneralOrderDetail } from "../types/pharmacy-general";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 interface Props {
   orderId: string | null;
@@ -295,9 +290,11 @@ export function PharmacyGeneralOrderDetailModal({
     load();
   }, [orderId, open]);
 
+  console.log(data, "SLKJALKDKLLKJASDJLJLKSAJDLKJSAKLDJLKASJLKDJ");
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="min-w-[800px] max-w-none p-0 overflow-hidden">
+      <DialogContent className="min-w-[1000px] max-w-none p-0 overflow-hidden">
         {/* Accesibilidad */}
         <DialogTitle className="sr-only">
           Detalle de Orden de Farmacia
@@ -325,12 +322,8 @@ export function PharmacyGeneralOrderDetailModal({
           <div className="flex flex-col max-h-[80vh] overflow-y-auto">
             {/* ───────────── Info Card ───────────── */}
             <div className="px-8 pt-8">
-              <div className="bg-muted/40 rounded-xl p-6 border grid grid-cols-1 md:grid-cols-3 gap-6">
-                <InfoBlock
-                  label="ID Ticket"
-                  value={data.ticketCode}
-                  highlight
-                />
+              <div className="bg-muted/40 rounded-xl p-6 border grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <InfoBlock label="ID Ticket" value={data.id} highlight />
 
                 <InfoBlock label="Servicio" value={data.service} />
 
@@ -341,12 +334,20 @@ export function PharmacyGeneralOrderDetailModal({
                 />
 
                 {data.affiliate && (
-                  <InfoBlock
-                    label="Afiliado"
-                    value={data.affiliate}
-                    icon={<User className="w-4 h-4" />}
-                    span={2}
-                  />
+                  <>
+                    <InfoBlock
+                      label="Afiliado"
+                      value={data.affiliate.fullName}
+                      icon={<User className="w-4 h-4" />}
+                      span={1}
+                    />
+
+                    <InfoBlock
+                      label="DNI Afiliado"
+                      value={data.affiliate.dni}
+                      span={1}
+                    />
+                  </>
                 )}
 
                 <InfoBlock
@@ -394,9 +395,7 @@ export function PharmacyGeneralOrderDetailModal({
                             <div className="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center">
                               💊
                             </div>
-                            <p className="font-bold">
-                              {item.productName}
-                            </p>
+                            <p className="font-bold">{item.productName}</p>
                           </div>
                         </td>
 
@@ -407,11 +406,11 @@ export function PharmacyGeneralOrderDetailModal({
                         </td>
 
                         <td className="px-6 py-5 text-right font-medium text-muted-foreground">
-                          cambiar
+                          {formatCurrency(item.unitPrice)}
                         </td>
 
                         <td className="px-6 py-5 text-right font-bold">
-                          cambiar
+                          {formatCurrency(item.totalPrice)}
                         </td>
                       </tr>
                     ))}
@@ -437,7 +436,7 @@ export function PharmacyGeneralOrderDetailModal({
                     Total a Pagar
                   </span>
                   <span className="text-2xl font-black tracking-tight">
-                    cambiar
+                    {formatCurrency(data.totalAmount)}
                   </span>
                 </div>
               </div>
@@ -475,15 +474,23 @@ function InfoBlock({
   icon,
   highlight,
   span = 1,
+  align = "start",
 }: {
   label: string;
   value: string;
   icon?: React.ReactNode;
   highlight?: boolean;
   span?: number;
+  align?: "start" | "center";
 }) {
   return (
-    <div className={`flex flex-col gap-1 ${span === 2 ? "md:col-span-2" : ""}`}>
+    <div
+      className={`
+        flex flex-col gap-1
+        ${span === 2 ? "md:col-span-2" : ""}
+        ${align === "center" ? "items-center text-center" : ""}
+      `}
+    >
       <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>

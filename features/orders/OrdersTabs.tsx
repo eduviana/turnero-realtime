@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PharmacyGeneralOrdersPage from "./areas/pharmacy-general/PharmacyGeneralOrdersPage";
+import PharmacyMedicationOrdersPage from "./areas/pharmacy-medication/PharmacyMedicationOrdersPage";
 
 const tabBase =
   "h-10 px-4 text-sm font-medium rounded-md transition-colors " +
@@ -41,7 +42,7 @@ export default function OrdersTabs() {
       </TabsContent>
 
       <TabsContent value="medication" className="pt-6">
-        farmacia medicamentos
+        <PharmacyMedicationOrdersPage />
       </TabsContent>
     </Tabs>
   );

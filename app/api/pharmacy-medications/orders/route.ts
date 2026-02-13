@@ -39,13 +39,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Operator not found" }, { status: 404 });
   }
 
+  // 4️⃣ Ticket
   const ticket = await prisma.ticket.findUnique({
     where: { id: ticketId },
     select: {
       id: true,
       status: true,
       serviceId: true,
-      affiliateId: true, // 👈 CLAVE
+      affiliateId: true,
       service: {
         select: { code: true },
       },
@@ -70,17 +71,40 @@ export async function POST(req: Request) {
     );
   }
 
+  // 5️⃣ Fetch product prices (CLAVE)
+  const products = await prisma.pharmacyMedicationProduct.findMany({
+    where: {
+      id: { in: items.map((i) => i.productId) },
+    },
+    select: {
+      id: true,
+      price: true,
+    },
+  });
+
+  const priceMap = new Map(products.map((p) => [p.id, p.price]));
+
+  // 6️⃣ Create order
   const order = await prisma.pharmacyMedicationOrder.create({
     data: {
       ticketId: ticket.id,
       serviceId: ticket.serviceId,
       operatorId: operator.id,
-      affiliateId: ticket.affiliateId ?? undefined, // 👈 acá
+      affiliateId: ticket.affiliateId ?? undefined,
       items: {
-        create: items.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
+        create: items.map((item) => {
+          const unitPrice = priceMap.get(item.productId);
+
+          if (!unitPrice) {
+            throw new Error(`Product price not found: ${item.productId}`);
+          }
+
+          return {
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice,
+          };
+        }),
       },
     },
     include: {
