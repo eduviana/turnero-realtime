@@ -1,33 +1,3 @@
-Aquí tienes el README completo con el orden optimizado.
-
-Reorganicé la estructura con esta lógica narrativa (más fuerte para reclutadores técnicos):
-
-Contexto
-
-Stack
-
-Arquitectura
-
-Dominio
-
-Realtime
-
-Seguridad
-
-Base de datos
-
-Instalación
-
-Dashboard
-
-Decisiones de diseño
-
-Estado
-
-Eso cuenta la historia del sistema de forma más profesional.
-
-Copia y pega todo este bloque:
-
 # Sistema Interno de Gestión de Turnos
 
 Sistema web fullstack desarrollado para la gestión interna de turnos de una obra social.  
