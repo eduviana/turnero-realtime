@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-
 import { pusherServer } from "@/lib/pusher/server";
-
 import { handleCurrentTicket } from "@/features/turn-queue/services/handleCurrentTicket";
 import {
   TURN_QUEUE_ACTIONS,
@@ -72,7 +70,7 @@ export async function POST(
   }
 
   // ✅ ACTIVIDAD REAL CONFIRMADA
-await updateUserActivity(operator.id);
+  await updateUserActivity(operator.id);
 
   /**
    * 🧠 Side effect: Farmacia Medicamentos
@@ -83,28 +81,6 @@ await updateUserActivity(operator.id);
       where: { id: serviceId },
       select: { code: true },
     });
-
-    if (service?.code === "FM") {
-      if (!Array.isArray(items) || items.length === 0) {
-        // Decisión explícita: permitir finalizar sin medicamentos
-      
-      } else {
-        await db.pharmacyMedicationOrder.create({
-          data: {
-            ticketId: ticket.id,
-            serviceId,
-            operatorId: operator.id,
-            affiliateId: ticket.affiliateId ?? null,
-            items: {
-              create: items.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-              })),
-            },
-          },
-        });
-      }
-    }
   }
 
   /**

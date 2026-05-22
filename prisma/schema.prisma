@@ -234,6 +234,8 @@ model Ticket {
 
   @@unique([serviceId, number])
   @@index([status])
+// indice nuevo
+  @@index([serviceId, status, createdAt])
 }
 
 enum AuditEventType {
