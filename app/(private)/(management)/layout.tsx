@@ -61,7 +61,7 @@ export default async function PrivateLayout({
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex h-screen overflow-hidden bg-gray-50 font-sans">
       <AuthProvider
         user={{
           role: user.role,
@@ -73,7 +73,7 @@ export default async function PrivateLayout({
         {/* Sidebar sigue recibiendo la info sin volverse client */}
         <Sidebar accountRole={user.role} />
 
-        <div className="flex flex-1 flex-col min-h-screen">
+        <div className="flex-1 flex flex-col min-w-0">
           <Header />
           <MainWrapper>{children}</MainWrapper>
         </div>

@@ -7,18 +7,16 @@ interface SidebarProps {
 
 export function Sidebar({ accountRole }: SidebarProps) {
   return (
-    <aside className="hidden md:flex w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+    <aside className="hidden md:flex w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shrink-0">
       {/* Header */}
-      <div className="flex items-center h-16 gap-2 px-6 border-b border-sidebar-border">
-        <h1 className="flex items-center gap-2 text-xl font-bold">
-          <span className="text-sidebar-primary font-black tracking-tighter">
-            DASHBOARD
-          </span>
+      <div className="p-6 border-b border-slate-700">
+        <h1 className="text-sidebar-primary font-black text-xl tracking-tighter italic">
+          Medical-Healt
         </h1>
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-1 flex-col gap-1 mt-8">
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         <RoleLinks role={accountRole} />
       </nav>
     </aside>

@@ -3,7 +3,7 @@ import PharmacyGeneralOrdersPage from "./areas/pharmacy-general/PharmacyGeneralO
 import PharmacyMedicationOrdersPage from "./areas/pharmacy-medication/PharmacyMedicationOrdersPage";
 
 const tabBase =
-  "h-10 px-4 text-sm font-medium rounded-md transition-colors " +
+  "h-10 px-4 text-sm font-medium rounded transition-colors " +
   "focus-visible:outline-none focus-visible:ring-0 flex-none";
 
 export default function OrdersTabs() {
@@ -14,11 +14,12 @@ export default function OrdersTabs() {
         <TabsTrigger
           value="general"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-500
+            bg-gray-100
+            hover:bg-gray-200
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Farmacia General
         </TabsTrigger>
@@ -26,11 +27,12 @@ export default function OrdersTabs() {
         <TabsTrigger
           value="medication"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-500
+            bg-gray-100
+            hover:bg-gray-200
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Farmacia Medicamentos
         </TabsTrigger>

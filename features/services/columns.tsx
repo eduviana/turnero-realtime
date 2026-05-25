@@ -82,7 +82,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ServiceTableRow } from "./types/service";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 
 interface Params {
   onToggleActive?: (id: string, newValue: boolean) => void;
@@ -96,7 +95,9 @@ export function columns({
       accessorKey: "name",
       header: () => <span className="text-left">Nombre</span>,
       cell: ({ row }) => (
-        <span className="block text-left font-medium">{row.original.name}</span>
+        <span className="block text-left text-base font-bold text-gray-800">
+          {row.original.name}
+        </span>
       ),
     },
 
@@ -118,6 +119,7 @@ export function columns({
               checked={isActive}
               disabled={!canToggle}
               onCheckedChange={handleToggle}
+              className="data-[state=checked]:bg-emerald-600"
             />
           </div>
         );
@@ -129,9 +131,9 @@ export function columns({
       header: () => <span className="block text-center">Código</span>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Badge className="uppercase px-3 py-1 tracking-wide">
+          <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded uppercase">
             {row.original.code}
-          </Badge>
+          </span>
         </div>
       ),
     },
@@ -140,7 +142,7 @@ export function columns({
       accessorKey: "currentIndex",
       header: () => <span className="block text-center">Índice actual</span>,
       cell: ({ row }) => (
-        <span className="block text-center tabular-nums">
+        <span className="block text-center text-sm text-gray-500 tabular-nums">
           {row.original.currentIndex}
         </span>
       ),

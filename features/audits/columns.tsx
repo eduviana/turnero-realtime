@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { AuditLogRow } from "./types/audit";
 
@@ -15,9 +14,9 @@ interface AuditColumnsProps {
  * Si se agrega un nuevo AuditEventType, TypeScript falla acá.
  */
 const EVENT_TYPE_BADGE_CLASS: Record<AuditLogRow["eventType"], string> = {
-  SECURITY: "bg-red-600 text-white px-2 py-1",
-  SYSTEM: "bg-blue-600 text-white px-2 py-1",
-  FUNCTIONAL: "bg-emerald-600 text-white px-2 py-1",
+  SECURITY: "bg-red-600 text-white",
+  SYSTEM: "bg-blue-600 text-white",
+  FUNCTIONAL: "bg-emerald-600 text-white",
 };
 
 /**
@@ -32,56 +31,46 @@ export function auditColumns({
      * ======================= */
     {
       accessorKey: "actorEmail",
-      header: () => <div className="text-left ml-10">Usuario</div>,
+      header: () => <div className="text-left">Usuario</div>,
       cell: ({ row }) => (
-        <div className="text-left text-sm whitespace-nowrap">
+        <div className="text-left text-base font-bold text-gray-800">
           {row.original.actorEmail ?? "—"}
         </div>
       ),
     },
 
-    /* =======================
-     * Tipo
-     * ======================= */
     {
       accessorKey: "eventType",
       header: () => <div className="text-center">Tipo</div>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Badge
-            variant="outline"
-            className={`text-xs font-medium ${
+          <span
+            className={`text-xs font-bold px-3 py-1 rounded uppercase ${
               EVENT_TYPE_BADGE_CLASS[row.original.eventType]
             }`}
           >
             {row.original.eventType}
-          </Badge>
+          </span>
         </div>
       ),
     },
 
-    /* =======================
-     * Acción
-     * ======================= */
     {
       accessorKey: "action",
       header: () => <div className="text-center">Acción</div>,
       cell: ({ row }) => (
-        <div className="text-center text-sm font-medium whitespace-nowrap">
+        <div className="text-center text-sm text-gray-500 whitespace-nowrap">
           {row.original.action}
         </div>
       ),
     },
 
-    /* =======================
-     * Detalle
-     * ======================= */
     {
       accessorKey: "summary",
       header: () => <div className="text-center">Detalle</div>,
       cell: ({ row }) => (
         <div
-          className="text-center max-w-[420px] truncate text-sm"
+          className="text-center text-sm text-gray-500 max-w-[420px] truncate"
           title={row.original.summary}
         >
           {row.original.summary}
@@ -89,36 +78,29 @@ export function auditColumns({
       ),
     },
 
-    /* =======================
-     * Fecha
-     * ======================= */
     {
       accessorKey: "createdAt",
       header: () => <div className="text-center">Fecha</div>,
       cell: ({ row }) => (
-        <div className="text-center whitespace-nowrap text-sm text-muted-foreground">
+        <div className="text-center text-sm text-gray-500 whitespace-nowrap">
           {row.original.createdAt}
         </div>
       ),
     },
 
-    /* =======================
-     * Ver más (acción)
-     * ======================= */
     {
       id: "view",
       enableSorting: false,
-      header: () => <div className="text-center w-10" />,
+      header: () => <div className="text-center" />,
       cell: ({ row }) => (
         <div className="flex justify-center">
           <button
             type="button"
             onClick={() => onView(row.original)}
-            className="flex items-center justify-center w-8 h-8 rounded-md
-                       bg-emerald-600 hover:bg-emerald-500 transition"
+            className="flex items-center justify-center w-8 h-8 rounded bg-emerald-500 hover:bg-emerald-600 transition"
             title="Ver detalle"
           >
-            <Eye className="h-4 w-4 text-white" />
+            <Eye size={16} className="text-white" />
           </button>
         </div>
       ),

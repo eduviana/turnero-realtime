@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import { AffiliateDataViewModal } from "../types/affiliate";
 import { getAffiliateById } from "../services/getAffiliateById";
 import { AffiliateViewSkeleton } from "./AffiliateViewSkeleton";
@@ -19,12 +17,13 @@ interface ViewUserModalProps {
   onClose: () => void;
 }
 
-
-
-export function ViewAffiliateModal({ affiliateId, onClose }: ViewUserModalProps) {
+export function ViewAffiliateModal({
+  affiliateId,
+  onClose,
+}: ViewUserModalProps) {
   const [loading, setLoading] = useState(false);
   const [affiliate, setAffiliate] = useState<AffiliateDataViewModal | null>(
-    null
+    null,
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -49,149 +48,244 @@ export function ViewAffiliateModal({ affiliateId, onClose }: ViewUserModalProps)
   }, [affiliateId]);
 
   const statusStyles: Record<string, string> = {
-    ACTIVE: "bg-emerald-700",
-    SUSPENDED: "bg-red-700",
-    INACTIVE: "bg-yellow-700",
+    ACTIVE: "bg-emerald-600",
+    SUSPENDED: "bg-amber-500",
+    INACTIVE: "bg-red-700",
   };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-full">
-        <DialogHeader>
-          <DialogTitle>Detalles del afiliado</DialogTitle>
-        </DialogHeader>
+      <DialogContent
+        showCloseButton={false}
+        className="
+        max-w-4xl
+        w-full
+        gap-0
+        p-0
+        overflow-hidden
+        rounded-lg
+        border-0
+        bg-foreground
+        shadow-2xl
+        outline
+        outline-1
+        outline-slate-900
+      "
+      >
+        <DialogTitle className="sr-only">Detalles del Afiliado</DialogTitle>
 
-        {/* LOADING */}
-        {loading && (
-          <div className="flex items-center justify-center py-12">
-            <AffiliateViewSkeleton />
-          </div>
-        )}
+        {/* HEADER */}
+        <div className="relative flex items-center justify-between bg-foreground px-6 py-6">
+          <h2 className="text-xl font-semibold tracking-tight text-white">
+            Detalles del Afiliado
+          </h2>
 
-        {/* ERROR */}
-        {!loading && error && (
-          <div className="text-center py-8 text-red-500 font-medium">
-            {error}
-          </div>
-        )}
+          <DialogClose className="cursor-pointer text-white transition-opacity hover:opacity-70">
+            <X className="size-5" />
+          </DialogClose>
+        </div>
 
-        {/* CONTENT */}
-        {!loading && !error && affiliate && (
-          <div className="space-y-6">
-            {/* HEADER */}
-            <Card>
-              <CardContent className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex flex-col gap-2">
-                  <p className="text-2xl font-semibold">
-                    {affiliate.firstName} {affiliate.lastName}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    DNI {affiliate.dni}
-                    {affiliate.affiliateNumber &&
-                      ` · Nº ${affiliate.affiliateNumber}`}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {affiliate.organization ?? "-"}
-                  </p>
-                </div>
+        {/* BODY */}
+        <div className="bg-white">
+          {/* LOADING */}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <AffiliateViewSkeleton />
+            </div>
+          )}
 
-                <Badge
-                  variant="outline"
-                  className={`uppercase tracking-wide px-4 py-2 text-sm text-white ${statusStyles[affiliate.status] ?? ""}`}>
-                  {affiliate.status}
-                </Badge>
-              </CardContent>
-            </Card>
+          {/* ERROR */}
+          {!loading && error && (
+            <div className="py-8 text-center font-medium text-red-500">
+              {error}
+            </div>
+          )}
 
-            {/* DATOS PERSONALES */}
-            <Card>
-              <CardHeader className="pb-2">
-                <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                  Datos personales
-                </h4>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label>Teléfono</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.phone ?? "-"}
+          {/* CONTENT */}
+          {!loading && !error && affiliate && (
+            <div
+              className="
+              flex flex-col gap-3
+              bg-gradient-radial
+              from-white
+              via-slate-100
+              to-slate-200/90
+              px-4 py-4 pb-8
+            "
+            >
+              {/* ===================================================== */}
+              {/* SECCIÓN 1 — PERFIL */}
+              {/* ===================================================== */}
+              <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-6 shadow-sm backdrop-blur-sm">
+                <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <div className="mb-3 flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-slate-500" />
+
+                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                        Perfil del afiliado
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-slate-900">
+                      {affiliate.firstName} {affiliate.lastName}
+                    </h3>
+
+                    <p className="mt-1 text-sm text-slate-600">
+                      DNI {affiliate.dni}
+                      {affiliate.affiliateNumber &&
+                        ` · Nº ${affiliate.affiliateNumber}`}
+                    </p>
+
+                    <p className="text-sm text-slate-500">
+                      {affiliate.organization ?? "-"}
+                    </p>
                   </div>
-                </div>
 
-                <div>
-                  <Label>Email</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.email ?? "-"}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* UBICACIÓN */}
-            <Card>
-              <CardHeader className="pb-2">
-                <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                  Ubicación
-                </h4>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label>Provincia</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.province}
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Ciudad</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.city}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* ESTADO ADMINISTRATIVO */}
-            <Card>
-              <CardHeader className="pb-2">
-                <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                  Estado administrativo
-                </h4>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>Estado</Label>
-                  <div className="text-sm text-muted-foreground">
+                  <span
+                    className={`
+                    inline-flex items-center rounded-full
+                    px-4 py-2 text-xs font-bold uppercase
+                    tracking-wider text-white
+                    ${statusStyles[affiliate.status] ?? "bg-gray-400"}
+                  `}
+                  >
                     {affiliate.status}
-                  </div>
+                  </span>
+                </div>
+              </section>
+
+              {/* ===================================================== */}
+              {/* SECCIÓN 2 — DATOS PERSONALES */}
+              {/* ===================================================== */}
+              <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-6 shadow-sm backdrop-blur-sm">
+                <div className="mb-5 flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-slate-500" />
+
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                    Datos personales
+                  </span>
                 </div>
 
-                <div>
-                  <Label>Motivo</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.statusReason}
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Teléfono
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.phone ?? "-"}
+                    </p>
                   </div>
+
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Email
+                    </span>
+
+                    <p className="break-all text-sm font-medium text-slate-700">
+                      {affiliate.email ?? "-"}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* ===================================================== */}
+              {/* SECCIÓN 3 — UBICACIÓN */}
+              {/* ===================================================== */}
+              <section className="rounded-2xl border border-sky-200/70 bg-sky-50/70 px-6 py-6 shadow-sm backdrop-blur-sm">
+                <div className="mb-5 flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-sky-500" />
+
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                    Ubicación
+                  </span>
                 </div>
 
-                <div>
-                  <Label>Fecha de alta</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {affiliate.activatedAt
-                      ? new Date(affiliate.activatedAt).toLocaleDateString()
-                      : "-"}
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Provincia
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.province ?? "-"}
+                    </p>
                   </div>
+
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Ciudad
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.city ?? "-"}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* ===================================================== */}
+              {/* SECCIÓN 4 — ESTADO ADMINISTRATIVO */}
+              {/* ===================================================== */}
+              <section className="rounded-2xl border border-violet-200/60 bg-violet-50/50 px-6 py-6 shadow-sm backdrop-blur-sm">
+                <div className="mb-5 flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-violet-500" />
+
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                    Estado administrativo
+                  </span>
                 </div>
 
-                <div>
-                  <Label>Última actualización</Label>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(affiliate.updatedAt).toLocaleDateString()}
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-2">
+                  {/* Fila 1 */}
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Estado
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.status}
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Motivo
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.statusReason ?? "-"}
+                    </p>
+                  </div>
+
+                  {/* Fila 2 */}
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Fecha de alta
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {affiliate.activatedAt
+                        ? new Date(affiliate.activatedAt).toLocaleDateString()
+                        : "-"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                      Última actualización
+                    </span>
+
+                    <p className="text-sm font-medium text-slate-700">
+                      {new Date(affiliate.updatedAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+              </section>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

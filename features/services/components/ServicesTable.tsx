@@ -79,7 +79,7 @@ export default function ServicesTable({ data }: ServicesTableProps) {
         columns={tableColumns}
         data={services}
         filterColumn="name"
-        filterPlaceholder="Filtrar por nombre..."
+        filterPlaceholder="Filtrar por servicio..."
       />
 
       {canToggleServices && (

@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
@@ -9,53 +8,33 @@ interface Props {
 
 export function UserViewSkeleton({ className = "" }: Props) {
   return (
-    <Card className={`overflow-hidden w-full ${className}`}>
-      {/* Header */}
-      <CardHeader className="flex flex-col items-center gap-4 p-6 bg-muted/30 border-b">
-        {/* Avatar */}
-        <Skeleton className="w-24 h-24 rounded-full" />
+    <div className={`${className}`}>
+      {/* Sección 1 — Perfil */}
+      <div className="px-6 pt-2 pb-6 flex flex-col items-center gap-3">
+        <Skeleton className="w-28 h-28 rounded-full" />
+        <Skeleton className="w-40 h-6" />
+        <Skeleton className="w-48 h-4" />
+        <Skeleton className="w-24 h-6 rounded" />
+      </div>
 
-        {/* Name + Role */}
-        <div className="text-center flex flex-col items-center gap-2">
-          <Skeleton className="w-40 h-5" />
-          <Skeleton className="w-20 h-4" />
+      {/* Sección 2 — Áreas */}
+      <div className="px-6 py-6 bg-[#f0f4f8] border-y border-slate-200/60 text-center">
+        <Skeleton className="w-32 h-3 mx-auto mb-3" />
+        <div className="flex justify-center gap-2">
+          <Skeleton className="w-16 h-6 rounded" />
+          <Skeleton className="w-16 h-6 rounded" />
         </div>
-      </CardHeader>
+      </div>
 
-      {/* Body */}
-      <CardContent className="p-6 space-y-6">
-        {/* Email */}
-        <div className="space-y-1">
-          <Skeleton className="w-20 h-4" />
-          <Skeleton className="w-full h-4" />
-        </div>
-
-        {/* Nombre + Apellido */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Skeleton className="w-20 h-4" />
-            <Skeleton className="w-full h-4" />
+      {/* Sección 3 — Info */}
+      <div className="px-6 py-6 grid grid-cols-2 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="text-center flex flex-col items-center gap-2">
+            <Skeleton className="w-20 h-3" />
+            <Skeleton className="w-24 h-5" />
           </div>
-
-          <div className="space-y-1">
-            <Skeleton className="w-20 h-4" />
-            <Skeleton className="w-full h-4" />
-          </div>
-        </div>
-
-        {/* Fechas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div className="space-y-1">
-            <Skeleton className="w-28 h-4" />
-            <Skeleton className="w-32 h-4" />
-          </div>
-
-          <div className="space-y-1">
-            <Skeleton className="w-32 h-4" />
-            <Skeleton className="w-28 h-4" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        ))}
+      </div>
+    </div>
   );
 }

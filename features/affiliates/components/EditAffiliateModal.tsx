@@ -7,10 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -129,105 +129,173 @@ export function EditAffiliateModal({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-6xl p-6 sm:p-8">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-lg font-semibold">
+      <DialogContent
+        showCloseButton={false}
+        className="
+        w-full
+        max-w-4xl
+        gap-0
+        overflow-hidden
+        rounded-lg
+        border-0
+        bg-foreground
+        p-0
+        shadow-2xl
+        outline
+        outline-1
+        outline-slate-900
+      "
+      >
+        <DialogTitle className="sr-only">Editar afiliado</DialogTitle>
+
+        {/* HEADER */}
+        <div className="relative flex items-center justify-between bg-foreground px-6 py-6">
+          <h2 className="text-xl font-semibold tracking-tight text-white">
             Editar afiliado
-          </DialogTitle>
-        </DialogHeader>
+          </h2>
 
-        {error && (
-          <div className="text-center text-sm text-red-600 font-medium">
-            {error}
-          </div>
-        )}
+          <DialogClose className="cursor-pointer text-white transition-opacity hover:opacity-70">
+            <X className="size-5" />
+          </DialogClose>
+        </div>
 
-        <form
-          id="edit-affiliate-form"
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
-          {/* ================= DATOS PERSONALES ================= */}
-          <Card>
-            <CardHeader className="pb-2">
-              <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                Datos personales
-              </h4>
-            </CardHeader>
+        {/* BODY */}
+        <div className="bg-white">
+          {error && (
+            <div className="px-6 pt-4 text-center text-sm font-medium text-red-600">
+              {error}
+            </div>
+          )}
 
-            <CardContent className="space-y-4">
-              {/* Nombre + Apellido */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form
+            id="edit-affiliate-form"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="
+            flex flex-col gap-3
+            bg-gradient-radial
+            from-white
+            via-slate-100
+            to-slate-200/90
+            px-4 py-4 pb-8
+          "
+          >
+            {/* ===================================================== */}
+            {/* SECCIÓN 1 — DATOS PERSONALES */}
+            {/* ===================================================== */}
+            <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-6 shadow-sm backdrop-blur-sm">
+              <div className="mb-5 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-slate-500" />
+
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                  Datos personales
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <Label>Nombre</Label>
-                  <Input {...register("firstName")} />
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Nombre
+                  </Label>
+
+                  <Input
+                    {...register("firstName")}
+                    className="mt-1.5 bg-white/80"
+                  />
+
                   {errors.firstName && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.firstName.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label>Apellido</Label>
-                  <Input {...register("lastName")} />
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Apellido
+                  </Label>
+
+                  <Input
+                    {...register("lastName")}
+                    className="mt-1.5 bg-white/80"
+                  />
+
                   {errors.lastName && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.lastName.message}
                     </p>
                   )}
                 </div>
-              </div>
 
-              {/* Teléfono + Email */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Teléfono</Label>
-                  <Input {...register("phone")} />
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Teléfono
+                  </Label>
+
+                  <Input
+                    {...register("phone")}
+                    className="mt-1.5 bg-white/80"
+                  />
+
                   {errors.phone && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.phone.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label>Email</Label>
-                  <Input type="email" {...register("email")} />
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Email
+                  </Label>
+
+                  <Input
+                    type="email"
+                    {...register("email")}
+                    className="mt-1.5 bg-white/80"
+                  />
+
                   {errors.email && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.email.message}
                     </p>
                   )}
                 </div>
-              </div>
 
-              {/* DNI */}
-              <div className="max-w-sm">
-                <Label>DNI</Label>
-                <Input {...register("dni")} />
-                {errors.dni && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors.dni.message}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* ================= UBICACIÓN ================= */}
-          <Card>
-            <CardHeader className="pb-2">
-              <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                Ubicación
-              </h4>
-            </CardHeader>
-
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Provincia */}
                 <div>
-                  <Label>Provincia</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    DNI
+                  </Label>
+
+                  <Input {...register("dni")} className="mt-1.5 bg-white/80" />
+
+                  {errors.dni && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.dni.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* ===================================================== */}
+            {/* SECCIÓN 2 — UBICACIÓN */}
+            {/* ===================================================== */}
+            <section className="rounded-2xl border border-sky-200/70 bg-sky-50/20 px-6 py-6 shadow-sm backdrop-blur-sm">
+              <div className="mb-5 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-sky-500" />
+
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                  Ubicación
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Provincia */}
+                <div className="w-full">
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Provincia
+                  </Label>
+
                   <Controller
                     name="provinceId"
                     control={control}
@@ -239,9 +307,10 @@ export function EditAffiliateModal({
                           form.setValue("cityId", undefined as any);
                         }}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1.5 w-full bg-white/80">
                           <SelectValue placeholder="Seleccionar provincia" />
                         </SelectTrigger>
+
                         <SelectContent>
                           {provinces.map((p) => (
                             <SelectItem key={p.id} value={String(p.id)}>
@@ -252,16 +321,20 @@ export function EditAffiliateModal({
                       </Select>
                     )}
                   />
+
                   {errors.provinceId && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.provinceId.message}
                     </p>
                   )}
                 </div>
 
                 {/* Ciudad */}
-                <div>
-                  <Label>Ciudad</Label>
+                <div className="w-full">
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Ciudad
+                  </Label>
+
                   <Controller
                     name="cityId"
                     control={control}
@@ -271,9 +344,10 @@ export function EditAffiliateModal({
                         onValueChange={(v) => field.onChange(Number(v))}
                         disabled={!selectedProvinceId}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1.5 w-full bg-white/80">
                           <SelectValue placeholder="Seleccionar ciudad" />
                         </SelectTrigger>
+
                         <SelectContent>
                           {filteredCities.map((c) => (
                             <SelectItem key={c.id} value={String(c.id)}>
@@ -284,29 +358,35 @@ export function EditAffiliateModal({
                       </Select>
                     )}
                   />
+
                   {errors.cityId && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="mt-1 text-xs text-red-600">
                       {errors.cityId.message}
                     </p>
                   )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </section>
 
-          {/* ================= ESTADO ================= */}
-          <Card>
-            <CardHeader className="pb-2">
-              <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                Estado administrativo
-              </h4>
-            </CardHeader>
+            {/* ===================================================== */}
+            {/* SECCIÓN 3 — ESTADO */}
+            {/* ===================================================== */}
+            <section className="rounded-2xl border border-violet-200/60 bg-violet-50/50 px-6 py-6 shadow-sm backdrop-blur-sm">
+              <div className="mb-5 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-violet-500" />
 
-            <CardContent className="space-y-4">
-              {/* Estado + Motivo */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                  Estado administrativo
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {/* Estado */}
                 <div>
-                  <Label>Estado</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Estado
+                  </Label>
+
                   <Controller
                     name="status"
                     control={control}
@@ -315,9 +395,10 @@ export function EditAffiliateModal({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1.5 bg-white/80">
                           <SelectValue />
                         </SelectTrigger>
+
                         <SelectContent>
                           <SelectItem value="ACTIVE">Activo</SelectItem>
                           <SelectItem value="SUSPENDED">Suspendido</SelectItem>
@@ -326,15 +407,14 @@ export function EditAffiliateModal({
                       </Select>
                     )}
                   />
-                  {errors.status && (
-                    <p className="text-xs text-red-600 mt-1">
-                      {errors.status.message}
-                    </p>
-                  )}
                 </div>
 
+                {/* Motivo */}
                 <div>
-                  <Label>Motivo</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Motivo
+                  </Label>
+
                   <Controller
                     name="statusReason"
                     control={control}
@@ -343,9 +423,10 @@ export function EditAffiliateModal({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1.5 bg-white/80">
                           <SelectValue />
                         </SelectTrigger>
+
                         <SelectContent>
                           <SelectItem value="NONE">Ninguno</SelectItem>
                           <SelectItem value="DEBT">Deuda</SelectItem>
@@ -362,41 +443,45 @@ export function EditAffiliateModal({
                       </Select>
                     )}
                   />
-                  {errors.statusReason && (
-                    <p className="text-xs text-red-600 mt-1">
-                      {errors.statusReason.message}
-                    </p>
-                  )}
+                </div>
+
+                {/* Fecha */}
+                <div>
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    Fecha de creación
+                  </Label>
+
+                  <Input
+                    value={createdAt}
+                    disabled
+                    className="mt-1.5 bg-slate-100"
+                  />
                 </div>
               </div>
+            </section>
 
-              {/* Fecha creación */}
-              <div className="max-w-sm">
-                <Label>Fecha de creación</Label>
-                <Input value={createdAt} disabled className="bg-muted" />
+            {/* ACCIONES */}
+            <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-5 shadow-sm backdrop-blur-sm">
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  disabled={submitting}
+                >
+                  Cancelar
+                </Button>
+
+                <Button
+                  type="submit"
+                  form="edit-affiliate-form"
+                  disabled={submitting}
+                >
+                  {submitting ? "Guardando..." : "Guardar cambios"}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </form>
-
-        {/* ================= ACTIONS ================= */}
-        <div className="flex justify-end gap-3 pt-4 border-t mt-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={submitting}
-          >
-            Cancelar
-          </Button>
-
-          <Button
-            type="submit"
-            form="edit-affiliate-form"
-            disabled={submitting}
-          >
-            Guardar cambios
-          </Button>
+            </section>
+          </form>
         </div>
       </DialogContent>
     </Dialog>

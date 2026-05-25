@@ -21,11 +21,10 @@ export function RoleLinks({ role }: { role: Role }) {
             key={route.href}
             href={route.href}
             className={clsx(
-              "flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors",
-              "border-r-4 border-transparent",
+              "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
               isActive
-                ? "bg-sidebar-accent text-sidebar-primary border-sidebar-primary"
-                : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+                ? "text-sidebar-primary bg-sidebar-accent rounded-md font-semibold"
+                : "text-sidebar-foreground hover:text-white"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />

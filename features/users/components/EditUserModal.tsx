@@ -3,11 +3,11 @@
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
+  DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -51,153 +51,181 @@ export function EditUserModal(props: EditUserModalProps) {
 
   return (
     <Dialog open onOpenChange={props.onClose}>
-      <DialogContent className="w-full px-10 py-8 gap-6">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Editar usuario</DialogTitle>
-        </DialogHeader>
+      <DialogContent
+        showCloseButton={false}
+        className="
+        max-w-lg
+        gap-0
+        p-0
+        overflow-hidden
+        rounded-lg
+        border-0
+        bg-foreground
+        shadow-2xl
+        outline
+        outline-1
+        outline-slate-900
+      "
+      >
+        {/* HEADER */}
+        <div className="relative flex items-center justify-between bg-foreground px-6 py-6">
+          <DialogTitle className="m-0 text-xl font-semibold leading-none text-white">
+            Editar usuario
+          </DialogTitle>
 
-        {/* LOADING */}
-        {loading && <UserViewSkeleton className={CARD_HEIGHT_CLASS} />}
+          <DialogClose className="cursor-pointer text-white opacity-100 transition-opacity hover:opacity-70">
+            <X className="size-5" />
+          </DialogClose>
+        </div>
 
-        {/* ERROR */}
-        {!loading && error && (
-          <div className="text-center py-6 text-red-500 font-medium">
-            {error}
-          </div>
-        )}
+        {/* BODY */}
+        <div className="bg-white">
+          {/* LOADING */}
+          {loading && (
+            <div className="p-6">
+              <UserViewSkeleton className={CARD_HEIGHT_CLASS} />
+            </div>
+          )}
 
-        {/* CONTENT */}
-        {!loading && !error && user && (
-          <Card className="overflow-hidden w-full p-0 gap-0">
-            {/* HEADER (idéntico al modal de solo lectura) */}
-            <CardHeader className="bg-muted/30 p-0">
-              <div className="flex flex-col items-center gap-2 py-4 border-b">
-                {user.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt="Foto de perfil"
-                    className="w-24 h-24 rounded-full object-cover border shadow-sm"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-sm border shadow-sm">
-                    Sin foto
+          {/* ERROR */}
+          {!loading && error && (
+            <div className="p-6 text-center font-medium text-red-500">
+              {error}
+            </div>
+          )}
+
+          {/* CONTENT */}
+          {!loading && !error && user && (
+            <div className="flex flex-col gap-2 px-4 py-4 pb-8 bg-gradient-to-b from-slate-200 via-slate-10 to-white">
+              {/* SECCIÓN 1 — Perfil */}
+              <section className="flex flex-col items-center rounded-2xl border border-slate-200/70 bg-white/40 px-6 py-8 text-center backdrop-blur-[1px]">
+                <div className="mb-4 rounded-full">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white shadow-lg ring-4 ring-white">
+                    {user.profileImage ? (
+                      <img
+                        src={user.profileImage}
+                        alt="Foto de perfil"
+                        className="h-24 w-24 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-sm text-slate-400">Sin foto</span>
+                    )}
                   </div>
+                </div>
+
+                <h3 className="text-2xl font-bold leading-tight text-slate-900">
+                  {user.firstName} {user.lastName}
+                </h3>
+
+                {user.email && (
+                  <p className="mt-1 text-sm text-slate-500">{user.email}</p>
                 )}
 
-                <div className="text-center">
-                  <p className="font-semibold text-xl">
-                    {user.firstName} {user.lastName}
-                  </p>
+                <Badge className="mt-4 rounded bg-sidebar px-4 py-1.5 text-sm uppercase tracking-widest text-white">
+                  {user.role}
+                </Badge>
+              </section>
 
-                  {user.email && (
-                    <p className="text-sm text-muted-foreground">
-                      {user.email}
-                    </p>
-                  )}
-
-                  <Badge className="uppercase tracking-wide mt-2">
-                    {user.role}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-
-            {/* BODY */}
-            <CardContent className="px-6 py-6 space-y-6 overflow-auto">
-              {/* SERVICIOS ASIGNADOS */}
-              <div className="space-y-3">
-                <Label className="text-lg font-medium">
+              {/* SECCIÓN 2 — Servicios vinculados */}
+              <section className="rounded-2xl border border-slate-200/70 bg-white/35 px-6 py-6 backdrop-blur-[1px]">
+                <Label className="mb-3 block text-xs font-semibold uppercase tracking-wider text-slate-600">
                   Servicios vinculados
                 </Label>
 
                 {services.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-slate-400">
                     Este usuario no tiene servicios asignados.
                   </p>
                 )}
 
-                {services.map((service) => (
-                  <div
-                    key={service.serviceId}
-                    className="flex items-center justify-between gap-4 border rounded-md px-4 py-3"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Checkbox
-                        checked={service.assigned}
-                        onCheckedChange={() => toggleService(service.serviceId)}
-                      />
+                <div className="space-y-2">
+                  {services.map((service) => (
+                    <div
+                      key={service.serviceId}
+                      className="flex items-center justify-between gap-4 rounded-lg border border-slate-200/70 bg-white/60 px-4 py-3"
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Checkbox
+                          checked={service.assigned}
+                          onCheckedChange={() =>
+                            toggleService(service.serviceId)
+                          }
+                        />
+                        <span className="truncate text-sm font-medium text-slate-700">
+                          {service.name}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-                      <span className="font-medium text-sm truncate">
-                        {service.name}
-                      </span>
+                {/* Vincular servicio */}
+                {availableServices.length > 0 && (
+                  <div className="mt-4 border-t border-slate-200/70 pt-4 space-y-3">
+                    <Label className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                      Vincular servicio
+                    </Label>
+
+                    <div className="flex gap-2">
+                      <Select
+                        value={selectedServiceId}
+                        onValueChange={setSelectedServiceId}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Seleccionar servicio" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          {availableServices.map((service) => (
+                            <SelectItem key={service.id} value={service.id}>
+                              {service.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Button
+                        onClick={() => {
+                          const service = availableServices.find(
+                            (s) => s.id === selectedServiceId,
+                          );
+                          if (service) addService(service);
+                        }}
+                        disabled={!selectedServiceId}
+                      >
+                        Agregar
+                      </Button>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* VINCULAR SERVICIO */}
-              <div className="pt-4 border-t space-y-3">
-                <Label className="text-lg font-medium">Vincular servicio</Label>
-
-                {availableServices.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    No hay servicios disponibles para vincular.
-                  </p>
-                ) : (
-                  <div className="flex gap-2">
-                    <Select
-                      value={selectedServiceId}
-                      onValueChange={setSelectedServiceId}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar servicio" />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        {availableServices.map((service) => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {service.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Button
-                      onClick={() => {
-                        const service = availableServices.find(
-                          (s) => s.id === selectedServiceId,
-                        );
-                        if (service) addService(service);
-                      }}
-                      disabled={!selectedServiceId}
-                    >
-                      Agregar
-                    </Button>
-                  </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
-        {/* FOOTER */}
-        {!loading && !error && (
-          <DialogFooter className="flex justify-end gap-2">
-            <Button variant="outline" onClick={props.onClose} disabled={saving}>
-              Cancelar
-            </Button>
+                {availableServices.length === 0 && services.length > 0 && (
+                  <p className="mt-3 text-xs text-slate-400">
+                    No hay más servicios disponibles para vincular.
+                  </p>
+                )}
+              </section>
 
-            <Button onClick={handleSave} disabled={saving}>
-              Guardar cambios
-            </Button>
-          </DialogFooter>
-        )}
+              {/* SECCIÓN 3 — Acciones */}
+              <section className="rounded-2xl border border-slate-200/70 bg-white/30 px-6 py-5 backdrop-blur-[1px]">
+                <DialogFooter className="flex justify-end gap-2 sm:justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={props.onClose}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+
+                  <Button onClick={handleSave} disabled={saving}>
+                    {saving ? "Guardando..." : "Guardar cambios"}
+                  </Button>
+                </DialogFooter>
+              </section>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
-
-
-
-
-

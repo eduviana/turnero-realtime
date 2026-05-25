@@ -1,9 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Eye, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Eye, Pencil } from "lucide-react";
 
 import { UserTableRow } from "./types/users";
 import { UserPresenceStatus } from "@/lib/userPresence";
@@ -32,14 +30,14 @@ export function columns({
 
         return (
           <div className="flex flex-col text-left">
-            <span className="font-medium text-base">
+            <span className="text-base font-bold text-gray-800">
               {firstName || lastName
                 ? `${firstName ?? ""} ${lastName ?? ""}`.trim()
                 : email}
             </span>
 
             {email && (
-              <span className="text-xs text-muted-foreground">{email}</span>
+              <span className="text-sm text-gray-400">{email}</span>
             )}
           </div>
         );
@@ -51,23 +49,12 @@ export function columns({
     // ───────────────────────────────
     {
       accessorKey: "role",
-      header: ({ column }) => (
-        <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            className="text-base font-medium"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Rol
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      ),
+      header: () => <div className="text-center">Rol</div>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Badge className="uppercase px-3 py-1 tracking-wide">
+          <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded uppercase">
             {row.getValue("role")}
-          </Badge>
+          </span>
         </div>
       ),
     },
@@ -77,7 +64,7 @@ export function columns({
     // ───────────────────────────────
     {
       accessorKey: "serviceCodes",
-      header: () => <div className="text-center">Servicios</div>,
+      header: () => <div className="text-center">Áreas</div>,
       cell: ({ row }) => {
         const codes = row.getValue("serviceCodes") as string[];
 
@@ -85,13 +72,12 @@ export function columns({
           <div className="flex justify-center gap-1 flex-wrap">
             {codes.length > 0 ? (
               codes.map((code) => (
-                <Badge
+                <span
                   key={code}
-                  variant="secondary"
-                  className="px-3 py-1 tracking-wide"
+                  className="bg-gray-200 text-gray-600 text-xs font-bold px-2.5 py-1 rounded"
                 >
                   {code}
-                </Badge>
+                </span>
               ))
             ) : (
               <span className="text-muted-foreground text-sm">—</span>
@@ -124,7 +110,7 @@ export function columns({
         const date = row.getValue("lastActivityAt") as Date | null;
 
         return (
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-gray-500">
             {formatLastActivity(date)}
           </div>
         );
@@ -146,20 +132,20 @@ export function columns({
             {/* Ver */}
             <button
               onClick={() => onView(user.id)}
-              className="flex items-center justify-center w-8 h-8 rounded-md bg-emerald-600 hover:bg-emerald-500 transition"
+              className="flex items-center justify-center w-8 h-8 rounded bg-emerald-500 hover:bg-emerald-600 transition"
               title="Ver usuario"
             >
-              <Eye size={18} className="text-white" />
+              <Eye size={16} className="text-white" />
             </button>
 
             {/* Editar (solo si hay permiso) */}
             {onEdit && (
               <button
                 onClick={() => onEdit(user.id)}
-                className="flex items-center justify-center w-8 h-8 rounded-md bg-sky-600 hover:bg-sky-500 transition"
+                className="flex items-center justify-center w-8 h-8 rounded bg-blue-500 hover:bg-blue-600 transition"
                 title="Editar usuario"
               >
-                <Pencil size={18} className="text-white" />
+                <Pencil size={16} className="text-white" />
               </button>
             )}
           </div>

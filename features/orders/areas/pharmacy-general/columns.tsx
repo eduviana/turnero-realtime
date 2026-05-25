@@ -13,57 +13,46 @@ export function pharmacyGeneralOrdersColumns({
   onView,
 }: BuildColumnsArgs): ColumnDef<PharmacyGeneralOrderRow>[] {
   return [
-    // ───────────────────────────────
-    // Orden (ID)
-    // ───────────────────────────────
     {
       accessorKey: "id",
-      header: () => <div className="text-left ml-4">Orden</div>,
+      header: () => <div className="text-left">Orden</div>,
       cell: ({ row }) => (
-        <div className="text-left ml-4 text-sm">
+        <div className="text-left text-base font-bold text-gray-800">
           {row.getValue("id")}
         </div>
       ),
     },
 
-    // ───────────────────────────────
-    // Afiliado
-    // ───────────────────────────────
     {
       accessorKey: "affiliate",
       header: () => <div className="text-center">Afiliado</div>,
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("affiliate")}</div>
+        <div className="text-center text-sm text-gray-500">
+          {row.getValue("affiliate")}
+        </div>
       ),
     },
 
-    // ───────────────────────────────
-    // Operador
-    // ───────────────────────────────
     {
       accessorKey: "operator",
       header: () => <div className="text-center">Operador</div>,
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("operator")}</div>
+        <div className="text-center text-sm text-gray-500">
+          {row.getValue("operator")}
+        </div>
       ),
     },
 
-    // ───────────────────────────────
-    // Total
-    // ───────────────────────────────
     {
       accessorKey: "totalAmount",
       header: () => <div className="text-center">Total</div>,
       cell: ({ row }) => (
-        <div className="text-center font-medium">
+        <div className="text-center text-sm font-medium text-gray-700">
           {formatCurrency(row.getValue("totalAmount"))}
         </div>
       ),
     },
 
-    // ───────────────────────────────
-    // Fecha
-    // ───────────────────────────────
     {
       accessorKey: "createdAt",
       header: () => <div className="text-center">Fecha</div>,
@@ -71,16 +60,13 @@ export function pharmacyGeneralOrdersColumns({
         const date = row.getValue("createdAt") as Date;
 
         return (
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-gray-500">
             {date.toLocaleDateString("es-AR")}
           </div>
         );
       },
     },
 
-    // ───────────────────────────────
-    // Acciones
-    // ───────────────────────────────
     {
       id: "actions",
       enableHiding: false,
@@ -89,10 +75,10 @@ export function pharmacyGeneralOrdersColumns({
         <div className="flex justify-center">
           <button
             onClick={() => onView(row.original.id)}
-            className="flex items-center justify-center w-8 h-8 rounded-md bg-emerald-600 hover:bg-emerald-500 transition"
+            className="flex items-center justify-center w-8 h-8 rounded bg-emerald-500 hover:bg-emerald-600 transition"
             title="Ver orden"
           >
-            <Eye size={18} className="text-white" />
+            <Eye size={16} className="text-white" />
           </button>
         </div>
       ),
