@@ -26,7 +26,7 @@ Diseñado para operar en entorno controlado con múltiples roles, reglas de nego
 - **TypeScript**
 - **PostgreSQL (Docker)**
 - **Prisma 7**
-- **Clerk (Autenticación)**
+- **NextAuth.js v4 (Autenticación)**
 - **RBAC jerárquico propio (Autorización)**
 - **Pusher (Realtime)**
 - **TailwindCSS 4 + shadcn/ui**
@@ -134,27 +134,29 @@ El sistema implementa un enfoque de defensa en profundidad.
 
 ### Middleware (Capa Perimetral)
 
-Integrado con `clerkMiddleware`.
+Integrado con `withAuth` de NextAuth.js.
 
 Responsabilidades:
 
-- Autenticación obligatoria
+- Validación de sesión JWT
 - Autorización por prefijo de ruta
 - Redirección inteligente según rol
 - Registro de intentos indebidos
 
+Flujo:
+
+1. `withAuth` verifica el token JWT. Si es inválido o la ruta no es pública, rechaza la solicitud.
+2. Para rutas protegidas, consulta la base de datos para obtener el rol del usuario y lo compara contra el nivel requerido para el prefijo de ruta.
+3. Si el rol es insuficiente, registra un evento de auditoría (`FORBIDDEN_ACCESS`) y redirige al inicio de sesión.
+
 Ejemplo conceptual:
 
 ```ts
-if (!hasRequiredRole(userRole, routePermission)) {
-  logUnauthorizedAttempt({
-    actorId,
-    actorRole,
-    route,
-    ip,
-    userAgent
-  })
-  redirect("/unauthorized")
+const user = await db.user.findUnique({ where: { email: token.email } });
+
+if (ROLE_HIERARCHY[user.role] < ROUTE_PERMISSIONS[prefix]) {
+  auditService.record({ event: "FORBIDDEN_ACCESS", actorId: user.id });
+  redirect("/sign-in");
 }
 ```
 
@@ -168,8 +170,10 @@ Validación explícita en:
 
 Separación estricta:
 
-- **Autenticación → Clerk**
+- **Autenticación → NextAuth.js (CredentialsProvider + JWT)**
 - **Autorización → Sistema RBAC propio**
+
+El inicio de sesión se realiza mediante credenciales (email y contraseña) con verificación vía `bcryptjs`. La sesión se mantiene mediante JWT firmado con `NEXTAUTH_SECRET`.
 
 Nunca se confía únicamente en el middleware para proteger operaciones críticas.
 
@@ -279,6 +283,9 @@ DATABASE_URL=
 
 NEXT_PUBLIC_BASE_URL=
 
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+
 PUSHER_APP_ID=
 PUSHER_APP_KEY=
 PUSHER_APP_SECRET=
@@ -286,11 +293,6 @@ PUSHER_APP_CLUSTER=
 
 NEXT_PUBLIC_PUSHER_KEY=
 NEXT_PUBLIC_PUSHER_CLUSTER=
-
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-CLERK_WEBHOOK_SECRET=
-CLERK_WEBHOOK_SECRET_SESSION=
 ```
 
 ### 5️⃣ Iniciar proyecto
