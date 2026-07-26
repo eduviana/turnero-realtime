@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db/prisma";
 import { pusherServer } from "@/lib/pusher/server";
+import { getCurrentUser } from "@/lib/auth";
 
 import { callNextTicket } from "@/features/turn-queue/services/callNextTicket";
 import { updateUserActivity } from "@/lib/updateUserActivity";
@@ -12,15 +12,14 @@ export async function POST(
 ) {
   const { serviceId } = await params;
 
-
-  const { userId: clerkUserId } = await auth();
-  if (!clerkUserId) {
+  const sessionUser = await getCurrentUser();
+  if (!sessionUser?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const operator = await prisma.user.findFirst({
     where: {
-      clerkId: clerkUserId,
+      id: sessionUser.id,
       deletedAt: null,
       role: "OPERATOR",
     },
@@ -43,7 +42,6 @@ export async function POST(
     );
   }
 
-  // ✅ ACTIVIDAD REAL CONFIRMADA
   await updateUserActivity(operator.id);
 
   await pusherServer.trigger(`turn-queue-${serviceId}`,"updated",{});

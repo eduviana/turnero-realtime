@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 
 import { AffiliateFiltersForm } from "../schemas/affiliateFiltersSchema";
 import { useOrganizations } from "@/features/organizations/hooks/useOrganizations";
@@ -37,6 +37,7 @@ interface Props {
   onReset: () => void;
   provinces: ProvinceOption[];
   cities: CityOption[];
+  onClose?: () => void;
 }
 
 export function AffiliatesFilters({
@@ -46,6 +47,7 @@ export function AffiliatesFilters({
   onReset,
   provinces,
   cities,
+  onClose,
 }: Props) {
   const {
     control,
@@ -64,19 +66,31 @@ export function AffiliatesFilters({
 
   return (
     <FormProvider {...form}>
-      <Card className="overflow-hidden rounded-lg border-0 py-0 shadow-xl">
+      <Card className="overflow-hidden rounded-tl-xl rounded-bl-xl rounded-tr-none rounded-br-none border-0 py-0 shadow-xl h-full">
         {/* HEADER */}
         <CardHeader className="bg-[#1e293b] p-0 gap-0">
-          <div className="flex items-center justify-center gap-4 px-6 py-6">
-            <SlidersHorizontal className="h-5 w-5 shrink-0 text-white" />
+          <div className="flex items-center justify-between px-6 py-6">
+            <div className="flex items-center gap-4">
+              <SlidersHorizontal className="h-5 w-5 shrink-0 text-white" />
 
-            <CardTitle className="m-0 text-lg font-bold leading-none text-white">
-              Filtros de búsqueda
-            </CardTitle>
+              <CardTitle className="m-0 text-lg font-bold leading-none text-white">
+                Filtros de búsqueda
+              </CardTitle>
+            </div>
+
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1 text-white/60 hover:text-white transition-colors rounded hover:bg-white/10"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <form onSubmit={onSubmit} className="flex flex-col gap-6">
+          <form onSubmit={(e) => { e.preventDefault(); onSubmit(); onClose?.(); }} className="flex flex-col gap-6">
             {/* DNI */}
             <div className="flex flex-col gap-3">
               <Label className="text-xs font-bold uppercase tracking-wider text-gray-500">

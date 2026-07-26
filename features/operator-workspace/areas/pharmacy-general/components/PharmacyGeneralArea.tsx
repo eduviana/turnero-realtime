@@ -1,47 +1,28 @@
 "use client";
 
-
 import { SelectedList } from "./SelectedList";
 import { SearchResults } from "./SearchResults";
 import { SearchInput } from "./SearchInput";
-
-
-// import { usePharmacyGeneralSearch } from "../hooks/usePharmacyGeneralSearch";
+import { usePharmacyGeneralSearch } from "../hooks/usePharmacyGeneralSearch";
 import { usePharmacyGeneralCart } from "../context/PharmacyGeneralCartContext";
-// import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
-
+import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
 import { useTurnQueue } from "@/features/turn-queue/hooks/useTurnQueue";
-
 import { TicketStatus } from "@/generated/prisma/enums";
-import { usePharmacyGeneralSearch } from "../hooks/usePharmacyGeneralSearch";
-import { useSearchKeyboardNavigation } from "../hooks/useSearchKeyboardNavigation";
 
 export function PharmacyGeneralArea() {
-  /**
-   * Contexts
-   */
   const { service } = useOperatorService();
   const { state } = useTurnQueue(service?.id ?? "");
 
-  const { items, increase, decrease, addProduct } =
+  const { items, increase, decrease, removeProduct, addProduct } =
     usePharmacyGeneralCart();
 
-  /**
-   * Search
-   */
   const { query, setQuery, results, isSearching, hasSearched } =
     usePharmacyGeneralSearch();
 
-  /**
-   * Business rule
-   */
   const canAddItems =
     state?.currentTicket?.status === TicketStatus.IN_PROGRESS;
 
-  /**
-   * Select product
-   */
   const handleSelectProduct = (product: { id: string; name: string }) => {
     if (!canAddItems) return;
 
@@ -50,32 +31,27 @@ export function PharmacyGeneralArea() {
     keyboard.reset();
   };
 
-  /**
-   * Keyboard navigation
-   */
   const keyboard = useSearchKeyboardNavigation({
     results,
     onSelect: handleSelectProduct,
   });
 
   return (
-    <section className="space-y-12">
-      {/* BLOQUE BÚSQUEDA (70%) */}
-      <div className="relative w-full max-w-[70%] mx-auto">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-          <div className="p-5">
-            <SearchInput
-              value={query}
-              onSearch={setQuery}
-              onKeyDown={keyboard.onKeyDown}
-              disabled={!canAddItems}
-              helperText={
-                !canAddItems
-                  ? "Iniciá la atención del turno para poder agregar productos"
-                  : undefined
-              }
-            />
-          </div>
+    <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* Búsqueda */}
+      <div className="relative">
+        <div className="p-5 border-b border-slate-100">
+          <SearchInput
+            value={query}
+            onSearch={setQuery}
+            onKeyDown={keyboard.onKeyDown}
+            disabled={!canAddItems}
+            helperText={
+              !canAddItems
+                ? "Iniciá la atención del turno para poder agregar productos"
+                : undefined
+            }
+          />
         </div>
 
         <SearchResults
@@ -89,11 +65,12 @@ export function PharmacyGeneralArea() {
         />
       </div>
 
-      {/* BLOQUE LISTA (100%) */}
+      {/* Lista */}
       <SelectedList
         items={items}
         onIncrease={increase}
         onDecrease={decrease}
+        onRemove={removeProduct}
         disabled={!canAddItems}
       />
     </section>

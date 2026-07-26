@@ -11,7 +11,7 @@ export default async function UsersStatsView() {
   const services = await getServices();
 
   return (
-    <div className="grid grid-cols-1 gap-24 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Full width */}
       <div className="lg:col-span-2">
         <UsersActivityLineChart

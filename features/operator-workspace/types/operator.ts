@@ -47,5 +47,8 @@ export interface OperatorServiceCard {
 export interface OperatorDashboardData {
   operatorId: string;
   operatorName: string | null;
+  lastName: string | null;
+  role: string;
+  profileImage: string | null;
   services: OperatorServiceCard[];
 }

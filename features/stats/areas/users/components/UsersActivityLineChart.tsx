@@ -3,6 +3,7 @@
 import {
   LineChart,
   Line,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -26,16 +27,13 @@ type Props = {
 
 function formatXAxis(value: string, granularity: Granularity) {
   if (granularity === "day") {
-    // YYYY-MM-DD → DD/MM
     return value.slice(8, 10) + "/" + value.slice(5, 7);
   }
 
   if (granularity === "week") {
-    // mostrar inicio de semana
     return value.slice(5, 10);
   }
 
-  // month → YYYY-MM
   return value.slice(5);
 }
 
@@ -52,14 +50,13 @@ export default function UsersActivityLineChart({
   }
 
   return (
-    <div className="rounded-md border p-4 space-y-4 bg-white">
-      {/* Header */}
+    <div className="rounded-xl border bg-white shadow-xs p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0">
-          <h3 className="text-lg font-bold text-black dark:text-white">
+          <h3 className="text-lg font-bold text-slate-900">
             Usuarios activos en el tiempo
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Evolución del flujo de usuarios por período seleccionado
           </p>
         </div>
@@ -69,10 +66,10 @@ export default function UsersActivityLineChart({
             <button
               key={g}
               onClick={() => handleChange(g)}
-              className={`px-3 py-1 text-sm rounded ${
+              className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
                 granularity === g
-                  ? "bg-slate-700 text-primary-foreground"
-                  : "border"
+                  ? "bg-[#1e293b] text-white"
+                  : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
               {g === "day" ? "Día" : g === "week" ? "Semana" : "Mes"}
@@ -86,27 +83,56 @@ export default function UsersActivityLineChart({
           data={data}
           margin={{ top: 8, right: 16, bottom: 8, left: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <defs>
+            <linearGradient id="usersGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#2563eb" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
 
           <XAxis
             dataKey="date"
             tickFormatter={(value) => formatXAxis(value, granularity)}
             interval="preserveStartEnd"
+            tick={{ fill: "#64748b", fontSize: 12 }}
+            tickLine={false}
           />
 
-          <YAxis allowDecimals={false} />
+          <YAxis
+            allowDecimals={false}
+            tick={{ fill: "#64748b", fontSize: 12 }}
+            tickLine={false}
+          />
 
           <Tooltip
+            contentStyle={{
+              backgroundColor: "#1e293b",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              fontSize: "13px",
+            }}
             labelFormatter={(value) =>
               granularity === "month" ? `Mes ${value}` : `Fecha ${value}`
             }
           />
 
+          <Area
+            type="monotone"
+            dataKey="activeUsers"
+            fill="url(#usersGradient)"
+            stroke="none"
+          />
+
           <Line
             type="monotone"
             dataKey="activeUsers"
+            stroke="#2563eb"
             strokeWidth={2}
             dot={false}
+            activeDot={{ r: 4, fill: "#2563eb" }}
           />
         </LineChart>
       </ResponsiveContainer>

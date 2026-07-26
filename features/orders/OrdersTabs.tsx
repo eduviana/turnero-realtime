@@ -14,11 +14,12 @@ export default function OrdersTabs() {
         <TabsTrigger
           value="general"
           className={`${tabBase}
-            text-gray-500
-            bg-gray-100
-            hover:bg-gray-200
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
             data-[state=active]:bg-[#1e293b]
             data-[state=active]:text-white
+            data-[state=active]:border-transparent
             data-[state=active]:hover:bg-[#1e293b]`}
         >
           Farmacia General
@@ -27,11 +28,12 @@ export default function OrdersTabs() {
         <TabsTrigger
           value="medication"
           className={`${tabBase}
-            text-gray-500
-            bg-gray-100
-            hover:bg-gray-200
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
             data-[state=active]:bg-[#1e293b]
             data-[state=active]:text-white
+            data-[state=active]:border-transparent
             data-[state=active]:hover:bg-[#1e293b]`}
         >
           Farmacia Medicamentos

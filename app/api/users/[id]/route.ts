@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Autenticación + autorización
@@ -82,7 +82,7 @@ export async function GET(
 //se usa en el modal de edicion de /admin/usuarios para editar el/los servicios asociados a un usuario
 export async function PATCH(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireRole("ADMIN");

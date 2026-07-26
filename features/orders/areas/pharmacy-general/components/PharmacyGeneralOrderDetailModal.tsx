@@ -39,7 +39,7 @@ export function PharmacyGeneralOrderDetailModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="min-w-[1000px] max-w-none gap-0 p-0 overflow-hidden rounded-lg border-0 bg-foreground shadow-2xl outline outline-1 outline-slate-900"
+        className="min-w-[1000px] max-w-none gap-0 p-0 overflow-hidden rounded-lg border-0 bg-foreground shadow-2xl outline outline-1 outline-slate-900 ml-32"
       >
         <DialogTitle className="sr-only">
           Detalle de Orden de Farmacia
@@ -166,20 +166,20 @@ export function PharmacyGeneralOrderDetailModal({
               {/* Footer */}
               <div className="px-8 py-5 border-t border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
-                  <div className="bg-[#1e293b] rounded-lg px-5 py-3 flex flex-col items-center">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">
-                      Total Ítems
+                  <div className="flex flex-col items-center">
+                    <span className="text-sm text-gray-500">
+                      Productos
                     </span>
-                    <span className="text-2xl font-black text-white leading-none">
+                    <span className="text-2xl font-black tracking-tight text-gray-900">
                       {data.totalItems}
                     </span>
                   </div>
 
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-500">
+                  <div className="bg-[#1e293b] rounded-lg px-5 py-3 flex flex-col items-center">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">
                       Total a Pagar
                     </span>
-                    <span className="text-2xl font-black tracking-tight text-gray-900">
+                    <span className="text-2xl font-black text-white leading-none">
                       {formatCurrency(data.totalAmount)}
                     </span>
                   </div>
@@ -188,7 +188,7 @@ export function PharmacyGeneralOrderDetailModal({
                 <div className="flex gap-3 ml-auto">
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-6 py-3 rounded border border-gray-300 font-bold text-sm text-gray-700 hover:bg-gray-100 transition"
+                    className="flex items-center gap-2 px-6 py-3 rounded border border-gray-300 font-bold text-sm text-gray-700 bg-white hover:bg-gray-50 transition"
                   >
                     <Printer className="w-4 h-4" />
                     Imprimir

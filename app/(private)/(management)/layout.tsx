@@ -1,8 +1,8 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db/prisma";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
+import { getCurrentUser } from "@/lib/auth";
+import { Sidebar } from "@/components/layout/sidebar";
+import { Header } from "@/components/layout/header";
 import { MainWrapper } from "@/components/layout/MainWrapper";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
@@ -11,16 +11,15 @@ export default async function PrivateLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userId } = await auth();
+  const sessionUser = await getCurrentUser();
 
-  if (!userId) {
+  if (!sessionUser?.email) {
     redirect("/sign-in");
   }
 
-  // Buscar usuario activo (no soft-deleted)
   let user = await db.user.findFirst({
     where: {
-      clerkId: userId,
+      email: sessionUser.email,
       deletedAt: null,
     },
     select: {
@@ -31,33 +30,8 @@ export default async function PrivateLayout({
     },
   });
 
-  // 🔐 Fallback: crear usuario si no existe
   if (!user) {
-    const client = await clerkClient();
-    const clerkUser = await client.users.getUser(userId);
-
-    const email = clerkUser.primaryEmailAddressId
-      ? clerkUser.emailAddresses.find(
-          (e) => e.id === clerkUser.primaryEmailAddressId
-        )?.emailAddress ?? null
-      : null;
-
-    user = await db.user.create({
-      data: {
-        clerkId: userId,
-        email,
-        firstName: clerkUser.firstName ?? null,
-        lastName: clerkUser.lastName ?? null,
-        profileImage: clerkUser.imageUrl ?? null,
-        role: "OPERATOR",
-      },
-      select: {
-        role: true,
-        firstName: true,
-        lastName: true,
-        profileImage: true,
-      },
-    });
+    redirect("/sign-in");
   }
 
   return (
@@ -70,7 +44,6 @@ export default async function PrivateLayout({
           profileImage: user.profileImage,
         }}
       >
-        {/* Sidebar sigue recibiendo la info sin volverse client */}
         <Sidebar accountRole={user.role} />
 
         <div className="flex-1 flex flex-col min-w-0">

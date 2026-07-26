@@ -1,4 +1,4 @@
-version: "3.9"
+
 
 services:
   postgres:
@@ -16,8 +16,8 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: D:/docker/postgres-data
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: D:/docker/postgres-data

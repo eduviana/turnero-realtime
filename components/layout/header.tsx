@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bell, Menu, LogOut, User } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
+import { signOut } from "next-auth/react";
 
 import {
   Sheet,
@@ -25,10 +25,9 @@ import { useAuthContext } from "@/features/auth/AuthContext";
 export function Header() {
   const [open, setOpen] = useState(false);
   const { user } = useAuthContext();
-  const { signOut } = useClerk();
 
   const handleSignOut = async () => {
-    await signOut({ redirectUrl: "/" });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (

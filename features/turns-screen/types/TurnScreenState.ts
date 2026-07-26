@@ -12,3 +12,10 @@ export interface TurnScreenState {
   current: TurnScreenTicket | null;
   history: TurnScreenTicket[];
 }
+
+export type TurnScreenRow = {
+  ticketId: string;
+  ticketCode: string;
+  fullName: string;
+  isActive: boolean;
+};

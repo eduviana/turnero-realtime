@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -33,12 +33,7 @@ export function useAffiliateSearch() {
     mode: "onSubmit",
   });
 
-  /**
-   * Submit validado por Zod
-   * - Envía solo valores serializables
-   * - La adaptación a Date ocurre en route.ts
-   */
-  const submitSearch = form.handleSubmit(async (values) => {
+  const doSearch = useRef(async (values: AffiliateFiltersForm) => {
     try {
       setLoading(true);
       setHasSearched(true);
@@ -65,6 +60,12 @@ export function useAffiliateSearch() {
       setLoading(false);
     }
   });
+
+  const submitSearch = form.handleSubmit((values) => doSearch.current(values));
+
+  useEffect(() => {
+    doSearch.current(DEFAULT_VALUES);
+  }, []);
 
   function resetFilters() {
     form.reset(DEFAULT_VALUES);

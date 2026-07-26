@@ -8,6 +8,7 @@ interface Props {
   items: SelectedGeneralProduct[];
   onIncrease: (productId: string) => void;
   onDecrease: (productId: string) => void;
+  onRemove: (productId: string) => void;
   disabled?: boolean;
 }
 
@@ -15,12 +16,13 @@ export function SelectedList({
   items,
   onIncrease,
   onDecrease,
+  onRemove,
   disabled = false,
 }: Props) {
   const isEmpty = items.length === 0;
 
   return (
-    <section className="min-h-[500px] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <section>
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <h2 className="flex items-center gap-2 font-semibold text-slate-800">
@@ -35,7 +37,6 @@ export function SelectedList({
 
       {/* Body */}
       {isEmpty ? (
-        /* Empty state */
         <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
           <ShoppingBasket className="h-6 w-6 text-slate-300" />
           <p className="text-sm text-slate-500">
@@ -43,13 +44,12 @@ export function SelectedList({
           </p>
         </div>
       ) : (
-        /* Lista */
         <ul className="space-y-3 p-4">
           {items.map((item, index) => (
             <li
               key={item.productId}
               className={`
-                group flex items-center justify-between
+                group relative flex items-center justify-between
                 rounded-xl border border-slate-100
                 bg-slate-50 px-4 py-3
                 transition-colors hover:bg-slate-100
@@ -61,7 +61,7 @@ export function SelectedList({
                 <div
                   className={`
                     flex h-10 w-10 items-center justify-center
-                    rounded-lg
+                    rounded-lg shrink-0
                     ${
                       index % 2 === 0
                         ? "bg-emerald-100 text-emerald-600"
@@ -117,11 +117,11 @@ export function SelectedList({
                   </Button>
                 </div>
 
-                {/* Eliminar */}
                 <button
                   type="button"
                   disabled={disabled}
-                  className="p-2 text-slate-400 transition-colors hover:text-red-500"
+                  onClick={() => onRemove(item.productId)}
+                  className="p-2 text-slate-300 transition-colors hover:text-red-500 group-hover:text-slate-400"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

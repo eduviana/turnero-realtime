@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import type { OperatorServiceContext } from "../types/operator";
 
 interface GetOperatorServiceContextParams {
-  clerkUserId: string;
+  userId: string;
   serviceId: string;
 }
 
@@ -11,7 +11,7 @@ export async function getOperatorServiceContext(
 ): Promise<OperatorServiceContext | null> {
   const user = await prisma.user.findFirst({
     where: {
-      clerkId: params.clerkUserId,
+      id: params.userId,
       deletedAt: null,
       role: "OPERATOR",
       services: {

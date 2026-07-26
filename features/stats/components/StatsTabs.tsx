@@ -5,7 +5,7 @@ import AffiliatesStatsView from "../areas/affiliates/AffiliatesStatsView";
 import { AuditsStatsView } from "../areas/audits/AuditsStatsView";
 
 const tabBase =
-  "h-10 px-4 text-sm font-medium rounded-md transition-colors " +
+  "h-10 px-4 text-sm font-medium rounded transition-colors " +
   "focus-visible:outline-none focus-visible:ring-0 flex-none";
 
 export default function StatsTabs() {
@@ -16,11 +16,13 @@ export default function StatsTabs() {
         <TabsTrigger
           value="users"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:border-transparent
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Usuarios
         </TabsTrigger>
@@ -28,11 +30,13 @@ export default function StatsTabs() {
         <TabsTrigger
           value="services"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:border-transparent
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Servicios
         </TabsTrigger>
@@ -40,11 +44,13 @@ export default function StatsTabs() {
         <TabsTrigger
           value="affiliates"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:border-transparent
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Afiliados
         </TabsTrigger>
@@ -52,11 +58,13 @@ export default function StatsTabs() {
         <TabsTrigger
           value="audits"
           className={`${tabBase}
-            text-muted-foreground
-            hover:bg-muted
-            data-[state=active]:bg-primary
-            data-[state=active]:text-primary-foreground
-            data-[state=active]:hover:bg-primary`}
+            text-gray-600
+            bg-white border border-gray-200
+            hover:bg-gray-50
+            data-[state=active]:bg-[#1e293b]
+            data-[state=active]:text-white
+            data-[state=active]:border-transparent
+            data-[state=active]:hover:bg-[#1e293b]`}
         >
           Auditorías
         </TabsTrigger>

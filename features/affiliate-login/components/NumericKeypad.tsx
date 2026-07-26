@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Trash2, Delete } from "lucide-react";
 
 interface NumericKeypadProps {
   value: string;
@@ -11,7 +11,6 @@ interface NumericKeypadProps {
 export function NumericKeypad({
   value,
   onChange,
-  onSubmit,
 }: NumericKeypadProps) {
   const handleDigit = (digit: string) => {
     if (value.length >= 9) return;
@@ -26,53 +25,47 @@ export function NumericKeypad({
     onChange("");
   };
 
-  // Estilos base compartidos
-  const base =
-    "h-24 text-3xl transition-all duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500";
+  const keyBase =
+    "h-16 rounded-lg flex items-center justify-center text-xl font-semibold transition-all duration-200 active:scale-95";
 
   return (
-    <div className="mt-6 grid grid-cols-3 gap-4 max-w-lg mx-auto select-none">
+    <div className="grid grid-cols-3 gap-3 select-none">
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-        <Button
+        <button
           key={n}
           type="button"
-          variant="secondary"
-          className={`${base} hover:bg-gray-200`}
+          className={`${keyBase} bg-muted border border-border/20 text-foreground hover:bg-accent`}
           onClick={() => handleDigit(String(n))}
         >
           {n}
-        </Button>
+        </button>
       ))}
 
-      {/* Borrar Todo */}
-      <Button
+      <button
         type="button"
-        variant="destructive"
-        className={`${base} text-2xl hover:bg-red-600`}
+        className={`${keyBase} bg-destructive text-white flex flex-col gap-0.5 text-xs font-bold hover:brightness-110`}
         onClick={handleClear}
       >
-        Borrar Todo
-      </Button>
+        <Trash2 className="w-4 h-4" />
+        BORRAR TODO
+      </button>
 
-      {/* 0 */}
-      <Button
+      <button
         type="button"
-        variant="secondary"
-        className={`${base} hover:bg-gray-200`}
+        className={`${keyBase} bg-muted border border-border/20 text-foreground hover:bg-accent`}
         onClick={() => handleDigit("0")}
       >
         0
-      </Button>
+      </button>
 
-      {/* Borrar un dígito */}
-      <Button
+      <button
         type="button"
-        variant="outline"
-        className={`${base} text-2xl hover:bg-gray-100 hover:border-gray-400`}
+        className={`${keyBase} bg-accent border border-border/20 text-foreground flex flex-col gap-0.5 text-xs font-bold hover:bg-muted`}
         onClick={handleBackspace}
       >
-        Borrar
-      </Button>
+        <Delete className="w-4 h-4" />
+        BORRAR
+      </button>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { OperatorServiceCard } from "../types/operator";
 
 interface ServiceCardProps {
@@ -10,7 +9,6 @@ export function ServiceCard({ service }: ServiceCardProps) {
   const serviceIcons: Record<string, string> = {
     AC: "🩺",
     PF: "💳",
-    // ST: "🛠️",
     AF: "🧾",
     AP: "⭐️",
     FM: "💊",
@@ -18,50 +16,31 @@ export function ServiceCard({ service }: ServiceCardProps) {
   };
 
   return (
-    <Link href={service.href} className="group">
-      <Card
-        className="
-      h-64
-      rounded-2xl
-      border
-      bg-white
-      shadow-md
-      transition-all
-      duration-200
-      hover:shadow-lg
-    "
-      >
-        <div
-          className="
-        flex
-        h-full
-        flex-col
-        items-center
-        justify-center
-        gap-6
-        p-6
-        text-center
-      "
-        >
-          {/* Grupo compacto: icono + nombre */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-4xl leading-none" aria-hidden="true">
-              {serviceIcons[service.code] ?? "🟦"}
-            </div>
-
-            <p className="text-2xl font-semibold leading-tight">
-              {service.serviceName}
-            </p>
-          </div>
-
-          {/* Descripción (separada por gap del contenedor padre) */}
-          {service.description && (
-            <p className="text-sm text-muted-foreground max-w-xs">
-              {service.description}
-            </p>
-          )}
+    <div className="bg-white rounded-xl shadow-md border border-gray-200 px-4 py-4 flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg group h-full">
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <span className="text-3xl leading-none" aria-hidden="true">
+            {serviceIcons[service.code] ?? "🟦"}
+          </span>
         </div>
-      </Card>
-    </Link>
+
+        <h3 className="text-lg font-bold text-slate-900 mb-3">
+          {service.serviceName}
+        </h3>
+
+        {service.description && (
+          <p className="text-sm text-slate-500">
+            {service.description}
+          </p>
+        )}
+      </div>
+
+      <Link
+        href={service.href}
+        className="w-full py-3 px-6 bg-[#1e293b] text-white font-semibold text-sm rounded-lg hover:bg-[#1e293b]/90 transition-all active:scale-[0.98] shadow-sm text-center"
+      >
+        Acceder
+      </Link>
+    </div>
   );
 }

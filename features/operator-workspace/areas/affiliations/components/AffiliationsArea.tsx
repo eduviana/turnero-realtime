@@ -14,7 +14,7 @@ import {
   CreateAffiliateInput,
 } from "../schemas/affiliate-schema";
 import { City, Province } from "../types/affiliations";
-import { Organization } from "@clerk/nextjs/server";
+import { Organization } from "../types/affiliations";
 import { useOperatorService } from "@/features/operator-workspace/hooks/useOperatorService";
 import { useTurnQueue } from "@/features/turn-queue/hooks/useTurnQueue";
 

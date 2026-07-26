@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { createAffiliateSchema } from "@/features/operator-workspace/areas/affiliations/schemas/affiliate-schema";
 import { db } from "@/lib/db/prisma";
 
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId) {
+  const sessionUser = await getCurrentUser();
+  if (!sessionUser?.id) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }

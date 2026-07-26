@@ -1,14 +1,12 @@
-//seguridad para endpoints
-
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/lib/db/prisma";
-import { ROLE_HIERARCHY } from "@/lib/roles/role-hierarchy";
 import { NextResponse } from "next/server";
+import { db } from "@/lib/db/prisma";
+import { getCurrentUser } from "@/lib/auth";
+import { ROLE_HIERARCHY } from "@/lib/roles/role-hierarchy";
 
 export async function requireRole(minRole: keyof typeof ROLE_HIERARCHY) {
-  const { userId: clerkUserId } = await auth();
+  const sessionUser = await getCurrentUser();
 
-  if (!clerkUserId) {
+  if (!sessionUser?.email) {
     return {
       ok: false,
       response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
@@ -16,9 +14,9 @@ export async function requireRole(minRole: keyof typeof ROLE_HIERARCHY) {
   }
 
   const user = await db.user.findUnique({
-    where: { clerkId: clerkUserId },
+    where: { email: sessionUser.email },
     select: {
-      id: true, // 👈 IMPORTANTE
+      id: true,
       role: true,
     },
   });
@@ -43,6 +41,6 @@ export async function requireRole(minRole: keyof typeof ROLE_HIERARCHY) {
   return {
     ok: true,
     role: user.role,
-    userId: user.id, // 👈 ahora sí existe
+    userId: user.id,
   };
 }

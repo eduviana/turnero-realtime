@@ -3,16 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormControl,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Fingerprint, LogIn } from "lucide-react";
 
 import {
   affiliateLoginSchema,
@@ -28,16 +19,17 @@ export function AffiliateLoginForm() {
   const form = useForm<AffiliateLoginSchema>({
     resolver: zodResolver(affiliateLoginSchema),
     defaultValues: { dni: "" },
-    mode: "onSubmit", // validar SOLO al enviar
-    reValidateMode: "onSubmit", // no revalidar mientras se escribe
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     shouldUnregister: false,
   });
 
   const dniValue = form.watch("dni");
+  const error = form.formState.errors.dni;
 
   const onSubmit = async (values: AffiliateLoginSchema) => {
     try {
-      const result = await findByDni(values.dni);
+      await findByDni(values.dni);
 
       sessionStorage.setItem("affiliate_dni", values.dni);
 
@@ -45,15 +37,13 @@ export function AffiliateLoginForm() {
     } catch (error: any) {
       form.setError("dni", { message: error.message });
 
-      // Luego de 2s limpiamos todo y dejamos el form como nuevo
       setTimeout(() => {
         form.clearErrors();
-        form.reset({ dni: "" }); // resetea el form COMPLETO
+        form.reset({ dni: "" });
       }, 2000);
     }
   };
 
-  /** Maneja los cambios del keypad (solo actualiza el valor, sin validar) */
   const handleKeypadChange = (newValue: string) => {
     form.setValue("dni", newValue, {
       shouldValidate: false,
@@ -63,46 +53,62 @@ export function AffiliateLoginForm() {
   };
 
   return (
-    <div className="max-w-lg w-full rounded-xl border p-6 shadow-sm bg-white">
-      <h1 className="text-4xl font-semibold mb-12 text-center">
-        Ingreso de Afiliados
-      </h1>
+    <>
+      <div className="absolute top-1/4 -right-20 w-96 h-96 bg-primary opacity-[0.03] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-secondary opacity-[0.03] rounded-full blur-3xl pointer-events-none" />
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8"
-          noValidate
-        >
-          <FormField
-            control={form.control}
-            name="dni"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-2xl">DNI</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    inputMode="numeric"
-                    maxLength={9}
-                    placeholder="Ingresa tu DNI"
-                    className=" text-4xl! placeholder:text-xl h-20 px-6"
-                  />
-                </FormControl>
-                <div className="min-h-5">
-                  <FormMessage  className="text-xl"/>
-                </div>
-              </FormItem>
-            )}
-          />
+      <div className="w-full max-w-md bg-white rounded-xl p-8 flex flex-col gap-8 z-10 shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
+            Ingreso de Afiliados
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Ingrese su número de documento para continuar
+          </p>
+        </div>
 
-          <Button type="submit" className="w-full h-18 text-2xl">
-            Ingresar
-          </Button>
+        <div className="space-y-2">
+          <label className="text-xs font-semibold text-foreground uppercase tracking-wider">
+            DNI
+          </label>
+          <div className="relative group">
+            <input
+              value={dniValue}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "").slice(0, 9);
+                form.setValue("dni", val, { shouldValidate: false });
+              }}
+              placeholder=""
+              className="w-full bg-background border border-border rounded-lg px-6 py-5 text-3xl font-bold text-foreground text-center focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all outline-none"
+            />
+            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <Fingerprint className="w-5 h-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+            </div>
+          </div>
+          {error && (
+            <p className="text-sm text-destructive text-center">{error.message}</p>
+          )}
+        </div>
+
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <button
+            type="submit"
+            className="w-full bg-primary text-primary-foreground font-semibold text-base py-4 rounded-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          >
+            <span>Ingresar</span>
+            <LogIn className="w-5 h-5" />
+          </button>
         </form>
-      </Form>
 
-      <NumericKeypad value={dniValue} onChange={handleKeypadChange} />
-    </div>
+        <NumericKeypad value={dniValue} onChange={handleKeypadChange} />
+
+        <p className="text-center text-xs text-muted-foreground/70 italic">
+          ¿Problemas con su ingreso?{" "}
+          <a className="text-primary font-bold underline" href="#">
+            Contacte a soporte
+          </a>
+        </p>
+      </div>
+    </>
   );
 }

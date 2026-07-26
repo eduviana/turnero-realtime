@@ -1,12 +1,13 @@
 import { ReactNode } from "react";
-import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
+
 
 import { getOperatorServiceContext } from "@/features/operator-workspace/services/getOperatorServiceContext";
 import { OperatorServiceProvider } from "@/features/operator-workspace/context/OperatorServiceContext";
-import { OperatorServiceHeader } from "@/features/operator-workspace/components/OperatorServiceHeader";
+import { OperatorServiceHeaderUserMenu } from "@/features/operator-workspace/components/OperatorServiceHeaderUserMenu";
+import { OperatorTurnSidebarAdapter } from "@/features/operator-workspace/components/OperatorTurnSidebarAdapter";
 import { PharmacyMedicationCartProvider } from "@/features/operator-workspace/areas/pharmacy-medications/context/PharmacyMedicationCartContext";
-import { OperatorServiceSidebar } from "@/features/operator-workspace/components/OperatorServiceSidebar";
 import { PharmacyGeneralCartProvider } from "@/features/operator-workspace/areas/pharmacy-general/context/PharmacyGeneralCartContext";
 
 interface OperatorServiceLayoutProps {
@@ -20,52 +21,59 @@ export default async function OperatorServiceLayout({
   children,
   params,
 }: OperatorServiceLayoutProps) {
-  // ✅ unwrap params (Next 15)
   const { serviceId } = await params;
 
-  // 1️⃣ Autenticación
-  const { userId } = await auth();
-  if (!userId) {
+  const sessionUser = await getCurrentUser();
+  if (!sessionUser?.id) {
     redirect("/sign-in");
   }
 
-  // 2️⃣ Resolver contexto del servicio + autorización
   const serviceContext = await getOperatorServiceContext({
-    clerkUserId: userId,
+    userId: sessionUser.id,
     serviceId,
   });
 
-  // 3️⃣ Acceso inválido
   if (!serviceContext) {
     notFound();
   }
 
   const content = (
-    <div className="min-h-screen">
-      <OperatorServiceHeader />
-
-      <main className="container mx-auto mt-12 grid grid-cols-1 gap-12 md:grid-cols-[1fr_320px]">
-        <div>{children}</div>
-
-        <OperatorServiceSidebar />
-      </main>
+    <div className="min-h-screen flex flex-col">
+      <div className="bg-blue-950">
+        <div className="flex">
+          <div className="w-80 shrink-0 pl-8 flex items-center h-16">
+            <h1 className="text-white text-lg font-bold">
+              {serviceContext.service.name}
+            </h1>
+          </div>
+          <div className="flex-1 container mx-auto flex items-center justify-end h-16 px-8">
+            <OperatorServiceHeaderUserMenu />
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-1">
+        <OperatorTurnSidebarAdapter />
+        <main className="flex-1 container mx-auto py-6 px-8">
+          {children}
+        </main>
+      </div>
     </div>
   );
 
- return (
-  <OperatorServiceProvider value={serviceContext}>
-    {serviceContext.service.code === "FM" ? (
-      <PharmacyMedicationCartProvider>
-        {content}
-      </PharmacyMedicationCartProvider>
-    ) : serviceContext.service.code === "FG" ? (
-      <PharmacyGeneralCartProvider>
-        {content}
-      </PharmacyGeneralCartProvider>
-    ) : (
-      content
-    )}
-  </OperatorServiceProvider>
-);
+  return (
+    <OperatorServiceProvider value={serviceContext}>
+      {serviceContext.service.code === "FM" ? (
+        <PharmacyMedicationCartProvider>
+          {content}
+        </PharmacyMedicationCartProvider>
+      ) : serviceContext.service.code === "FG" ? (
+        <PharmacyGeneralCartProvider>
+          {content}
+        </PharmacyGeneralCartProvider>
+      ) : (
+        content
+      )}
+    </OperatorServiceProvider>
+  );
 }
 

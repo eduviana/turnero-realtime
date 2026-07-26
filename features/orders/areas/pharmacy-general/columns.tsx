@@ -14,21 +14,30 @@ export function pharmacyGeneralOrdersColumns({
 }: BuildColumnsArgs): ColumnDef<PharmacyGeneralOrderRow>[] {
   return [
     {
-      accessorKey: "id",
-      header: () => <div className="text-left">Orden</div>,
-      cell: ({ row }) => (
-        <div className="text-left text-base font-bold text-gray-800">
-          {row.getValue("id")}
-        </div>
-      ),
+      accessorKey: "affiliate",
+      header: () => <div className="text-left">Afiliado</div>,
+      cell: ({ row }) => {
+        const val = row.getValue("affiliate") as string;
+        const match = val.match(/^(.+?)\((\d+)\)$/);
+        return (
+          <div className="text-left">
+            <span className="text-base font-bold text-gray-800">
+              {match ? match[1].trim() : val}
+            </span>
+            {match && (
+              <span className="block text-sm text-gray-500">{match[2]}</span>
+            )}
+          </div>
+        );
+      },
     },
 
     {
-      accessorKey: "affiliate",
-      header: () => <div className="text-center">Afiliado</div>,
+      accessorKey: "id",
+      header: () => <div className="text-center">Orden</div>,
       cell: ({ row }) => (
         <div className="text-center text-sm text-gray-500">
-          {row.getValue("affiliate")}
+          {row.getValue("id")}
         </div>
       ),
     },

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { affiliateEditSchema } from "@/features/affiliates/schemas/affiliateEdit";
 
 
-export async function GET(req: Request, context: { params: { id: string } }) {
+export async function GET(req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     // Protección centralizada (autenticación + rol):
     await requireRole("ADMIN");
@@ -76,7 +76,7 @@ export async function GET(req: Request, context: { params: { id: string } }) {
   }
 }
 
-export async function PUT(req: Request, context: { params: { id: string } }) {
+export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     /**
      * =========================

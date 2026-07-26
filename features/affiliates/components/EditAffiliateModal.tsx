@@ -68,9 +68,9 @@ export function EditAffiliateModal({
 
   const selectedProvinceId = watch("provinceId");
 
-  const filteredCities = cities.filter(
-    (city) => city.provinceId === selectedProvinceId,
-  );
+  const filteredCities = selectedProvinceId
+    ? cities.filter((city) => city.provinceId === selectedProvinceId)
+    : [];
 
   useEffect(() => {
     const loadAffiliate = async () => {
@@ -176,7 +176,7 @@ export function EditAffiliateModal({
             from-white
             via-slate-100
             to-slate-200/90
-            px-4 py-4 pb-8
+            px-4 py-4 pb-4
           "
           >
             {/* ===================================================== */}
@@ -307,7 +307,7 @@ export function EditAffiliateModal({
                           form.setValue("cityId", undefined as any);
                         }}
                       >
-                        <SelectTrigger className="mt-1.5 w-full bg-white/80">
+                        <SelectTrigger className="mt-1.5 w-full bg-white/80 truncate">
                           <SelectValue placeholder="Seleccionar provincia" />
                         </SelectTrigger>
 
@@ -344,7 +344,7 @@ export function EditAffiliateModal({
                         onValueChange={(v) => field.onChange(Number(v))}
                         disabled={!selectedProvinceId}
                       >
-                        <SelectTrigger className="mt-1.5 w-full bg-white/80">
+                        <SelectTrigger className="mt-1.5 w-full bg-white/80 truncate">
                           <SelectValue placeholder="Seleccionar ciudad" />
                         </SelectTrigger>
 
@@ -461,7 +461,7 @@ export function EditAffiliateModal({
             </section>
 
             {/* ACCIONES */}
-            <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-5 shadow-sm backdrop-blur-sm">
+            <section className="rounded-2xl border border-slate-200/70 bg-white/70 px-6 py-3 shadow-sm backdrop-blur-sm">
               <div className="flex justify-end gap-3">
                 <Button
                   type="button"

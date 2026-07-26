@@ -78,7 +78,7 @@ export const DASHBOARD_ROUTES: Record<Role, DashboardRoute[]> = {
     },
     {
       label: "Órdenes",
-      href: "/admin/ordenes",
+      href: "/supervisor/ordenes",
       icon: ClipboardList,
     },
     {

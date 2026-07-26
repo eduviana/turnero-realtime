@@ -43,7 +43,8 @@ export function Services({ services }: ServicesProps) {
 
   return (
     <>
-      <main className="min-h-screen p-8 max-w-4xl mx-auto space-y-8">
+      <main className="min-h-screen flex flex-col items-center justify-center p-8">
+        <div className="w-full max-w-5xl space-y-8">
         <h1 className="text-3xl font-bold text-center">
           Seleccione un servicio
         </h1>
@@ -63,17 +64,19 @@ export function Services({ services }: ServicesProps) {
                 active:scale-[0.98]
                 focus:outline-none
                 focus:ring-4 focus:ring-blue-200
-                h-48
+                h-64
               "
             >
-              <div className="text-4xl" aria-hidden="true">
-                {serviceIcons[service.code] ?? "🟦"}
+              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                <span className="text-3xl leading-none">
+                  {serviceIcons[service.code] ?? "🟦"}
+                </span>
               </div>
 
               <div className="text-center">
                 <p className="text-xl font-semibold">{service.name}</p>
                 {service.description && (
-                  <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-2">
                     {service.description}
                   </p>
                 )}
@@ -81,6 +84,7 @@ export function Services({ services }: ServicesProps) {
             </button>
           ))}
         </div>
+      </div>
       </main>
 
       {createdTicket && (

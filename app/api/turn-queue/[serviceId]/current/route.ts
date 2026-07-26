@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { pusherServer } from "@/lib/pusher/server";
 import { handleCurrentTicket } from "@/features/turn-queue/services/handleCurrentTicket";
 import {
@@ -7,6 +6,7 @@ import {
   TurnQueueAction,
 } from "@/features/turn-queue/types/TurnQueueAction";
 import { db } from "@/lib/db/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { updateUserActivity } from "@/lib/updateUserActivity";
 
 interface CompletePayloadItem {
@@ -20,14 +20,13 @@ export async function POST(
 ) {
   const { serviceId } = await params;
 
-  // 🔐 Auth
-  const { userId: clerkId } = await auth();
-  if (!clerkId) {
+  const sessionUser = await getCurrentUser();
+  if (!sessionUser?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const operator = await db.user.findUnique({
-    where: { clerkId },
+    where: { id: sessionUser.id },
     select: { id: true },
   });
 
@@ -35,7 +34,6 @@ export async function POST(
     return NextResponse.json({ error: "Operator not found" }, { status: 401 });
   }
 
-  // 📦 Body
   let body: unknown;
   try {
     body = await req.json();
@@ -55,7 +53,6 @@ export async function POST(
     );
   }
 
-  // 🎯 Dominio principal: transición del ticket
   const ticket = await handleCurrentTicket({
     serviceId,
     operatorId: operator.id,
@@ -69,13 +66,8 @@ export async function POST(
     );
   }
 
-  // ✅ ACTIVIDAD REAL CONFIRMADA
   await updateUserActivity(operator.id);
 
-  /**
-   * 🧠 Side effect: Farmacia Medicamentos
-   * Se ejecuta SOLO al completar el turno
-   */
   if (action === "COMPLETE") {
     const service = await db.service.findUnique({
       where: { id: serviceId },
@@ -83,14 +75,8 @@ export async function POST(
     });
   }
 
-  /**
-   * 🔔 UI update (cola)
-   */
   await pusherServer.trigger(`turn-queue-${serviceId}`, "updated", {});
 
-  /**
-   * 🔔 Evento genérico de dominio
-   */
   await pusherServer.trigger("tickets", "ticket.updated", {
     ticketId: ticket.id,
     serviceId,

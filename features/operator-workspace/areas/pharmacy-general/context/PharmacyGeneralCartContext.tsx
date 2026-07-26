@@ -18,6 +18,7 @@ interface PharmacyGeneralCartContextValue {
   addProduct: (product: { id: string; name: string }) => void;
   increase: (productId: string) => void;
   decrease: (productId: string) => void;
+  removeProduct: (productId: string) => void;
   clear: () => void;
 }
 
@@ -80,6 +81,10 @@ export function PharmacyGeneralCartProvider({
     );
   }, []);
 
+  const removeProduct = useCallback((productId: string) => {
+    setItems((prev) => prev.filter((item) => item.productId !== productId));
+  }, []);
+
   const clear = useCallback(() => {
     setItems([]);
   }, []);
@@ -95,9 +100,10 @@ export function PharmacyGeneralCartProvider({
       addProduct,
       increase,
       decrease,
+      removeProduct,
       clear,
     }),
-    [items, totalItems, addProduct, increase, decrease, clear]
+    [items, totalItems, addProduct, increase, decrease, removeProduct, clear]
   );
 
   return (

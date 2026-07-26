@@ -4,17 +4,20 @@ import { buildServiceHref } from "../lib/buildServiceHref";
 import { OperatorDashboardData, OperatorServiceCard } from "../types/operator";
 
 export async function getOperatorServices(
-  clerkUserId: string
+  userId: string
 ): Promise<OperatorDashboardData> {
   const user = await prisma.user.findFirst({
     where: {
-      clerkId: clerkUserId,
+      id: userId,
       deletedAt: null,
       role: "OPERATOR",
     },
     select: {
       id: true,
       firstName: true,
+      lastName: true,
+      role: true,
+      profileImage: true,
       services: {
         where: {
           isActive: true, // vínculo operador-servicio activo
@@ -52,6 +55,9 @@ export async function getOperatorServices(
   return {
     operatorId: user.id,
     operatorName: user.firstName,
+    lastName: user.lastName,
+    role: user.role,
+    profileImage: user.profileImage,
     services,
   };
 }

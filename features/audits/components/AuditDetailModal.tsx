@@ -24,7 +24,7 @@ export function AuditDetailModal({
 }: AuditDetailModalProps) {
   if (!open || !audit) return null;
 
-  const formattedDate = new Date(audit.createdAt).toLocaleString();
+  const formattedDate = audit.createdAt;
 
   const metadataJson = audit.metadata
     ? JSON.stringify(audit.metadata, null, 2)
@@ -37,29 +37,27 @@ export function AuditDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl  animate-in fade-in zoom-in duration-300">
+      <div className="w-full max-w-2xl overflow-hidden rounded-lg border-0 bg-foreground shadow-2xl outline outline-1 outline-slate-900 ml-32 animate-in fade-in zoom-in duration-300">
         {/* ================= Header ================= */}
-        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 ">
+        <div className="relative flex items-center justify-between bg-foreground px-6 py-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600">
-              <Eye className="h-5 w-5 text-white" />
-            </div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+            <Eye className="h-6 w-6 text-white" />
+            <h2 className="text-xl font-semibold tracking-tight text-white">
               Detalle de auditoría
             </h2>
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 transition hover:text-slate-600 "
+            className="cursor-pointer text-white transition-opacity hover:opacity-70"
             aria-label="Cerrar"
           >
-            <X className="h-5 w-5" />
+            <X className="size-5" />
           </button>
         </div>
 
         {/* ================= Content ================= */}
-        <div className="space-y-8 p-6">
+        <div className="bg-white space-y-8 p-6">
           {/* Grid principal */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
             {/* Fecha */}

@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db/prisma";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
-  // 1️⃣ Auth
-  const { userId: clerkId } = await auth();
-  if (!clerkId) {
+  const sessionUser = await getCurrentUser();
+  if (!sessionUser?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // 2️⃣ Body
   let body: unknown;
   try {
     body = await req.json();
@@ -29,9 +27,8 @@ export async function POST(req: Request) {
     );
   }
 
-  // 3️⃣ Operator
   const operator = await prisma.user.findUnique({
-    where: { clerkId },
+    where: { id: sessionUser.id },
     select: { id: true },
   });
 
@@ -39,7 +36,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Operator not found" }, { status: 404 });
   }
 
-  // 4️⃣ Ticket
   const ticket = await prisma.ticket.findUnique({
     where: { id: ticketId },
     select: {
@@ -71,7 +67,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // 5️⃣ Fetch product prices (CLAVE)
   const products = await prisma.pharmacyMedicationProduct.findMany({
     where: {
       id: { in: items.map((i) => i.productId) },
@@ -84,7 +79,6 @@ export async function POST(req: Request) {
 
   const priceMap = new Map(products.map((p) => [p.id, p.price]));
 
-  // 6️⃣ Create order
   const order = await prisma.pharmacyMedicationOrder.create({
     data: {
       ticketId: ticket.id,

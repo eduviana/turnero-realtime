@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/prisma";
 
@@ -11,124 +11,157 @@ import {
   AuditEventType,
 } from "./generated/prisma/enums";
 
-// Rutas totalmente públicas (bypass total)
-const isPublicRoute = createRouteMatcher([
+const PUBLIC_ROUTES = [
   "/",
-  "/sign-in(.*)",
-  "/api/users/sync",
-  "/api/sessions(.*)",
-  "/ingreso-afiliado(.*)",
-  //Pantalla de turnos
+  "/sign-in",
+  "/sign-in/",
+  "/api/auth",
+  "/ingreso-afiliado",
   "/pantalla-turnos",
   "/api/turn-screen",
-
-  // Afiliados
-  "/api/affiliate/find-by-dni(.*)",
-
-  // Otros públicos
-  "/api/services(.*)",
+  "/api/affiliate/find-by-dni",
+  "/api/services",
   "/api/tickets/create",
+];
 
-]);
+function isPublicRoute(pathname: string) {
+  return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
+}
 
-export default clerkMiddleware(async (auth, req) => {
-  const pathname = req.nextUrl.pathname;
+function debug(...args: unknown[]) {
+  console.log(`[MIDDLEWARE ${new Date().toISOString()}]`, ...args);
+}
 
-  // ===============================
-  // 🔁 REDIRECT CENTRAL DE DASHBOARD
-  // ===============================
-  if (pathname === "/dashboard") {
-    const { userId } = await auth();
+export default withAuth(
+  async function middleware(req) {
+    const pathname = req.nextUrl.pathname;
+    const token = req.nextauth.token;
 
-    if (!userId) {
-      return NextResponse.redirect(new URL("/sign-in", req.url));
-    }
+    debug(`request`, { pathname, hasToken: !!token, hasEmail: !!token?.email, email: token?.email });
 
-    const user = await db.user.findUnique({
-      where: { clerkId: userId },
-      select: { role: true },
-    });
-
-    if (!user) {
-      return NextResponse.redirect(new URL("/sign-in", req.url));
-    }
-
-    switch (user.role) {
-      case "ADMIN":
-        return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-      case "SUPERVISOR":
-        return NextResponse.redirect(new URL("/supervisor/dashboard", req.url));
-      case "OPERATOR":
-        return NextResponse.redirect(new URL("/operator/dashboard", req.url));
-      default:
+    if (pathname === "/dashboard") {
+      if (!token?.email) {
+        debug(`redirect /dashboard -> /sign-in: no email in token`, { token });
         return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+
+      let user: { role: string } | null;
+      try {
+        user = await db.user.findUnique({
+          where: { email: token.email },
+          select: { role: true },
+        });
+      } catch (err) {
+        debug(`redirect /dashboard -> /sign-in: db error`, { error: String(err) });
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+
+      if (!user) {
+        debug(`redirect /dashboard -> /sign-in: user not found by email`, { email: token.email });
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+
+      switch (user.role) {
+        case "ADMIN":
+          return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+        case "SUPERVISOR":
+          return NextResponse.redirect(new URL("/supervisor/dashboard", req.url));
+        case "OPERATOR":
+          return NextResponse.redirect(new URL("/operator/dashboard", req.url));
+        default:
+          debug(`redirect /dashboard -> /sign-in: unknown role`, { role: user.role });
+          return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
     }
-  }
 
-  // ===============================
-  // 🌍 RUTAS PÚBLICAS
-  // ===============================
-  if (isPublicRoute(req)) {
-    return NextResponse.next();
-  }
+    if (isPublicRoute(pathname)) {
+      return NextResponse.next();
+    }
 
-  // ===============================
-  // 🔐 AUTENTICACIÓN
-  // ===============================
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
-  }
+    if (!token?.email) {
+      debug(`redirect to /sign-in: no email in token`, { pathname, token });
+      return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
 
-  // ===============================
-  // 🛡 AUTORIZACIÓN POR ROL
-  // ===============================
-  const matchedPermission = Object.entries(ROUTE_PERMISSIONS).find(([prefix]) =>
-    pathname.startsWith(prefix),
-  );
+    const matchedPermission = Object.entries(ROUTE_PERMISSIONS).find(([prefix]) =>
+      pathname.startsWith(prefix),
+    );
 
-  if (!matchedPermission) {
-    return NextResponse.next();
-  }
+    if (!matchedPermission) {
+      return NextResponse.next();
+    }
 
-  const [, requiredRole] = matchedPermission;
+    const [, requiredRole] = matchedPermission;
 
-  const currentUser = await db.user.findUnique({
-    where: { clerkId: userId },
-    select: { id: true, role: true },
-  });
+    let currentUser: { id: string; role: string } | null;
+    try {
+      currentUser = await db.user.findUnique({
+        where: { email: token.email },
+        select: { id: true, role: true },
+      });
+    } catch (err) {
+      debug(`redirect to /sign-in: db error on permission check`, { error: String(err), pathname });
+      return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
 
-  if (!currentUser) {
-    return new Response("Usuario no encontrado", { status: 403 });
-  }
+    if (!currentUser) {
+      debug(`403: user not found by email`, { email: token.email, pathname });
+      return new Response("Usuario no encontrado", { status: 403 });
+    }
 
-  const userLevel = ROLE_HIERARCHY[currentUser.role];
-  const requiredLevel = ROLE_HIERARCHY[requiredRole];
+    const userLevel = ROLE_HIERARCHY[currentUser.role as keyof typeof ROLE_HIERARCHY];
+    const requiredLevel = ROLE_HIERARCHY[requiredRole];
 
-  if (userLevel < requiredLevel) {
-    await auditService.record({
-      eventType: AuditEventType.SECURITY,
-      action: AuditAction.FORBIDDEN_ACCESS,
-      entity: AuditEntity.SYSTEM,
-
-      actorId: currentUser.id,
-      actorRole: currentUser.role,
-
-      metadata: {
-        requiredRole,
+    if (userLevel < requiredLevel) {
+      debug(`redirect to /sign-in: role insufficient`, {
+        pathname,
         userRole: currentUser.role,
-        attemptedPath: pathname,
+        requiredRole,
+      });
+
+      await auditService.record({
+        eventType: AuditEventType.SECURITY,
+        action: AuditAction.FORBIDDEN_ACCESS,
+        entity: AuditEntity.SYSTEM,
+
+        actorId: currentUser.id,
+        actorRole: currentUser.role as any,
+
+        metadata: {
+          requiredRole,
+          userRole: currentUser.role,
+          attemptedPath: pathname,
+        },
+
+        ip: req.headers.get("x-forwarded-for"),
+        userAgent: req.headers.get("user-agent"),
+      });
+
+      return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
+
+    return NextResponse.next();
+  },
+  {
+    secret: process.env.NEXTAUTH_SECRET,
+    callbacks: {
+      authorized: ({ token, req }) => {
+        const pathname = req.nextUrl.pathname;
+
+        if (isPublicRoute(pathname)) {
+          return true;
+        }
+
+        if (!token) {
+          debug(`authorized=false: no token`, { pathname });
+          return false;
+        }
+
+        return true;
       },
-
-      ip: req.headers.get("x-forwarded-for"),
-      userAgent: req.headers.get("user-agent"),
-    });
-
-    return NextResponse.redirect(new URL("/sign-in", req.url));
-  }
-
-  return NextResponse.next();
-});
+    },
+  },
+);
 
 export const config = {
   matcher: [

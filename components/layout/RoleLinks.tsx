@@ -24,7 +24,7 @@ export function RoleLinks({ role }: { role: Role }) {
               "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
               isActive
                 ? "text-sidebar-primary bg-sidebar-accent rounded-md font-semibold"
-                : "text-sidebar-foreground hover:text-white"
+                : "text-sidebar-foreground hover:text-white hover:bg-white/10 rounded-md"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
